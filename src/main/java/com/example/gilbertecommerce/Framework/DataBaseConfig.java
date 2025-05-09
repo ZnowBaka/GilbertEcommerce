@@ -1,4 +1,4 @@
-package com.example.gilbertecommerce.Config;
+package com.example.gilbertecommerce.Framework;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

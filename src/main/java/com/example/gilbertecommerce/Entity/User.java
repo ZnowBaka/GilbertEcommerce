@@ -1,19 +1,19 @@
 package com.example.gilbertecommerce.Entity;
 
-public class Profile {
+public class User {
 
     private String email;
     private String firstName;
     private String lastName;
     private int userID;
-    private int role; // For now its kept as an int, possibly used with a to string, possibly an enum.
+    private UserRole role; // For now its kept as an int, possibly used with a to string, possibly an enum.
     private int trustRating;
    // private ContactInfo contactInfo;  an object pulled when invoice is created
 
 
-    public Profile() {}
+    public User() {}
 
-    public Profile(String email, String firstName, String lastName, int userID, int role, int trustRating) {
+    public User(String email, String firstName, String lastName, int userID, UserRole role, int trustRating) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -55,11 +55,11 @@ public class Profile {
         this.userID = userID;
     }
 
-    public int getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(int role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
