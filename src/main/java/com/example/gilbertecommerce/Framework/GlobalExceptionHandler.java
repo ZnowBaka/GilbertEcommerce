@@ -14,25 +14,25 @@ import org.springframework.ui.Model;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IncorrectPasswordException.class)
-    public String incorrectPassword(Model model, IncorrectPasswordException e) {
-        model.addAttribute("ErrorMessage", e.getMessage());
-        return "incorrectPassword"; // This should return to where-ever the error happened
+    public String handleIncorrectPassword(Model model, IncorrectPasswordException e) {
+        model.addAttribute("error", e.getMessage());
+        return "/loginPage"; // This should return to where-ever the error happened
     }
 
     @ExceptionHandler(UserAlreadyExistException.class)
-    public String incorrectPassword(Model model, UserAlreadyExistException e) {
-        model.addAttribute("ErrorMessage", e.getMessage());
-        return "userAlreadyExist"; // This should return to where-ever the error happened
+    public String handleUserAlreadyExist(Model model, UserAlreadyExistException e) {
+        model.addAttribute("error", e.getMessage());
+        return "/registerNewProfile"; // This should return to where-ever the error happened
     }
 
     @ExceptionHandler(UserDoesNotExistException.class)
-    public String incorrectPassword(Model model, UserDoesNotExistException e) {
+    public String handleUserDoesNotExist(Model model, UserDoesNotExistException e) {
         model.addAttribute("ErrorMessage", e.getMessage());
         return "userDoesNotExist"; // This should return to where-ever the error happened
     }
 
     @ExceptionHandler(UserNameAlreadyExistException.class)
-    public String incorrectPassword(Model model, UserNameAlreadyExistException e) {
+    public String handleIncorrectPassword(Model model, UserNameAlreadyExistException e) {
         model.addAttribute("ErrorMessage", e.getMessage());
         return "userNameAlreadyExist"; // This should return to where-ever the error happened
     }

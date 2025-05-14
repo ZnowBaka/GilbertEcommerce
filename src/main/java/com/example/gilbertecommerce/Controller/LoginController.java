@@ -27,9 +27,9 @@ public class LoginController {
     }
 
     @GetMapping("/")
-    public String getNewProfile(Model model) {
+    public String home(Model model) {
         model.addAttribute("registrationFrom", new RegistrationForm());
-        return "/registerNewProfile";
+        return "redirect:/registerNewProfile";
     }
 
     @PostMapping("/registerNewProfile")
