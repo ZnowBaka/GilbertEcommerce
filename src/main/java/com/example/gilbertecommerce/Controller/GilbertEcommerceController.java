@@ -1,6 +1,7 @@
 package com.example.gilbertecommerce.Controller;
 
 import com.example.gilbertecommerce.Entity.RegistrationForm;
+import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Service.LoginService;
 import com.example.gilbertecommerce.Service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -31,21 +32,21 @@ public class GilbertEcommerceController {
 
 
     @GetMapping("/welcomePage")
-    public String welcome(Model model) {
+    public String getWelcomePage(Model model) {
 
         return "welcomePage";
     }
 
-    @GetMapping("/loginPage")
-    public String loginPage(Model model) {
 
-        return "/loginPage";
+    // registerNewProfile GET & POST
+    @GetMapping("/registerNewProfile")
+    public String getNewProfile(Model model) {
+        model.addAttribute("registrationFrom", new RegistrationForm());
+        return "/registerNewProfile";
     }
-
 
     @PostMapping("/registerNewProfile")
     public String postNewProfile(@ModelAttribute("registrationForm") RegistrationForm registrationForm, Model model) {
-        model.addAttribute("registrationFrom", new RegistrationForm());
 
         if (!loginService.doesLoginInfoExist(registrationForm.getLoginInfo().getLoginName())) {
             loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
@@ -55,6 +56,10 @@ public class GilbertEcommerceController {
             return "/registerNewProfile";
         }
     }
+
+
+
+
 }
 /*
     @GetMapping("/loginPage")
