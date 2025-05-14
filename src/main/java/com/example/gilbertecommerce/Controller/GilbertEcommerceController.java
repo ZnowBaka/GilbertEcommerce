@@ -41,8 +41,8 @@ public class GilbertEcommerceController {
     // registerNewProfile GET & POST
     @GetMapping("/registerNewProfile")
     public String getNewProfile(Model model) {
-        model.addAttribute("registrationFrom", new RegistrationForm());
-        return "/registerNewProfile";
+        model.addAttribute("registrationForm", new RegistrationForm());
+        return "registerNewProfile";
     }
 
     @PostMapping("/registerNewProfile")
@@ -50,7 +50,7 @@ public class GilbertEcommerceController {
 
         if (!loginService.doesLoginInfoExist(registrationForm.getLoginInfo().getLoginName())) {
             loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
-            return "redirect:/login";
+            return "redirect:/welcomePage";
         } else {
             model.addAttribute("error", "User already exists");
             return "/registerNewProfile";
