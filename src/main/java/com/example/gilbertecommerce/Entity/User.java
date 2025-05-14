@@ -22,7 +22,7 @@ public class User {
         this.userID = userID;
         this.role = role;
         this.trustRating = trustRating;
-       // contanctinfo left out until implemented
+       // contact info left out until implemented
     }
     public String getDisplayName() {
         return displayName;

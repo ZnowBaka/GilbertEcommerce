@@ -38,10 +38,13 @@ public class UserRepo {
         try {
             String sql = "insert into USER (first_name, last_name, user_email) values (?, ?, ?)";
             jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmail());
+
             sql = "select user_id from USER where display_name = ?";
             int id = jdbcTemplate.queryForObject(sql, Integer.class, user.getDisplayName());
+
             sql = "insert into LOGIN_INFO (login_id, user_loginName, user_pass) values (?, ?, ?)";
             jdbcTemplate.update(sql, id,loginInfo.getLoginName(), loginInfo.getLoginPass());
+
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
