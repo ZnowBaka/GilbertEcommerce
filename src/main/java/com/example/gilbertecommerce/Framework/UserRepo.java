@@ -12,12 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserRepo {
     private final JdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     public SecurityConfig securityConfig;
 
     public UserRepo(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     public String getLoginInfo(String loginName) {
@@ -27,7 +25,7 @@ public class UserRepo {
         return jdbcTemplate.queryForObject(sql, String.class, loginName);
     }
     public boolean doesLoginInfoExist(String loginName) throws UserAlreadyExistException {
-        String sql = "select * from LOGIN_INFO where login_Name = ?";
+        String sql = "select * from LOGIN_INFO where user_loginName = ?";
         if (jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginName).size() > 0) {
             return false;
         } else {

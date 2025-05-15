@@ -3,6 +3,7 @@ package com.example.gilbertecommerce.Entity;
 public class RegistrationForm {
     private User user = new User();
     private LoginInfo loginInfo = new LoginInfo();
+
     public LoginInfo getLoginInfo() {
         return loginInfo;
     }
