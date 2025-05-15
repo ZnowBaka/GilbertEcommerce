@@ -14,6 +14,9 @@ import java.sql.SQLException;
 public class LoginService {
     private UserRepo userRepo;
     private SecurityConfig securityConfig = new SecurityConfig();
+    public LoginService(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
     public boolean checkLogin(String loginName, String password){
         String hashed = userRepo.getLoginInfo(loginName);
         if(securityConfig.passwordEncoder().matches(password, hashed)){
