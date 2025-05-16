@@ -17,9 +17,12 @@ public class LoginService {
     public LoginService(UserRepo userRepo) {
         this.userRepo = userRepo;
     }
-    public boolean checkLogin(String loginName, String password){
-        String hashed = userRepo.getLoginInfo(loginName);
-        if(securityConfig.passwordEncoder().matches(password, hashed)){
+    public boolean checkLogin(LoginInfo loginInfo) throws SQLException {
+        LoginInfo loginInfo1 = userRepo.getLoginInfo(loginInfo);
+        System.out.println(loginInfo1.getLoginPass());
+        System.out.println(loginInfo1.getLoginName());
+        String hashed = loginInfo1.getLoginPass();
+        if(securityConfig.passwordEncoder().matches(loginInfo.getLoginPass(), hashed)){
             return true;
         }
         return false;

@@ -18,27 +18,26 @@ public class UserRepo {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public String getLoginInfo(String loginName) {
-        String sql = "select user_pass from LOGIN_INFO where user_loginName = ?";
+    public LoginInfo getLoginInfo(LoginInfo loginInfo) {
+        String sql = "select * from LOGIN_INFO where user_loginName = ?";
         //the line below allows for more flexiable input but not needed in this case
         // return jdbcTemplate.queryForObject(sql, new Object[]{loginName}, String.class);
-        return jdbcTemplate.queryForObject(sql, String.class, loginName);
+        LoginInfo loginInfo1 = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginInfo.getLoginName());
+        System.out.println(loginInfo1.getLoginName());
+        return loginInfo1;
+        //return jdbcTemplate.queryForObject(sql, String.class, loginName);
     }
     public boolean doesLoginInfoExist(String loginName) throws UserAlreadyExistException {
         String sql = "select * from LOGIN_INFO where user_loginName = ?";
-        if (jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginName).size() > 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginName).isEmpty();
     }
     public boolean createNewUser(LoginInfo loginInfo, User user) {
         try {
-            String sql = "insert into USER (first_name, last_name, user_email) values (?, ?, ?)";
-            jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmail());
+            String sql = "insert into USER (first_name, last_name, user_email, displayName) values (?, ?, ?, ?)";
+            jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmail(), user.getDisplayName());
 
-            sql = "select user_id from USER where display_name = ?";
-            int id = jdbcTemplate.queryForObject(sql, Integer.class, user.getDisplayName());
+            sql = "select user_id from USER where user_email = ?";
+            int id = jdbcTemplate.queryForObject(sql, Integer.class, user.getEmail());
 
             sql = "insert into LOGIN_INFO (login_id, user_loginName, user_pass) values (?, ?, ?)";
             jdbcTemplate.update(sql, id,loginInfo.getLoginName(), loginInfo.getLoginPass());
@@ -47,5 +46,9 @@ public class UserRepo {
             throw new RuntimeException(e);
         }
         return true;
+    }
+    public User getUserById(int id) {
+        String sql = "select * from USER where user_id = ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), id);
     }
 }
