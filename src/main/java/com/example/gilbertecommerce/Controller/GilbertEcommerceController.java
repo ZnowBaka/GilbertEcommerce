@@ -70,22 +70,29 @@ public String getLoginPage(Model model) {
     return "/loginPage";
 }
 
-@PostMapping("/loginPage")
-public String postLoginPage(@ModelAttribute("loginInfo") LoginInfo loginInfo, Model model) throws IncorrectPasswordException, SQLException {
+    @PostMapping("/loginPage")
+    public String postLoginPage(@ModelAttribute("loginInfo") LoginInfo loginInfo, Model model) throws IncorrectPasswordException, SQLException {
 
-    if (loginService.checkLogin(loginInfo)) {
-        session.setAttribute("loginInfo" , (LoginInfo) loginInfo);
-        session.setAttribute("user", (User)userService.getUserById(loginInfo.getLoginId()));
-        LoginInfo loginInfo1 = (LoginInfo) session.getAttribute("loginInfo");
-        User user = (User) session.getAttribute("user");
-        System.out.println("displayName" + user.getDisplayName());
-        System.out.println("loginInfo" + loginInfo1.getLoginName());
-        return "redirect:/welcomePage";
-    } else {
-        model.addAttribute("error", "Incorrect username or password");
-        return "/loginPage";
+        if (loginService.checkLogin(loginInfo)) {
+
+            LoginInfo actualFromDb = loginService.getLoginInfo(loginInfo);
+            session.setAttribute("loginInfo", loginInfo);
+
+            User user = userService.getUserById(actualFromDb.getLoginId());
+            if (user == null) {
+                System.out.println("No user found for login ID: " + loginInfo.getLoginId());
+                model.addAttribute("error", "User not found.");
+                return "/loginPage";
+            }
+
+            session.setAttribute("user", user);
+            System.out.println("displayName: " + user.getDisplayName());
+            return "redirect:/welcomePage";
+        } else {
+            model.addAttribute("error", "Incorrect username or password");
+            return "/loginPage";
+        }
     }
-}
 }
 
 

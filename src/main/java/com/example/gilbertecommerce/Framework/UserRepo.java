@@ -4,6 +4,7 @@ import com.example.gilbertecommerce.CustomException.UserAlreadyExistException;
 import com.example.gilbertecommerce.Entity.LoginInfo;
 import com.example.gilbertecommerce.Entity.User;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -22,14 +23,27 @@ public class UserRepo {
         String sql = "select * from LOGIN_INFO where user_loginName = ?";
         //the line below allows for more flexiable input but not needed in this case
         // return jdbcTemplate.queryForObject(sql, new Object[]{loginName}, String.class);
-        LoginInfo loginInfo1 = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginInfo.getLoginName());
-        System.out.println(loginInfo1.getLoginName());
-        return loginInfo1;
-        //return jdbcTemplate.queryForObject(sql, String.class, loginName);
-    }
+        //jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginInfo.getLoginName());
+        return jdbcTemplate.queryForObject(sql, new Object[]{loginInfo.getLoginName()}, (rs, rowNum) -> {
+
+            LoginInfo loginInfo1 = new LoginInfo();
+            loginInfo1.setLoginId(rs.getInt("login_id"));
+            loginInfo1.setLoginName(rs.getString("user_loginName"));
+            loginInfo1.setLoginPass(rs.getString("user_pass"));
+            System.out.println("logininfo " + loginInfo1.getLoginName() + " is in the db with id:" + loginInfo1.getLoginId());
+            // result (User jack is in the db with id:1) it just works
+            // result User bob is in the db with id:4
+            return loginInfo1;
+        });
+        }
+
     public boolean doesLoginInfoExist(String loginName) throws UserAlreadyExistException {
-        String sql = "select * from LOGIN_INFO where user_loginName = ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginName).isEmpty();
+        String sql = "select count(*) from LOGIN_INFO where user_loginName = ?";
+        int existisngCount = jdbcTemplate.queryForObject(sql, Integer.class, loginName);
+        if(existisngCount < 0){
+            return false;
+        }else
+            return true;
     }
     public boolean createNewUser(LoginInfo loginInfo, User user) {
         try {
@@ -49,6 +63,12 @@ public class UserRepo {
     }
     public User getUserById(int id) {
         String sql = "select * from USER where user_id = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), id);
+        try {
+            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), id);
+        } catch (EmptyResultDataAccessException e) {
+            // Log the exception, return null or handle appropriately
+            System.out.println("No user found with ID: " + id);
+            return null; // Safely handle in case no user is found
+        }
     }
 }
