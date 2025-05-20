@@ -1,89 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register Page</title>
-  <link rel="stylesheet" href="/LoginStyles.css"> <!-- Link to your external CSS file -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register</title>
+  <link rel="stylesheet" href="/LoginStyles.css" />
 </head>
 
 <body>
 <div class="login-container">
   <h2>Register</h2>
 
-  <form action="#" th:action="@{/registerNewProfile}" th:object="${registrationForm}" method="post">
+  <form th:action="@{/registerNewProfile}" th:object="${registrationForm}" method="post">
     <div class="input-group">
       <label for="firstName">First Name</label>
       <input type="text" id="firstName" th:field="*{user.firstName}" required />
     </div>
+
     <div class="input-group">
       <label for="lastName">Last Name</label>
       <input type="text" id="lastName" th:field="*{user.lastName}" required />
     </div>
+
     <div class="input-group">
       <label for="displayName">Display Name</label>
       <input type="text" id="displayName" th:field="*{user.displayName}" />
     </div>
+
     <div class="input-group">
       <label for="email">Email</label>
       <input type="email" id="email" th:field="*{user.email}" required />
     </div>
-    <div class="input-group">
-      <label for="loginName">Username (for login)</label>
-      <input type="text" id="loginName" th:field="*{loginInfo.loginName}" required />
-    </div>
+
     <div class="input-group">
       <label for="loginPass">Password</label>
       <input type="password" id="loginPass" th:field="*{loginInfo.loginPass}" required />
     </div>
+
     <div class="input-group">
-      <label for="passwordConfirmation">Profile Picture</label>
-      <input type="password" id="passwordConfirmation" th:field="" />
+      <label for="passwordConfirmation">Confirm Password</label>
+      <input type="password" id="passwordConfirmation" th:field="*{passwordConfirmation}" required />
     </div>
+
     <div class="button-group">
       <button type="submit">Register</button>
     </div>
   </form>
 
-  <!--    <form action="#" th:action="@{/registerNewProfile}" th:object="${newUser}" th:object="${loginInfo}" method="post">-->
-  <!--        <div class="input-group">-->
-  <!--            <label for="firstName">Username</label>-->
-  <!--            <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required />-->
-  <!--        </div>-->
-  <!--        <div class="input-group">-->
-  <!--            <label for="lastName">last name</label>-->
-  <!--            <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required />-->
-  <!--        </div>-->
-  <!--        <div class="input-group">-->
-  <!--        <label for="DisplayName">display name</label>-->
-  <!--        <input type="text" id="DisplayName" name="displayName" th:field="*{displayName}">-->
-  <!--        </div>-->
-  <!--        <div class="input-group">-->
-  <!--            <label for="email">Email</label>-->
-  <!--            <input type="email" id="email" name="userEmail" th:field="*{email}" required />-->
-  <!--        </div>-->
-  <!--        <div class="input-group">-->
-  <!--            <label for="loginName">user name: this will be used when you login</label>-->
-  <!--            <input type="text" id="loginName" name="loginName" th:field="*{loginName}" required>-->
-  <!--        </div>-->
-  <!--         <div class="input-group">-->
-  <!--            <label for="loginPass">Password</label>-->
-  <!--            <input type="password" id="loginPass" name="loginPass" th:field="*{loginPass}" required />-->
-  <!--        </div>-->
-  <!--        <div class="button-group">-->
-  <!--            <button type="submit">Register</button>-->
-  <!--        </div>-->
-  <!--        &lt;!&ndash;The old error div was placed here &ndash;&gt;-->
-  <!--    </form>-->
-
   <div th:if="${error}" class="error-message">
     <p th:text="${error}"></p>
   </div>
 
-  <!-- Login link for redirecting to login page -->
   <div class="login-link">
-    <p>Already have an account? <a href="/loginPage">Login here</a></p>
+    <a href="/loginPage">Already have an account?</a>
   </div>
 </div>
 </body>
