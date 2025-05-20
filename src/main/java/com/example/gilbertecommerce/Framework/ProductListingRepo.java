@@ -3,9 +3,11 @@ package com.example.gilbertecommerce.Framework;
 import com.example.gilbertecommerce.Entity.ProductListing;
 import com.example.gilbertecommerce.Entity.ProductListingMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class ProductListingRepo {
 
     private final JdbcTemplate jdbcTemplate;
@@ -15,12 +17,12 @@ public class ProductListingRepo {
     }
 
     public List<ProductListing> findAllListings() {
-        String sql = "select * from productlisting";
+        String sql = "select * from Listings";
         return jdbcTemplate.query(sql, new ProductListingMapper());
     }
 
     public ProductListing findById(int id) {
-        String sql = "select * from productlisting where id = ?";
+        String sql = "select * from Listings where listing_id = ?";
         return jdbcTemplate.queryForObject(sql, new ProductListingMapper(), id);
     }
 
@@ -35,7 +37,7 @@ public class ProductListingRepo {
     }
 
     public void update(ProductListing productListing) {
-        String sql = "update Listings set title =?, description =?, postingDate =?, price=? where id = ?";
+        String sql = "update Listings set title =?, description =?, postingDate =?, price=? where listing_id = ?";
         jdbcTemplate.update(sql,
                 productListing.getListingTitle(),
                 productListing.getListingDescription(),
@@ -46,7 +48,7 @@ public class ProductListingRepo {
 
 
     public void delete(int id) {
-        String sql = "delete from productlisting where id = ?";
+        String sql = "delete from Listings where id = ?";
         jdbcTemplate.update(sql, id);
     }
 }

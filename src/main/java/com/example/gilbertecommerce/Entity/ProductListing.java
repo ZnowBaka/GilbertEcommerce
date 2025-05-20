@@ -12,7 +12,6 @@ public class ProductListing {
     private int listingID;
     private double price;
     private int sellerID;
-    private int productID;
     private LocalDateTime listingDate;
     private String listingTitle;
     private String listingDescription;
@@ -33,11 +32,10 @@ public class ProductListing {
         this.listingStatus = listingStatus;
     }*/
 
-    public ProductListing(int listingID, double price, int sellerID, int productID, long epochMillis, String listingTitle, String ListingDescription, String ListingImage, boolean listingStatus) {
+    public ProductListing(int listingID, double price, int sellerID, long epochMillis, String listingTitle, String ListingDescription, String ListingImage, boolean listingStatus) {
         this.listingID = listingID;
         this.price = price;
         this.sellerID = sellerID;
-        this.productID = productID;
         this.listingStatus = listingStatus;
         this.listingDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), ZoneId.systemDefault());
         this.listingTitle = listingTitle;
@@ -62,12 +60,6 @@ public class ProductListing {
     }
     public void setSellerID(int sellerID) {
         this.sellerID = sellerID;
-    }
-    public int getProductID() {
-        return productID;
-    }
-    public void setProductID(int productID) {
-        this.productID = productID;
     }
     public LocalDateTime getListingDate() {
         return listingDate;
