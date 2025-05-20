@@ -57,23 +57,21 @@ public class GilbertEcommerceController {
             if (registrationForm.getLoginInfo().getLoginPass().equals(passwordConfirmation)) {
                 loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
             }
-                return "redirect:/welcomePage";
+            return "redirect:/welcomePage";
 
-            } else{
-                model.addAttribute("error", "User already exists");
-                return "/registerNewProfile";
-            }
+        } else {
+            model.addAttribute("error", "User already exists");
+            return "/registerNewProfile";
         }
     }
 
 
-
-@GetMapping("/loginPage")
-public String getLoginPage(Model model) {
-    session.invalidate();
-    model.addAttribute("loginInfo", new LoginInfo());
-    return "/loginPage";
-}
+    @GetMapping("/loginPage")
+    public String getLoginPage(Model model) {
+        session.invalidate();
+        model.addAttribute("loginInfo", new LoginInfo());
+        return "/loginPage";
+    }
 
     @PostMapping("/loginPage")
     public String postLoginPage(@ModelAttribute("loginInfo") LoginInfo loginInfo, Model model) throws IncorrectPasswordException, SQLException {
@@ -98,7 +96,12 @@ public String getLoginPage(Model model) {
             return "/loginPage";
         }
     }
+    @GetMapping("/productListingPage")
+    public String getProductPage() {
+        return "/productListingPage";
+    }
 }
- */
+
+
 
 
