@@ -13,16 +13,23 @@ import java.sql.SQLException;
 @Service
 public class LoginService {
     private UserRepo userRepo;
-    private SecurityConfig securityConfig = new SecurityConfig();
-    public LoginService(UserRepo userRepo) {
+    private SecurityConfig securityConfig;
+    public LoginService(UserRepo userRepo, SecurityConfig securityConfig) {
         this.userRepo = userRepo;
+        this.securityConfig = securityConfig;
     }
-    public boolean checkLogin(String loginName, String password){
-        String hashed = userRepo.getLoginInfo(loginName);
-        if(securityConfig.passwordEncoder().matches(password, hashed)){
+    public boolean checkLogin(LoginInfo loginInfo) throws SQLException {
+        LoginInfo loginInfo1 = userRepo.getLoginInfo(loginInfo);
+        System.out.println(loginInfo1.getLoginPass());
+        System.out.println(loginInfo1.getLoginName());
+        String hashed = loginInfo1.getLoginPass();
+        if(securityConfig.passwordEncoder().matches(loginInfo.getLoginPass(), hashed)){
             return true;
         }
         return false;
+    }
+    public LoginInfo getLoginInfo(LoginInfo loginInfo) {
+        return userRepo.getLoginInfo(loginInfo);
     }
     public boolean registerUser(LoginInfo loginInfo, User user) {
         //hashing password

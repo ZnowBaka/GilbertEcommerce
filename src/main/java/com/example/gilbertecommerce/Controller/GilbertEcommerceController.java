@@ -1,5 +1,7 @@
 package com.example.gilbertecommerce.Controller;
 
+import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
+import com.example.gilbertecommerce.Entity.LoginInfo;
 import com.example.gilbertecommerce.Entity.RegistrationForm;
 import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Service.LoginService;
@@ -10,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.sql.SQLException;
 
 @Controller
 public class GilbertEcommerceController {
@@ -53,38 +57,51 @@ public class GilbertEcommerceController {
             if (registrationForm.getLoginInfo().getLoginPass().equals(passwordConfirmation)) {
                 loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
             }
-                return "redirect:/welcomePage";
+            return "redirect:/welcomePage";
 
-            } else{
-                model.addAttribute("error", "User already exists");
-                return "/registerNewProfile";
-            }
+        } else {
+            model.addAttribute("error", "User already exists");
+            return "/registerNewProfile";
         }
     }
 
-/*
+
     @GetMapping("/loginPage")
-    public String loginPage(Model model) {
+    public String getLoginPage(Model model) {
         session.invalidate();
-        model.addAttribute("user", new User());
+        model.addAttribute("loginInfo", new LoginInfo());
         return "/loginPage";
     }
 
     @PostMapping("/loginPage")
-    public String postLoginPage(@ModelAttribute("user") User user, Model model) throws IncorrectPasswordException {
-        User loggedInUser = userService.loginUser(user);
-        if (loggedInUser != null) {
+    public String postLoginPage(@ModelAttribute("loginInfo") LoginInfo loginInfo, Model model) throws IncorrectPasswordException, SQLException {
 
-            session.setAttribute("user", loggedInUser);
-            session.setAttribute("profile", profileService.getProfileById((User) session.getAttribute("user")));
-            return "redirect:/frontPage";
-        } else if (loggedInUser == null) {
+        if (loginService.checkLogin(loginInfo)) {
+
+            LoginInfo actualFromDb = loginService.getLoginInfo(loginInfo);
+            session.setAttribute("loginInfo", loginInfo);
+
+            User user = userService.getUserById(actualFromDb.getLoginId());
+            if (user == null) {
+                System.out.println("No user found for login ID: " + loginInfo.getLoginId());
+                model.addAttribute("error", "User not found.");
+                return "/loginPage";
+            }
+
+            session.setAttribute("user", user);
+            System.out.println("displayName: " + user.getDisplayName());
+            return "redirect:/welcomePage";
+        } else {
             model.addAttribute("error", "Incorrect username or password");
             return "/loginPage";
         }
-        return "/loginPage";
+    }
+    @GetMapping("/productListingPage")
+    public String getProductPage() {
+        return "/productListingPage";
     }
 }
- */
+
+
 
 

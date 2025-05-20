@@ -11,14 +11,14 @@
 <div class="login-container">
     <h2>Login</h2>
 
-    <form action="#" th:action="@{/loginPage}" th:object="${user}" method="post">
+    <form action="#" th:action="@{/loginPage}" th:object="${loginInfo}" method="post">
         <div class="input-group">
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" th:field="*{userName}" required/>
+            <input type="text" id="username" name="username" th:field="*{loginName}" required/>
         </div>
         <div class="input-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" th:field="*{userPass}" required/>
+            <input type="password" id="password" name="password" th:field="*{loginPass}" required/>
         </div>
         <div class="button-group">
             <!--The old error div was placed here -->
