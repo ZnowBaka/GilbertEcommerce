@@ -46,18 +46,23 @@ public class GilbertEcommerceController {
     @GetMapping("/registerNewProfile")
     public String getNewProfile(Model model) {
         model.addAttribute("registrationForm", new RegistrationForm());
+        model.addAttribute("passwordConfirmation");
         return "registerNewProfile";
     }
 
     @PostMapping("/registerNewProfile")
-    public String postNewProfile(@ModelAttribute("registrationForm") RegistrationForm registrationForm, Model model) {
+    public String postNewProfile(@ModelAttribute("registrationForm") RegistrationForm registrationForm, @ModelAttribute("passwordConfirmation") String passwordConfirmation, Model model) {
 
-        if (loginService.doesLoginInfoExist(registrationForm.getLoginInfo().getLoginName())) {
-            loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
-            return "redirect:/welcomePage";
-        } else {
-            model.addAttribute("error", "User already exists");
-            return "/registerNewProfile";
+        if (!loginService.doesLoginInfoExist(registrationForm.getLoginInfo().getLoginName())) {
+            if (registrationForm.getLoginInfo().getLoginPass().equals(passwordConfirmation)) {
+                loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
+            }
+                return "redirect:/welcomePage";
+
+            } else{
+                model.addAttribute("error", "User already exists");
+                return "/registerNewProfile";
+            }
         }
     }
 
@@ -94,5 +99,6 @@ public String getLoginPage(Model model) {
         }
     }
 }
+ */
 
 
