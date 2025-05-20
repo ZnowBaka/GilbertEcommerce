@@ -31,10 +31,12 @@ public class ProductListingService {
     }
 
     public void create(ProductListing listing) {
+        validateListing(listing);
         repo.save(listing);
     }
 
     public void update(int id, ProductListing listing) {
+        validateListing(listing);
         repo.update(listing);
     }
 
@@ -45,15 +47,15 @@ public class ProductListingService {
     public void validateListing(ProductListing productListing) {
 
         if(productListing.getListingTitle() == null || productListing.getListingTitle().isEmpty()) {
-            throw new InvalidListingException("The title of your listing is empty, but must be provided.");
+            throw new InvalidListingException("The title of your listing is empty, but must be provided.", "title", "create");
         }
 
         if(productListing.getListingDescription() == null || productListing.getListingDescription().isEmpty()) {
-            throw new InvalidListingException("The description of your listing is empty, but must be provided.");
+            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "description", "create");
         }
 
         if(productListing.getPrice() <= 0){
-            throw new InvalidListingException("The price of your listing is less than or equal to zero.");
+            throw new InvalidListingException("The price of your listing is less than or equal to zero.", "price", "create");
         }
     }
 
