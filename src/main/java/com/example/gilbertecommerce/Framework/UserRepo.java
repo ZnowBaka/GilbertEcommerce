@@ -20,30 +20,27 @@ public class UserRepo {
     }
 
     public LoginInfo getLoginInfo(LoginInfo loginInfo) {
-        String sql = "select * from LOGIN_INFO where user_loginName = ?";
+        String sql = "select * from LOGIN_INFO where user_loginEmail = ?";
         //the line below allows for more flexiable input but not needed in this case
-        // return jdbcTemplate.queryForObject(sql, new Object[]{loginName}, String.class);
-        //jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginInfo.getLoginName());
-        return jdbcTemplate.queryForObject(sql, new Object[]{loginInfo.getLoginName()}, (rs, rowNum) -> {
+        // return jdbcTemplate.queryForObject(sql, new Object[]{loginEmail}, String.class);
+        //jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginInfo.getLoginEmail());
+        return jdbcTemplate.queryForObject(sql, new Object[]{loginInfo.getLoginEmail()}, (rs, rowNum) -> {
 
             LoginInfo loginInfo1 = new LoginInfo();
             loginInfo1.setLoginId(rs.getInt("login_id"));
-            loginInfo1.setLoginName(rs.getString("user_loginName"));
+            loginInfo1.setLoginEmail(rs.getString("user_loginEmail"));
             loginInfo1.setLoginPass(rs.getString("user_pass"));
-            System.out.println("logininfo " + loginInfo1.getLoginName() + " is in the db with id:" + loginInfo1.getLoginId());
+            System.out.println("logininfo " + loginInfo1.getLoginEmail() + " is in the db with id:" + loginInfo1.getLoginId());
             // result (User jack is in the db with id:1) it just works
             // result User bob is in the db with id:4
             return loginInfo1;
         });
         }
 
-    public boolean doesLoginInfoExist(String loginName) throws UserAlreadyExistException {
-        String sql = "select count(*) from LOGIN_INFO where user_loginName = ?";
-        int existisngCount = jdbcTemplate.queryForObject(sql, Integer.class, loginName);
-        if(existisngCount < 0){
-            return false;
-        }else
-            return true;
+    public boolean doesLoginInfoExist(String loginEmail) throws UserAlreadyExistException {
+        String sql = "select count(*) from LOGIN_INFO where user_loginEmail = ?";
+        int existingCount = jdbcTemplate.queryForObject(sql, Integer.class, loginEmail);
+        return existingCount > 0;
     }
     public boolean createNewUser(LoginInfo loginInfo, User user) {
         try {
@@ -53,8 +50,8 @@ public class UserRepo {
             sql = "select user_id from USER where user_email = ?";
             int id = jdbcTemplate.queryForObject(sql, Integer.class, user.getEmail());
 
-            sql = "insert into LOGIN_INFO (login_id, user_loginName, user_pass) values (?, ?, ?)";
-            jdbcTemplate.update(sql, id,loginInfo.getLoginName(), loginInfo.getLoginPass());
+            sql = "insert into LOGIN_INFO (login_id, user_loginEmail, user_pass) values (?, ?, ?)";
+            jdbcTemplate.update(sql, id,loginInfo.getLoginEmail(), loginInfo.getLoginPass());
 
         } catch (DataAccessException e) {
             throw new RuntimeException(e);

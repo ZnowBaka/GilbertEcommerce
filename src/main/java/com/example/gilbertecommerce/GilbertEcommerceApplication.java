@@ -9,8 +9,6 @@ public class GilbertEcommerceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GilbertEcommerceApplication.class, args);
-        SecurityConfig securityConfig = new SecurityConfig();
-        System.out.println(securityConfig.passwordEncoder().encode("abc123"));
     }
 
 
