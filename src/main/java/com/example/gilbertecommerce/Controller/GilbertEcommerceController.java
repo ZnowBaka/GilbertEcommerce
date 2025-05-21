@@ -82,7 +82,7 @@ public class GilbertEcommerceController {
             LoginInfo actualFromDb = loginService.getLoginInfo(loginInfo);
             session.setAttribute("loginInfo", loginInfo);
 
-            User user = userService.getUserById(actualFromDb.getLoginId());
+            User user = userService.getUserById(actualFromDb);
             if (user == null) {
                 System.out.println("No user found for login ID: " + loginInfo.getLoginId());
                 model.addAttribute("error", "User not found.");
@@ -112,8 +112,12 @@ public class GilbertEcommerceController {
             return "redirect:/welcomePage";
         }
     }
+    @GetMapping("/ProfileView")
+    public String getProfileView() {
+        User user = (User) session.getAttribute("user");
+        if (user.getRole().equals("admin")) {
+            return "/AdminMenu";
+        }
+        return "/ProfileView";
+    }
 }
-
-
-
-
