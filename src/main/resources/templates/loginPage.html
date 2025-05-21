@@ -13,8 +13,8 @@
 
     <form action="#" th:action="@{/loginPage}" th:object="${loginInfo}" method="post">
         <div class="input-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" th:field="*{loginName}" required/>
+            <label for="username">Email</label>
+            <input type="text" id="username" name="username" th:field="*{loginEmail}" required/>
         </div>
         <div class="input-group">
             <label for="password">Password</label>

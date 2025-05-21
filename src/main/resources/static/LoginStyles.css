@@ -1,64 +1,128 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+@font-face {
+    font-family: 'The Seasons';
+    src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/webfonts/fa-regular-400.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
 
-    background-image: url('https://cdn.pixabay.com/photo/2022/12/05/05/20/cat-7635983_1280.png');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
+:root {
+    --primary-color: #004224;
+    --text-color: #f8f0e5;
+    --accent-color: #423a26;
+    --light-accent: rgba(66, 58, 38, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'The Seasons', Arial, sans-serif;
+}
+
+body {
+    background-color: var(--text-color);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
 }
 
 .login-container {
     background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    padding: 2.5rem;
+    border-radius: 0;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
 }
 
-h2 {
+.login-container h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+    font-size: 2rem;
 }
 
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 1.25rem;
 }
 
 .input-group label {
-    font-size: 14px;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
 }
 
 .input-group input {
     width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 0.75rem;
+    border: 1px solid var(--light-accent);
+    background-color: #fff;
+    border-radius: 0;
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--light-accent);
 }
 
 .button-group {
+    margin-top: 1.5rem;
     text-align: center;
 }
 
 .button-group button {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-color);
     border: none;
-    border-radius: 4px;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
     cursor: pointer;
+    border-radius: 0;
+    transition: background-color 0.3s ease;
 }
 
 .button-group button:hover {
-    background-color: #45a049;
+    background-color: var(--accent-color);
+}
+
+.error-message {
+    margin-top: 1rem;
+    background-color: rgba(255, 0, 0, 0.1);
+    padding: 0.75rem;
+    color: red;
+    font-size: 0.95rem;
+    border-radius: 0;
+}
+
+.login-link {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.login-link a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 1.5rem;
+    }
+
+    .login-container h2 {
+        font-size: 1.5rem;
+    }
 }
