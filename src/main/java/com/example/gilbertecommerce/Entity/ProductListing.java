@@ -12,31 +12,38 @@ public class ProductListing {
     private int listingID;
     private double price;
     private int sellerID;
-    private int productID;
     private LocalDateTime listingDate;
-
-
+    private String listingTitle;
+    private String listingDescription;
+    private String listingImage;
+    private boolean listingStatus;
+    
     public ProductListing() {}
-
-    public ProductListing(int listingID, double price, int sellerID, int productID, LocalDateTime listingDate) {
+/*
+    public ProductListing(int listingID, double price, int sellerID, int productID, LocalDateTime listingDate,String listingTitle, String ListingDescription, String ListingImage, boolean listingStatus) {
         this.listingID = listingID;
         this.price = price;
         this.sellerID = sellerID;
         this.productID = productID;
         this.listingDate = listingDate;
-    }
+        this.listingTitle = listingTitle;
+        this.listingDescription = ListingDescription;
+        this.listingImage = ListingImage;
+        this.listingStatus = listingStatus;
+    }*/
 
-    public ProductListing(int listingID, double price, int sellerID, int productID, long epochMillis) {
+    public ProductListing(int listingID, double price, int sellerID, long epochMillis, String listingTitle, String ListingDescription, String ListingImage, boolean listingStatus) {
         this.listingID = listingID;
         this.price = price;
         this.sellerID = sellerID;
-        this.productID = productID;
+        this.listingStatus = listingStatus;
         this.listingDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), ZoneId.systemDefault());
+        this.listingTitle = listingTitle;
+        this.listingDescription = ListingDescription;
+        this.listingImage = ListingImage;
     }
 
-    public int getListingID() {
-        return listingID;
-    }
+    public int getListingID() {return listingID;}
     public void setListingID(int listingID) {
         this.listingID = listingID;
     }
@@ -52,18 +59,34 @@ public class ProductListing {
     public void setSellerID(int sellerID) {
         this.sellerID = sellerID;
     }
-    public int getProductID() {
-        return productID;
-    }
-    public void setProductID(int productID) {
-        this.productID = productID;
-    }
     public LocalDateTime getListingDate() {
         return listingDate;
     }
     public void setListingDate(LocalDateTime listingDate) {
         this.listingDate = listingDate;
     }
-
-
+    public boolean isListingStatus() {
+        return listingStatus;
+    }
+    public void setListingStatus(boolean listingStatus) {
+        this.listingStatus = listingStatus;
+    }
+    public String getListingImage() {
+        return listingImage;
+    }
+    public void setListingImage(String listingImage) {
+        this.listingImage = listingImage;
+    }
+    public String getListingDescription() {
+        return listingDescription;
+    }
+    public void setListingDescription(String listingDescription) {
+        this.listingDescription = listingDescription;
+    }
+    public String getListingTitle() {
+        return listingTitle;
+    }
+    public void setListingTitle(String listingTitle) {
+        this.listingTitle = listingTitle;
+    }
 }

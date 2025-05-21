@@ -2,10 +2,7 @@ package com.example.gilbertecommerce.Framework;
 
 
 
-import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
-import com.example.gilbertecommerce.CustomException.UserAlreadyExistException;
-import com.example.gilbertecommerce.CustomException.UserDoesNotExistException;
-import com.example.gilbertecommerce.CustomException.UserNameAlreadyExistException;
+import com.example.gilbertecommerce.CustomException.*;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.ui.Model;
@@ -37,12 +34,17 @@ public class GlobalExceptionHandler {
         return "userNameAlreadyExist"; // This should return to where-ever the error happened
     }
 
+    @ExceptionHandler(ListingNotFoundException.class)
+    public String handleListingNotFound(Model model, ListingNotFoundException e) {
+        model.addAttribute("ErrorMessage", e.getMessage());
+        return ""; //Tilføje siden, hvor fejlen skete, så vi forbliver på samme
+    }
 
-
-
-
-
-
-
-
+    @ExceptionHandler(InvalidListingException.class)
+    public String handleInvalidListing(Model model, InvalidListingException e) {
+        model.addAttribute("ErrorMessage", e.getMessage());
+        model.addAttribute("errorField", e.getField());
+        model.addAttribute("source", e.getSource());
+        return e.getSource().equals("update") ? "editListingForm" : "createListingForm"; //Defineret else if
+    }
 }
