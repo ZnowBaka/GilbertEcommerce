@@ -1,6 +1,7 @@
 package com.example.gilbertecommerce.Service;
 
 
+import com.example.gilbertecommerce.Entity.LoginInfo;
 import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Framework.UserRepo;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,8 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    public User getUserById(int id) {
-        User loggedInUser = userRepo.getUserById(id);
+    public User getUserById(LoginInfo loginInfo) {
+        User loggedInUser = userRepo.getUserById(loginInfo);
         if(loggedInUser == null){
             return null;
         } else {
