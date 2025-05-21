@@ -43,7 +43,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidListingException.class)
     public String handleInvalidListing(Model model, InvalidListingException e) {
         model.addAttribute("ErrorMessage", e.getMessage());
-        model.addAttribute("details", e.getDetails());
-        return e.getSource().equals("Update") ? "editListingForm" : "createListingForm"; //Definerer
+        model.addAttribute("errorField", e.getField());
+        model.addAttribute("source", e.getSource());
+        return e.getSource().equals("update") ? "editListingForm" : "createListingForm"; //Defineret else if
     }
 }

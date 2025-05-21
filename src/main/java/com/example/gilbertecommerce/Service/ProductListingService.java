@@ -13,7 +13,6 @@ public class ProductListingService {
 
     private ProductListingRepo repo;
 
-
     public ProductListingService(ProductListingRepo repo) {
         this.repo = repo;
     }
@@ -31,32 +30,35 @@ public class ProductListingService {
     }
 
     public void create(ProductListing listing) {
-        validateListing(listing);
+        validateListing(listing, "create");
         repo.save(listing);
     }
 
     public void update(int id, ProductListing listing) {
-        validateListing(listing);
+        validateListing(listing, "update");
         repo.update(listing);
+    }
+
+    public List<ProductListing> getListingsByUser(int userId) {
+        return repo.getListingsByUserId(userId);
     }
 
     public void delete(int id) {
         repo.delete(id);
     }
 
-    public void validateListing(ProductListing productListing) {
+    public void validateListing(ProductListing productListing, String source) {
 
         if(productListing.getListingTitle() == null || productListing.getListingTitle().isEmpty()) {
-            throw new InvalidListingException("The title of your listing is empty, but must be provided.", "title", "create");
+            throw new InvalidListingException("The title of your listing is empty, but must be provided.", "title", source);
         }
 
         if(productListing.getListingDescription() == null || productListing.getListingDescription().isEmpty()) {
-            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "description", "create");
+            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "description", source);
         }
 
         if(productListing.getPrice() <= 0){
-            throw new InvalidListingException("The price of your listing is less than or equal to zero.", "price", "create");
+            throw new InvalidListingException("The price of your listing is less than or equal to zero.", "price", source);
         }
     }
-
 }

@@ -43,9 +43,7 @@ public class ProductListing {
         this.listingImage = ListingImage;
     }
 
-    public int getListingID() {
-        return listingID;
-    }
+    public int getListingID() {return listingID;}
     public void setListingID(int listingID) {
         this.listingID = listingID;
     }

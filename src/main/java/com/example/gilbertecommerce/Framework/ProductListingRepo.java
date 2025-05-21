@@ -46,9 +46,13 @@ public class ProductListingRepo {
                 productListing.getListingID());
     }
 
-
     public void delete(int id) {
-        String sql = "delete from Listings where id = ?";
+        String sql = "delete from Listings where listing_id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public List<ProductListing> getListingsByUserId(int userId) {
+        String sql = "SELECT * FROM Listings WHERE owner_id = ?";
+        return jdbcTemplate.query(sql, new ProductListingMapper(), userId);
     }
 }
