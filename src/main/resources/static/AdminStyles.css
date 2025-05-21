@@ -322,3 +322,13 @@ footer {
         max-width: 100%;
     }
 }
+.tab-content {
+    display: none;
+}
+
+/* Show the section when its radio is selected */
+#tab-account:checked ~ .content #account,
+#tab-listings:checked ~ .content #listings,
+#tab-settings:checked ~ .content #settings {
+    display: block;
+}
