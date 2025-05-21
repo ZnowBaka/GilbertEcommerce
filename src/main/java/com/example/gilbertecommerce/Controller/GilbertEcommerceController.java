@@ -97,9 +97,20 @@ public class GilbertEcommerceController {
             return "/loginPage";
         }
     }
+
     @GetMapping("/productListingPage")
     public String getProductPage() {
         return "/productListingPage";
+    }
+
+    @GetMapping("/AdminMenu")
+    public String getAdminMenu() {
+        User user = (User) session.getAttribute("user");
+        if (user.getRole().equals("admin")) {
+            return "/AdminMenu";
+        } else {
+            return "redirect:/welcomePage";
+        }
     }
 }
 
