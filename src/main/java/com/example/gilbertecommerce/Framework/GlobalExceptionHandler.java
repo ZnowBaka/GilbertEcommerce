@@ -3,6 +3,7 @@ package com.example.gilbertecommerce.Framework;
 
 
 import com.example.gilbertecommerce.CustomException.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.ui.Model;
@@ -46,5 +47,11 @@ public class GlobalExceptionHandler {
         model.addAttribute("errorField", e.getField());
         model.addAttribute("source", e.getSource());
         return e.getSource().equals("update") ? "editListingForm" : "createListingForm"; //Defineret else if
+    }
+
+    @ExceptionHandler(UserNotLoggedIn.class)
+    public String handleUserNotLoggedIn(Model model, UserNotLoggedIn e, HttpServletRequest request) {
+        model.addAttribute("ErrorMessage", e.getMessage());
+        return "redirect:/loginPage";
     }
 }
