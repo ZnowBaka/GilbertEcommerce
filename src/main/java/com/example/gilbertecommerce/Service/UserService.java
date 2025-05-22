@@ -14,7 +14,7 @@ public class UserService {
     }
 
     public User getUserById(LoginInfo loginInfo) {
-        User loggedInUser = userRepo.getUserById(loginInfo);
+        User loggedInUser = userRepo.getUserByEmail(loginInfo);
         if(loggedInUser == null){
             return null;
         } else {

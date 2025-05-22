@@ -31,11 +31,11 @@
     <h2>Account</h2>
     <p>Manage user accounts here.</p>
     <div class="account-info">
-      <div class="account-info-item" th:each="users : ${users}">
+      <div class="account-info-item" th:each="user : ${users}">
         <div class="account-info-icon"><img src="/Icons/user-svgrepo-com.svg" width="20" height="20"></div>
         <div class="account-info-text">
-          <span class="account-info-title">Username</span>
-          <span class="account-info-value">admin</span>
+          <span class="account-info-title" th:text="${user.getDisplayName()}"></span>
+          <span class="account-info-value" th:text="${user.getRole().getRoleName()}"></span>
         </div>
       </div>
     </div>

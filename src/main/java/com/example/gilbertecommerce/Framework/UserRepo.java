@@ -5,11 +5,12 @@ import com.example.gilbertecommerce.Entity.LoginInfo;
 import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Entity.UserRole;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class UserRepo {
@@ -61,8 +62,8 @@ public class UserRepo {
         return true;
     }
 
-    public User getUserById(LoginInfo loginInfo) {
-        String sql = "select * from USER where user_id = ?";
+    public User getUserByEmail(LoginInfo loginInfo) {
+        String sql = "select * from USER where user_email = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{loginInfo.getLoginEmail()}, (rs, rowNum) -> {
 
             User userFromdb = new User();
@@ -75,6 +76,10 @@ public class UserRepo {
             userFromdb.setRole(UserRole.fromCode(code));
             return userFromdb;
         });
+    }
+    public List<User> getAllUsers(){
+        String sql = "select * from users";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 }
 
