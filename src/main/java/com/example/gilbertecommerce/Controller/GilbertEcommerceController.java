@@ -4,6 +4,7 @@ import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
 import com.example.gilbertecommerce.Entity.LoginInfo;
 import com.example.gilbertecommerce.Entity.RegistrationForm;
 import com.example.gilbertecommerce.Entity.User;
+import com.example.gilbertecommerce.Service.AdminService;
 import com.example.gilbertecommerce.Service.LoginService;
 import com.example.gilbertecommerce.Service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Controller
 public class GilbertEcommerceController {
@@ -21,11 +23,13 @@ public class GilbertEcommerceController {
     private final LoginService loginService;
     private final UserService userService;
     private final HttpSession session;
+    private final AdminService adminService;
 
-    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session) {
+    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService) {
         this.loginService = loginService;
         this.userService = userService;
         this.session = session;
+        this.adminService = adminService;
     }
 
     @GetMapping("/")
@@ -91,7 +95,7 @@ public class GilbertEcommerceController {
 
             session.setAttribute("user", user);
             System.out.println("displayName: " + user.getDisplayName());
-            return "redirect:/welcomePage";
+            return "redirect:/productListingPage";
         } else {
             model.addAttribute("error", "Incorrect username or password");
             return "/loginPage";
@@ -104,19 +108,18 @@ public class GilbertEcommerceController {
     }
 
     @GetMapping("/AdminMenu")
-    public String getAdminMenu() {
+    public String getAdminMenu(Model model) {
         User user = (User) session.getAttribute("user");
-        if (user.getRole().equals("admin")) {
+            List<User> users = adminService.getAllUsers();
+            model.addAttribute("users", users);
             return "/AdminMenu";
-        } else {
-            return "redirect:/welcomePage";
-        }
     }
     @GetMapping("/ProfileView")
     public String getProfileView() {
         User user = (User) session.getAttribute("user");
-        if (user.getRole().equals("admin")) {
-            return "/AdminMenu";
+        System.out.println("user role: " + user.getRole().getRoleName());
+        if (user.getRole().getRoleName().equals("Admin")) {
+            return "redirect:/AdminMenu";
         }
         return "/ProfileView";
     }
