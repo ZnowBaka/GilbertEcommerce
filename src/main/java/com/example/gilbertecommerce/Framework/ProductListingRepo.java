@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public class ProductListingRepo {
 
-    private final JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     public ProductListingRepo(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -18,8 +18,6 @@ public class ProductListingRepo {
 
     public ProductListingRepo() {
     }
-
-    public ProductListingRepo listingRepo(){};
 
     public List<ProductListing> findAllListings() {
         String sql = "select * from Listings";

@@ -65,5 +65,4 @@ public class ProductListingController {
         }
         return user;
     }
-
 }

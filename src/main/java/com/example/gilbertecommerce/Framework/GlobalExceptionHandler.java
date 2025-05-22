@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -50,8 +51,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotLoggedIn.class)
-    public String handleUserNotLoggedIn(Model model, UserNotLoggedIn e, HttpServletRequest request) {
-        model.addAttribute("ErrorMessage", e.getMessage());
+    public String handleUserNotLoggedIn(UserNotLoggedIn e, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("ErrorMessage", e.getMessage()); //Implementerede med model i starten, men model er kun "live" i den nuværende request. Flash sikrer den kun er aktiv i et request
         return "redirect:/loginPage";
     }
 }
