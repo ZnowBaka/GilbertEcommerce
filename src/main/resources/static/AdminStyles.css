@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'The Seasons';
-    src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/webfonts/fa-regular-400.woff2') format('woff2');
+    src: url('https://example.com/fonts/the-seasons.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
@@ -25,6 +25,7 @@ body {
     line-height: 1.6;
 }
 
+/* Header */
 header {
     background-color: var(--primary-color);
     color: var(--text-color);
@@ -48,7 +49,6 @@ header {
 .search-bar {
     margin: 1rem auto;
     max-width: 600px;
-    position: relative;
     display: flex;
 }
 
@@ -56,7 +56,6 @@ header {
     width: 100%;
     padding: 0.75rem;
     border: none;
-    border-radius: 0;
     font-size: 1rem;
 }
 
@@ -66,219 +65,114 @@ header {
     border: none;
     padding: 0.75rem 1.5rem;
     cursor: pointer;
-    border-radius: 0;
 }
 
-main {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+/* Tabs */
+input[type="radio"] {
+    display: none;
 }
 
-.featured-collections {
-    margin-bottom: 3rem;
-}
-
-.section-title {
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
-    color: var(--primary-color);
-    position: relative;
-    padding-bottom: 0.5rem;
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100px;
-    height: 3px;
-    background-color: var(--primary-color);
-}
-
-.collection-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-}
-
-.card {
-    background-color: white;
-    border-radius: 0;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-.card-img {
-    height: 220px;
-    width: 100%;
-    object-fit: cover;
-}
-
-.card-content {
-    padding: 1.5rem;
-}
-
-.card-title {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-    color: var(--primary-color);
-}
-
-.card-price {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    color: var(--accent-color);
-}
-
-.card-brand {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-}
-
-.card-seller {
+.tab-nav {
     display: flex;
-    align-items: center;
-    margin-top: 1rem;
-}
-
-.seller-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 0;
-    margin-right: 10px;
-}
-
-.seller-name {
-    font-size: 0.9rem;
-}
-
-.trust-score {
-    margin-left: auto;
-    background-color: var(--light-accent);
-    color: var(--primary-color);
-    padding: 3px 8px;
-    border-radius: 0;
-    font-size: 0.8rem;
-}
-
-.filter-section {
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.filter-title {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: var(--primary-color);
-}
-
-.filter-options {
-    display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
+    margin: 2rem auto 1rem;
     gap: 1rem;
 }
 
-.filter-chip {
+.tab-nav label {
+    padding: 0.5rem 1.5rem;
     background-color: var(--light-accent);
     color: var(--primary-color);
-    padding: 0.5rem 1rem;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-weight: bold;
     transition: background-color 0.3s ease;
 }
 
-.filter-chip:hover {
+.tab-nav label:hover {
     background-color: var(--accent-color);
     color: var(--text-color);
 }
-.category-section {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-}
 
-.category-card {
-    flex: 1;
-    max-width: 32%;
+/* Highlight active tab */
+#tab-account:checked ~ .tab-nav label[for="tab-account"],
+#tab-listings:checked ~ .tab-nav label[for="tab-listings"],
+#tab-settings:checked ~ .tab-nav label[for="tab-settings"] {
     background-color: var(--primary-color);
     color: var(--text-color);
+}
+
+/* Tab Content Display */
+.tab-content {
+    display: none;
+}
+
+#tab-account:checked ~ .content #account,
+#tab-listings:checked ~ .content #listings,
+#tab-settings:checked ~ .content #settings {
+    display: block;
+}
+
+/* Content */
+.content {
     padding: 2rem;
-    border-radius: 0;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.3s ease;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.category-card:hover {
-    transform: scale(1.03);
-}
-
-.category-title {
-    font-size: 1.5rem;
+/* Section titles */
+.tab-content h2 {
     margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--primary-color);
 }
 
-.category-description {
-    font-size: 0.9rem;
-    opacity: 0.9;
+.tab-content p {
+    color: #555;
 }
 
-footer {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    padding: 1rem;
-    text-align: center;
-    position: fixed;
-    bottom: 0;
+/* User Cards */
+.user-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
 }
 
-.footer-nav {
+.user-card {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-    position: sticky;
+    align-items: center;
+    padding: 1rem;
+    background-color: #fdfdfd;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    gap: 15px;
 }
 
-.footer-link {
-    margin: 0 1.5rem;
-    color: var(--text-color);
-    text-decoration: none;
-    
+.account-info-icon img {
+    width: 30px;
+    height: 30px;
 }
 
-.footer-link::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--text-color);
-    transition: width 0.3s ease;
+.account-info-text {
+    display: flex;
+    flex-direction: column;
 }
 
-.footer-link:hover::after {
-    width: 100%;
+.account-info-title {
+    font-weight: bold;
+    color: var(--primary-color);
 }
 
-.copyright {
-    font-size: 0.9rem;
-    opacity: 0.8;
+.account-info-value {
+    font-size: 0.85rem;
+    color: #666;
 }
 
+/* Bottom Navigation */
 .nav-bar {
     position: fixed;
     bottom: 0;
@@ -306,58 +200,67 @@ footer {
     font-weight: bold;
 }
 
-.nav-icon {
-    font-size: 0.5rem;
+.nav-icon img {
+    width: 20px;
+    height: 20px;
 }
 
+/* Footer */
+footer {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 1rem;
+    text-align: center;
+    position: static;
+    margin-top: 2rem;
+}
 
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.footer-link {
+    position: relative;
+    margin: 0 1.5rem;
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.footer-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--text-color);
+    transition: width 0.3s ease;
+}
+
+.footer-link:hover::after {
+    width: 100%;
+}
+
+footer .copyright {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .collection-cards {
+    .tab-nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user-list-container {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     }
 
-    .category-section {
-        flex-direction: column;
-        gap: 1rem;
+    footer {
+        display: none;
     }
-
-    .category-card {
-        max-width: 100%;
-    }
-}
-.tab-content {
-    display: none;
-}
-
-/* Show the section when its radio is selected */
-#tab-account:checked ~ .content #account,
-#tab-listings:checked ~ .content #listings,
-#tab-settings:checked ~ .content #settings {
-    display: block;
-}
-.user-list-container {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    min-width: 600px;
-    width: clamp(300px, 80%, 1000px);
-    margin: 0 auto 20px;
-    padding: 1rem;
-    overflow: hidden; /* Ensures no overflow issues */
-    float: left;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-}
-
-.user-card {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-    width: 100%; /* Ensures it stays inside container */
-    box-sizing: border-box; /* Includes padding inside width */
 }
