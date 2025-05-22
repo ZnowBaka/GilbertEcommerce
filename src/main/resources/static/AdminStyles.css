@@ -46,26 +46,6 @@ header {
     margin-top: 0.5rem;
 }
 
-.search-bar {
-    margin: 1rem auto;
-    max-width: 600px;
-    display: flex;
-}
-
-.search-bar input {
-    width: 100%;
-    padding: 0.75rem;
-    border: none;
-    font-size: 1rem;
-}
-
-.search-bar button {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-}
 
 /* Tabs */
 input[type="radio"] {
