@@ -95,7 +95,7 @@ public class GilbertEcommerceController {
 
             session.setAttribute("user", user);
             System.out.println("displayName: " + user.getDisplayName());
-            return "redirect:/welcomePage";
+            return "redirect:/productListingPage";
         } else {
             model.addAttribute("error", "Incorrect username or password");
             return "/loginPage";
@@ -110,17 +110,14 @@ public class GilbertEcommerceController {
     @GetMapping("/AdminMenu")
     public String getAdminMenu(Model model) {
         User user = (User) session.getAttribute("user");
-        if (user.getRole().getRoleName().equals("Admin")) {
             List<User> users = adminService.getAllUsers();
             model.addAttribute("users", users);
             return "/AdminMenu";
-        } else {
-            return "redirect:/productListingPage";
-        }
     }
     @GetMapping("/ProfileView")
     public String getProfileView() {
         User user = (User) session.getAttribute("user");
+        System.out.println("user role: " + user.getRole().getRoleName());
         if (user.getRole().getRoleName().equals("Admin")) {
             return "redirect:/AdminMenu";
         }

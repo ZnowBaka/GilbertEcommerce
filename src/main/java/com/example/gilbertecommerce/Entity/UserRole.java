@@ -30,7 +30,7 @@ public enum UserRole {
         return null;
     }
 
-    public UserRole fromCode(int code) {
+    public static UserRole fromCode(int code) {
         for (UserRole role : UserRole.values()) {
             if (role.getCode() == code) {
                 return role;

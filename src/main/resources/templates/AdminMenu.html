@@ -30,12 +30,12 @@
   <div id="account" class="tab-content">
     <h2>Account</h2>
     <p>Manage user accounts here.</p>
-    <div class="account-info">
-      <div class="account-info-item" th:each="user : ${users}">
+    <div class="account-info user-list-container">
+      <div class="account-info-item user-card" th:each="user : ${users}">
         <div class="account-info-icon"><img src="/Icons/user-svgrepo-com.svg" width="20" height="20"></div>
         <div class="account-info-text">
           <span class="account-info-title" th:text="${user.getDisplayName()}"></span>
-          <span class="account-info-value" th:text="${user.getRole().getRoleName()}"></span>
+          <span class="account-info-value" th:text="${user.getRole().getRoleName().toString()}"></span>
         </div>
       </div>
     </div>

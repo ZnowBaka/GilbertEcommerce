@@ -77,9 +77,19 @@ public class UserRepo {
             return userFromdb;
         });
     }
-    public List<User> getAllUsers(){
-        String sql = "select * from users";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+    public List<User> getAllUsers() {
+        String sql = "SELECT * FROM USER";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            User userFromDb = new User();
+            userFromDb.setUserID(rs.getInt("user_id"));
+            userFromDb.setFirstName(rs.getString("first_name"));
+            userFromDb.setLastName(rs.getString("last_name"));
+            userFromDb.setEmail(rs.getString("user_email"));
+            userFromDb.setDisplayName(rs.getString("displayName"));
+            int code = rs.getInt("user_role");
+            userFromDb.setRole(UserRole.fromCode(code));
+            return userFromDb;
+        });
     }
 }
 
