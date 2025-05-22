@@ -115,12 +115,12 @@ public class GilbertEcommerceController {
             return "/AdminMenu";
     }
     @GetMapping("/ProfileView")
-    public String getProfileView() {
+    public String getProfileView(Model model) {
         User user = (User) session.getAttribute("user");
-        System.out.println("user role: " + user.getRole().getRoleName());
         if (user.getRole().getRoleName().equals("Admin")) {
             return "redirect:/AdminMenu";
         }
+        model.addAttribute("user", user);
         return "/ProfileView";
     }
 }
