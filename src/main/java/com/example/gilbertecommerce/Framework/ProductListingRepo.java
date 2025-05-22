@@ -16,6 +16,11 @@ public class ProductListingRepo {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public ProductListingRepo() {
+    }
+
+    public ProductListingRepo listingRepo(){};
+
     public List<ProductListing> findAllListings() {
         String sql = "select * from Listings";
         return jdbcTemplate.query(sql, new ProductListingMapper());
