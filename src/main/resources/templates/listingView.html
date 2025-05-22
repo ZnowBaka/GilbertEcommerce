@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Dine Annoncer</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <meta charset="UTF-8">
+</head>
+<body>
+
+<h1>Min Profil</h1>
+
+<section>
+  <h2>Mine Aktive Annoncer</h2>
+  <div th:if="${listings}">
+    <div th:each="listing : ${listings}" th:if="${listing.status} == 'active'" class="listing-card">
+      <h3 th:text="${listing.title}">Titel</h3>
+      <p>Pris: <span th:text="${listing.price}">0</span> DKK</p>
+      <form th:action="@{'/listingView/delete/' + ${listing.productID}}" method="post">
+        <button type="submit">Slet</button>
+      </form>
+    </div>
+  </div>
+  <p th:if="${#lists.isEmpty(listings)}">Du har ingen aktive annoncer.</p>
+</section>
+
+<hr/>
+
+<section>
+  <h2>Tidligere Solgte Produkter</h2>
+  <div th:if="${listings}">
+    <div th:each="listing : ${listings}" th:if="${listing.status} == 'sold'" class="listing-card sold">
+      <h3 th:text="${listing.title}">Titel</h3>
+      <p>Solgt for: <span th:text="${listing.price}">0</span> DKK</p>
+    </div>
+  </div>
+  <p th:if="${#lists.isEmpty(listings)}">Ingen tidligere salg.</p>
+</section>
+
+<hr/>
+
+<section>
+  <h2>Tidligere Køb</h2>
+  <div th:if="${listings}">
+    <div th:each="listing : ${listings}" th:if="${listing.status} == 'purchased'" class="listing-card purchased">
+      <h3 th:text="${listing.title}">Titel</h3>
+      <p>Købt for: <span th:text="${listing.price}">0</span> DKK</p>
+    </div>
+  </div>
+  <p th:if="${#lists.isEmpty(listings)}">Ingen tidligere køb.</p>
+</section>
+
+</body>
+</html>

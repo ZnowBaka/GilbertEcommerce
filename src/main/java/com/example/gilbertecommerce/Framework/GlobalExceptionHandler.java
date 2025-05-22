@@ -3,9 +3,11 @@ package com.example.gilbertecommerce.Framework;
 
 
 import com.example.gilbertecommerce.CustomException.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -46,5 +48,11 @@ public class GlobalExceptionHandler {
         model.addAttribute("errorField", e.getField());
         model.addAttribute("source", e.getSource());
         return e.getSource().equals("update") ? "editListingForm" : "createListingForm"; //Defineret else if
+    }
+
+    @ExceptionHandler(UserNotLoggedIn.class)
+    public String handleUserNotLoggedIn(UserNotLoggedIn e, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("ErrorMessage", e.getMessage()); //Implementerede med model i starten, men model er kun "live" i den nuværende request. Flash sikrer den kun er aktiv i et request
+        return "redirect:/loginPage";
     }
 }
