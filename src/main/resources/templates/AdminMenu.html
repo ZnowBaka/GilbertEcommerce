@@ -51,6 +51,21 @@
   <div id="listings" class="tab-content">
     <h2>Listings</h2>
     <p>Manage your listings here.</p>
+    <div class="listing-list-container">
+      <div class="listing-card" th:each="listing : ${listings}">
+        <figure>
+          <img th:src="${listing.getListingImage}" alt="Cat picture was here" style="width:200px ; height:200px">
+          <figcaption style="display: flex">
+            <span>posting date: <span th:text="${listing.getListingDate}"></span> price: <span th:number="${listing.getPrice}"></span>.</span>
+          </figcaption>
+        </figure>
+
+        <div class="listing-info">
+          <h3 th:text="${listing.getTitle}"></h3>
+          <p th:text="${listing.getDescription}"></p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Settings Tab -->

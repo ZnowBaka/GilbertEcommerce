@@ -56,4 +56,8 @@ public class ProductListingRepo {
         String sql = "SELECT * FROM Listings WHERE owner_id = ?";
         return jdbcTemplate.query(sql, new ProductListingMapper(), userId);
     }
+    public List<ProductListing> getAllPendingProductListings() {
+        String sql = "select * from Listings where listing_status = 'pending'";
+        return jdbcTemplate.query(sql, new ProductListingMapper());
+    }
 }

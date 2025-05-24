@@ -119,7 +119,9 @@ public class GilbertEcommerceController {
     public String getAdminMenu(Model model) {
             User user = (User) session.getAttribute("user");
             List<User> users = adminService.getAllUsers();
+            List<ProductListing> pendingListings = listingService.getAllPendingProductListings();
             model.addAttribute("users", users);
+            model.addAttribute("pendingListings", pendingListings);
             if(user.getRole().getRoleName().equals("Admin")) {
                 return "/AdminMenu";
             }

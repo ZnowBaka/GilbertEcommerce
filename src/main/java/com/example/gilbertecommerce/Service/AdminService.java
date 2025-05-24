@@ -1,5 +1,6 @@
 package com.example.gilbertecommerce.Service;
 
+import com.example.gilbertecommerce.Entity.ProductListing;
 import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Framework.UserRepo;
 import org.springframework.stereotype.Service;
