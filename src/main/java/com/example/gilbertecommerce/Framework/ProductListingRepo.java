@@ -60,4 +60,9 @@ public class ProductListingRepo {
         String sql = "select * from Listings where Status = 'pending'";
         return jdbcTemplate.query(sql, new ProductListingMapper());
     }
+
+    public void updateStatus(int id, String status) {
+        String sql = "update Listings set Status = ? where listing_id = ?";
+        jdbcTemplate.update(sql, status, id);
+    }
 }

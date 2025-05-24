@@ -15,8 +15,8 @@
 </header>
 
 <!-- Radio Tabs -->
-<input type="radio" name="tab" id="tab-account" checked>
-<input type="radio" name="tab" id="tab-listings">
+<input type="radio" name="tab" id="tab-account" >
+<input type="radio" name="tab" id="tab-listings" checked>
 <input type="radio" name="tab" id="tab-settings">
 
 <!-- Tab Navigation -->
@@ -53,24 +53,26 @@
     <p>Manage your listings here.</p>
     <div class="listing-list-container">
       <div class="listing-card" th:each="listing : ${pendingListings}">
-
         <figure>
           <img th:if="${listing.listingImage} ==null" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" th:else="${listing.listingImage}">
-
           <figcaption>
-            <span>posting date: <span th:text="${listing.getListingDate}"></span>  price: <span th:text="${listing.price}"></span>Kr</span>
+            <span>posting date: <span th:text="${listing.getListingDate}"></span>  price: <span th:text="${listing.price}"></span>Dkk</span>
           </figcaption>
         </figure>
 
         <div class="listing-info">
           <h3 th:text="${listing.listingTitle}"></h3>
           <p th:text="${listing.listingDescription}"></p>
+          <a th:href="@{'/AdminMenu/Approve/' + ${listing.listingID}}">
+            <button>Approve</button>
+          </a>
+          <a th:href="@{'/AdminMenu/Reject/' + ${listing.listingID}}">
+            <button>Reject</button>
+          </a>
         </div>
 
       </div>
-
     </div>
-
   </div>
 
   <!-- Settings Tab -->

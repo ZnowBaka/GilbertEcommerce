@@ -125,6 +125,18 @@ public class GilbertEcommerceController {
             }
             return "redirect:/listingView";
     }
+    @GetMapping("/AdminMenu/Approve/{Id}")
+    public String postAdminMenu(@PathVariable("Id") int listingId, Model model) {
+        System.out.println("approving listing: " + listingId);
+        adminService.approveListing(listingId);
+        return "redirect:/AdminMenu";
+    }
+    @GetMapping("/AdminMenu/Reject/{Id}")
+    public String postAdminMenuReject(@PathVariable("Id") int listingId, Model model) {
+        System.out.println("rejecting listing: " + listingId);
+        adminService.rejectListing(listingId);
+        return "redirect:/AdminMenu";
+    }
 
     @GetMapping("/listingView/create")
     public String showCreateForm(Model model) {
