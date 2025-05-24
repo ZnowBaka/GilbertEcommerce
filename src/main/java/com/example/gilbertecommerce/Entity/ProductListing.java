@@ -31,6 +31,11 @@ public class ProductListing {
         this.listingImage = ListingImage;
         this.listingStatus = listingStatus;
     }*/
+    public ProductListing(String listingTitle, String listingDescription, double price){
+        this.listingTitle = listingTitle;
+        this.listingDescription = listingDescription;
+        this.price = price;
+    }
 
     public ProductListing(int listingID, double price, int sellerID, long epochMillis, String listingTitle, String ListingDescription, String ListingImage, boolean listingStatus) {
         this.listingID = listingID;

@@ -1,20 +1,24 @@
 package com.example.gilbertecommerce.Controller;
 
 import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
+import com.example.gilbertecommerce.CustomException.UserNotLoggedIn;
 import com.example.gilbertecommerce.Entity.LoginInfo;
+import com.example.gilbertecommerce.Entity.ProductListing;
 import com.example.gilbertecommerce.Entity.RegistrationForm;
 import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Service.AdminService;
 import com.example.gilbertecommerce.Service.LoginService;
+import com.example.gilbertecommerce.Service.ProductListingService;
 import com.example.gilbertecommerce.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -24,12 +28,16 @@ public class GilbertEcommerceController {
     private final UserService userService;
     private final HttpSession session;
     private final AdminService adminService;
+    private final ProductListingService listingService;
+    private final ProductListingService productListingService;
 
-    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService) {
+    public GilbertEcommerceController(ProductListingService listingService, LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService productListingService) {
         this.loginService = loginService;
         this.userService = userService;
         this.session = session;
         this.adminService = adminService;
+        this.listingService = listingService;
+        this.productListingService = productListingService;
     }
 
     @GetMapping("/")
@@ -102,25 +110,71 @@ public class GilbertEcommerceController {
         }
     }
 
-    @GetMapping("/productListingPage")
+    @GetMapping("/productListingPage") //HOME
     public String getProductPage() {
         return "/productListingPage";
     }
 
     @GetMapping("/AdminMenu")
     public String getAdminMenu(Model model) {
-        User user = (User) session.getAttribute("user");
+            User user = (User) session.getAttribute("user");
             List<User> users = adminService.getAllUsers();
             model.addAttribute("users", users);
-            return "/AdminMenu";
+            if(user.getRole().getRoleName().equals("Admin")) {
+                return "/AdminMenu";
+            }
+            return "redirect:/listingView";
     }
-    @GetMapping("/ProfileView")
-    public String getProfileView(Model model) {
+
+    @GetMapping("/listingView/create")
+    public String showCreateForm(Model model) {
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        model.addAttribute("listing", new ProductListing());
+        return "/CreateNewListingForm";
+    }
+    @PostMapping("/listingView/create")
+    public String postCreateForm(@ModelAttribute("user") User user,@ModelAttribute("listing") ProductListing listing, Model model) {
+        listing.setSellerID(user.getUserID());
+        model.addAttribute("error","all fields needed");
+        try{
+            productListingService.create(listing);
+            return "redirect:/listingView";
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/listingView")
+    public String showOwnListings(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user.getRole().getRoleName().equals("Admin")) {
             return "redirect:/AdminMenu";
         }
         model.addAttribute("user", user);
-        return "/ProfileView";
+        List<ProductListing> listings = listingService.getListingsByUser(user.getUserID());
+        model.addAttribute("listings", listings);
+        return "listingView";
     }
+
+    @PostMapping("/listingView/delete/{id}")
+    public String deleteListing(@PathVariable("id") int listingID, HttpSession session, Model model) {
+
+        User user = getLoggedInUser(session);
+        ProductListing listing = listingService.getProductListing(listingID);
+        if(listing != null && listing.getSellerID() == user.getUserID()) {
+            listingService.delete(listingID);
+        }
+        return "redirect:/listingView";
+    }
+
+    private User getLoggedInUser(HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            throw new UserNotLoggedIn("You cannot acces this page as a guest. Please create an account or log in");
+        }
+        return user;
+    }
+
 }

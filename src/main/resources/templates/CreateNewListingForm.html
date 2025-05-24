@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Listing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="sell and buy high end clothing">
+    <meta name="keywords" content="Clothing, High fashion, Fashion,">
+    <meta name="author" content="GilbertInc">
+    <link rel="stylesheet" href="/IndexStyles.css">
+</head>
+<body>
+<header>
+    <div class="logo">Gilbert</div>
+    <div class="tagline">Quality • Sustainability • Preloved</div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search for products, brands or designers...">
+        <button>Search</button>
+    </div>
+</header>
+
+<main>
+    <div class="listing-creation-container">
+        <form th:action="@{/postCreateForm}" th:object="${listing}" method="post">
+
+            <div class="input-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" th:field="*{listing.setListingTitle()}" required />
+            </div>
+
+            <div class="input-group">
+                <label for="listingDescription">Listing Description</label>
+                <input type="text" id="listingDescription" th:field="*{listing.setListingDescription()}" required />
+            </div>
+
+            <div class="input-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" th:field="*{listing.setPrice()}" required/>
+            </div>
+
+            <div class="button-group">
+                <button type="submit">Create Listing</button>
+            </div>
+        </form>
+
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+
+    </div>
+
+</main>
+
+<div class="nav-bar">
+    <a href="#" class="nav-item active">
+        <div class="nav-icon"><img src="/Icons/home-1-svgrepo-com.svg" width="20" height="20"></div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/search-alt-2-svgrepo-com.svg" width="20" height="20"></div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/heart-svgrepo-com.svg" width="20" height="20"></div>
+
+    </a>
+    <a href="/ProfileView" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" width="20" height="20"></div>
+
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/bell-alt-svgrepo-com.svg" width="20" height="20"></div>
+
+    </a>
+</div>
+
+<footer>
+    <div class="footer-nav">
+        <a href="#" class="footer-link">About Gilbert</a>
+        <a href="#" class="footer-link">How It Works</a>
+        <a href="#" class="footer-link">Sustainability</a>
+        <a href="#" class="footer-link">FAQ</a>
+        <a href="#" class="footer-link">Contact</a>
+        <a href="#" class="footer-link">Terms</a>
+    </div>
+    <div class="copyright">
+        © 2025 Gilbert - All rights reserved
+    </div>
+</footer>
+</body>
+</html>
+</body>
+</html>

@@ -1,53 +1,143 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
   <title>Dine Annoncer</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="/profileStyle.css">
   <meta charset="UTF-8">
 </head>
 <body>
 
-<h1>Min Profil</h1>
+<header>
+  <div class ="logo">Gilbert</div>
+  <div class ="tagline">Quality Sustainability Preloved</div>
+</header>
 
-<section>
-  <h2>Mine Aktive Annoncer</h2>
-  <div th:if="${listings}">
-    <div th:each="listing : ${listings}" th:if="${listing.status} == 'active'" class="listing-card">
-      <h3 th:text="${listing.title}">Titel</h3>
-      <p>Pris: <span th:text="${listing.price}">0</span> DKK</p>
-      <form th:action="@{'/listingView/delete/' + ${listing.productID}}" method="post">
-        <button type="submit">Slet</button>
-      </form>
+<div class="profile-header"></div>
+  <div class="profile-info"></div>
+    <div class="profile-avatar"></div>
+      <span th:text="${user.firstName != null ? user.firstName.substring(0,1).toUpperCase() : 'U'}">U</span>
+    <div clas="profile-details">
+      <h1 th:text="${user.displayName != null ? user.displayName : user.firstName + ' ' + user.lastName}">Username</h1>
+     <p><Strong>Active listings:</Strong> <span th:text="${activeListingCount}">0</span></p>
+    </div>
+    <div class="profile-actions"></div>
+      <a href="/listingView/create" class="profile-button"> Create New Listing</a>
+
+<!--
+Skal tilføjes
+-->
+<a href="/listingView/profileEdit" class="Another-profile-button">Edit Profile</a>
+
+<input type="radio" name="tab" id="tab-account" checked>
+<input type="radio" name="tab" id="tab-listings">
+<input type="radio" name="tab" id="tab-orders">
+
+<div class="tab-nav">
+  <label for="tab-account">Account Info</label>
+  <label for="tab-listings">My Listings</label>
+  <label for="tab-orders">Order History</label>
+</div>
+
+<div class="content">
+
+  <div id="account" class="tab-content">
+  <h2>Personal Information</h2>
+
+  <div class="account-info-grid"></div>
+    <div class ="account-info-card"></div>
+      <div class="account-info-icon">
+        <img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" width="80" height="80">
+      </div>
+      <div class="account-info-text"></div>
+      <div class="account-info-title">Name</div>
+      <div class="account-info-value" th:text="${user.firstName + ' ' + user.lastName}">First Last</div>
+  </div>
+  <div class="account-info-card">
+    <div class="account-info-icon">
+      <img src="/Icons/home-1-svgrepo-com.svg" width="80" height="80">
+    </div>
+    <div class="account-info-text">
+      <div class="account-info-title">Email</div>
+      <div class="account-info-value" th:text="${user.email}"> ATEST@email</div>
     </div>
   </div>
-  <p th:if="${#lists.isEmpty(listings)}">Du har ingen aktive annoncer.</p>
-</section>
 
-<hr/>
+    <div id="listings" class="tab-content">
+      <div class="myListing-section">
+        <h2 class="section-title">
+          <div th:if="${#lists.isEmpty(listings)}" class="listings-grid">
+          <div th:each="listing : ${listings}" th:if="${listings.listingStatus}" class="listing-card">
+            <div class="listing-image">
+              <span th:if="${listing.listingImage}" th:text="'Image: ' + ${listing.listingTitle}"> Product Image</span>
+            </div>
+            <div class="listing-content">
+              <h3 class="listing-title" th:text="${listing.listingTitle}"> Product Title </h3>
+              <p class="listing-price">
+                <span th:text="${listing.price}">0</span>DKK
+              </p>
+              <div class="listing-actions">
+                <form th:action="@{'/listingView/delete/' + ${listing.listingID}}" method="post" style="display: inline">
+                  <button type="submit" class="listing-button delete-button">Delete</button>
+                </form>
+                <a th:href="@{'/listingView/edit/' + ${listing.listingID}}" class="listing-button edit-button">Edit</a>
+              </div>
+            </div>
+          </div>
+          <div th:if="${#lists.isEmpty(listings)}" class="empty">
+            <p> You have no active listings.</p>
+          </div>
 
-<section>
-  <h2>Tidligere Solgte Produkter</h2>
-  <div th:if="${listings}">
-    <div th:each="listing : ${listings}" th:if="${listing.status} == 'sold'" class="listing-card sold">
-      <h3 th:text="${listing.title}">Titel</h3>
-      <p>Solgt for: <span th:text="${listing.price}">0</span> DKK</p>
+          <div class="listings-section">
+            <h2 class="section-title">Previously Sold Products</h2>
+            <div th:if="${!#lists.isEmpty(listings)}" class="listings-grid">
+              <div th:each="listing : ${listings}" th:if="${!listing.listingStatus}" class="listing-card sold">
+                <div class="listing-image">
+                  <span th:if="${listing.listingImage}" th:text="'Image: ' + ${listing.listingTitle}">Product Image</span>
+                  <span th:unless="${listing.listingImage}">No Image</span>
+                </div>
+                <div class="listing-content">
+                  <h3 class="listing-title" th:text="${listing.listingTitle}">Product Title</h3>
+                  <p class="listing-price">
+                    Sold for: <span th:text="${listing.price}">0</span> DKK
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div th:if="${#lists.isEmpty(listings)}" class="empty">
+
+          <div id="orders" class="tab-content">
+            <h2 class="section-title">Order History</h2>
+            <div class="empty">
+              <p>No Previous Purchases.</p>
+            </div>
+          </div>
+          </div>
+
+          <div class="nav-bar">
+            <a href="/" class="nav-item">
+              <div class="nav-icon"></div>
+              <div class="nav-label">Home</div>
+            </a>
+            <a href="/search" class="nav-item">
+              <div class="nav-icon"></div>
+                <div class="nav-label">Search</div>
+            </a>
+            <a href="/favorites" class="nav-item">
+              <div class="nav-icon"></div>
+              <div class="nav-label">Favorites</div>
+            </a>
+            <a href="/listingView">
+              <div class="nav-icon"></div>
+              <div class="nav-label">Notifications</div>
+            </a>
+          </div>
+          </div>
+        </h2>
+      </div>
     </div>
   </div>
-  <p th:if="${#lists.isEmpty(listings)}">Ingen tidligere salg.</p>
-</section>
-
-<hr/>
-
-<section>
-  <h2>Tidligere Køb</h2>
-  <div th:if="${listings}">
-    <div th:each="listing : ${listings}" th:if="${listing.status} == 'purchased'" class="listing-card purchased">
-      <h3 th:text="${listing.title}">Titel</h3>
-      <p>Købt for: <span th:text="${listing.price}">0</span> DKK</p>
-    </div>
-  </div>
-  <p th:if="${#lists.isEmpty(listings)}">Ingen tidligere køb.</p>
-</section>
-
-</body>
+  </body>
 </html>
+
+
