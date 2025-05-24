@@ -16,8 +16,6 @@ public class ProductListingRepo {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public ProductListingRepo() {
-    }
 
     public List<ProductListing> findAllListings() {
         String sql = "select * from Listings";

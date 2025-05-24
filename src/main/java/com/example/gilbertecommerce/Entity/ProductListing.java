@@ -1,9 +1,6 @@
 package com.example.gilbertecommerce.Entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -16,7 +13,7 @@ public class ProductListing {
     private String listingTitle;
     private String listingDescription;
     private String listingImage;
-    private boolean listingStatus;
+    private String listingStatus;
     
     public ProductListing() {}
 /*
@@ -31,8 +28,13 @@ public class ProductListing {
         this.listingImage = ListingImage;
         this.listingStatus = listingStatus;
     }*/
+    public ProductListing(String listingTitle, String listingDescription, double price){
+        this.listingTitle = listingTitle;
+        this.listingDescription = listingDescription;
+        this.price = price;
+    }
 
-    public ProductListing(int listingID, double price, int sellerID, long epochMillis, String listingTitle, String ListingDescription, String ListingImage, boolean listingStatus) {
+    public ProductListing(int listingID, double price, int sellerID, long epochMillis, String listingTitle, String ListingDescription, String ListingImage, String listingStatus) {
         this.listingID = listingID;
         this.price = price;
         this.sellerID = sellerID;
@@ -65,10 +67,10 @@ public class ProductListing {
     public void setListingDate(LocalDateTime listingDate) {
         this.listingDate = listingDate;
     }
-    public boolean isListingStatus() {
+    public String isListingStatus() {
         return listingStatus;
     }
-    public void setListingStatus(boolean listingStatus) {
+    public void setListingStatus(String listingStatus) {
         this.listingStatus = listingStatus;
     }
     public String getListingImage() {
