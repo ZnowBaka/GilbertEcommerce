@@ -239,9 +239,9 @@ footer .copyright {
     align-items: center;
     gap: 15px;
     padding: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--text-color);
     border-radius: 8px;
-    background-color: #fff;
+    background-color: var(--text-color);
     width: 100%; /* Ensures it stays inside container */
     box-sizing: border-box; /* Includes padding inside width */
 }

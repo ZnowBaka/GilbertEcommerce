@@ -16,11 +16,11 @@ public class ProductListingMapper implements org.springframework.jdbc.core.RowMa
         listing.setSellerID(rs.getInt("owner_id"));
         listing.setListingTitle(rs.getString("title"));
         listing.setListingDescription(rs.getString("description"));
-        String postingDate = rs.getString("postingDate");
+        //String postingDate = rs.getString("postingDate");
         listing.setPrice(rs.getDouble("price"));
         //listing.setListingImage(rs.getString("image")); //SKAL TILFØJES I DB
         listing.setListingStatus(rs.getString("Status")); //SKAL TILFØJES I DB
-        listing.setListingDate(LocalDateTime.parse(postingDate));
+        //listing.setListingDate(LocalDateTime.parse(postingDate));
 
         return listing;
     }

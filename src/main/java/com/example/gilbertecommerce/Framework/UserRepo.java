@@ -74,6 +74,7 @@ public class UserRepo {
             userFromdb.setDisplayName(rs.getString("displayName"));
             int code = rs.getInt("user_role");
             userFromdb.setRole(UserRole.fromCode(code));
+            System.out.println("user from db: " + userFromdb.getUserID());
             return userFromdb;
         });
     }
