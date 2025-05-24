@@ -21,21 +21,21 @@
 
 <main>
     <div class="listing-creation-container">
-        <form th:action="@{/postCreateForm}" th:object="${listing}" method="post">
+        <form th:action="@{/listingView/create}" th:object="${listing}" method="post">
 
             <div class="input-group">
                 <label for="title">Title</label>
-                <input type="text" id="title" th:field="*{listing.setListingTitle()}" required />
+                <input type="text" id="title" th:field="*{listingTitle}" required />
             </div>
 
             <div class="input-group">
                 <label for="listingDescription">Listing Description</label>
-                <input type="text" id="listingDescription" th:field="*{listing.setListingDescription()}" required />
+                <input type="text" id="listingDescription" th:field="*{listingDescription}" required />
             </div>
 
             <div class="input-group">
                 <label for="price">Price</label>
-                <input type="number" id="price" th:field="*{listing.setPrice()}" required/>
+                <input type="number" id="price" th:field="*{price}" required/>
             </div>
 
             <div class="button-group">

@@ -154,7 +154,7 @@ public class GilbertEcommerceController {
         model.addAttribute("user", user);
         List<ProductListing> listings = listingService.getListingsByUser(user.getUserID());
         model.addAttribute("listings", listings);
-        return "listingView";
+        return "/listingView";
     }
 
     @PostMapping("/listingView/delete/{id}")
