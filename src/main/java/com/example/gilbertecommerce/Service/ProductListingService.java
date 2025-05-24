@@ -4,9 +4,11 @@ import com.example.gilbertecommerce.CustomException.InvalidListingException;
 import com.example.gilbertecommerce.CustomException.ListingNotFoundException;
 import com.example.gilbertecommerce.CustomException.UserNotLoggedIn;
 import com.example.gilbertecommerce.Entity.ProductListing;
+import com.example.gilbertecommerce.Entity.ProductListingMapper;
 import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Framework.ProductListingRepo;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,4 +66,8 @@ public class ProductListingService {
             throw new InvalidListingException("The price of your listing is less than or equal to zero.", "price", source);
         }
     }
-}
+    public List<ProductListing> getAllPendingProductListings() {
+        return repo.getAllPendingProductListings();
+    }
+    }
+

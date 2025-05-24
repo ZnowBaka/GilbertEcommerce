@@ -9,7 +9,6 @@ public class Report {
     private int reportID;
 
     public Report(){}
-
     public Report(int reportedUserID, int reportingUserID, int reportedListingID, String complaintMSG, int reportID) {
         this.reportedUserID = reportedUserID;
         this.reportingUserID = reportingUserID;

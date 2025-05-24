@@ -91,4 +91,9 @@ public class ProductListing {
     public void setListingTitle(String listingTitle) {
         this.listingTitle = listingTitle;
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

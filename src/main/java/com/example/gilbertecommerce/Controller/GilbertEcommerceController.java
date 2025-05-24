@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -94,7 +92,7 @@ public class GilbertEcommerceController {
             LoginInfo actualFromDb = loginService.getLoginInfo(loginInfo);
             session.setAttribute("loginInfo", loginInfo);
 
-            User user = userService.getUserById(actualFromDb);
+            User user = userService.getUserByEmail(actualFromDb);
             if (user == null) {
                 System.out.println("No user found for login ID: " + loginInfo.getLoginId());
                 model.addAttribute("error", "User not found.");
@@ -119,22 +117,37 @@ public class GilbertEcommerceController {
     public String getAdminMenu(Model model) {
             User user = (User) session.getAttribute("user");
             List<User> users = adminService.getAllUsers();
+            List<ProductListing> pendingListings = listingService.getAllPendingProductListings();
             model.addAttribute("users", users);
+            model.addAttribute("pendingListings", pendingListings);
             if(user.getRole().getRoleName().equals("Admin")) {
                 return "/AdminMenu";
             }
             return "redirect:/listingView";
     }
+    @GetMapping("/AdminMenu/Approve/{Id}")
+    public String postAdminMenu(@PathVariable("Id") int listingId, Model model) {
+        System.out.println("approving listing: " + listingId);
+        adminService.approveListing(listingId);
+        return "redirect:/AdminMenu";
+    }
+    @GetMapping("/AdminMenu/Reject/{Id}")
+    public String postAdminMenuReject(@PathVariable("Id") int listingId, Model model) {
+        System.out.println("rejecting listing: " + listingId);
+        adminService.rejectListing(listingId);
+        return "redirect:/AdminMenu";
+    }
 
     @GetMapping("/listingView/create")
     public String showCreateForm(Model model) {
-        User user = (User) session.getAttribute("user");
-        model.addAttribute("user", user);
         model.addAttribute("listing", new ProductListing());
         return "/CreateNewListingForm";
     }
     @PostMapping("/listingView/create")
-    public String postCreateForm(@ModelAttribute("user") User user,@ModelAttribute("listing") ProductListing listing, Model model) {
+    public String postCreateForm(@ModelAttribute("listing") ProductListing listing, Model model) {
+        User user = (User) session.getAttribute("user");
+        System.out.println(user.getUserID());
+        System.out.println(listing.getListingTitle());
         listing.setSellerID(user.getUserID());
         model.addAttribute("error","all fields needed");
         try{

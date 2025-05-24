@@ -38,6 +38,24 @@ Skal tilføjes
   <label for="tab-orders">Order History</label>
 </div>
 
+<div class="nav-bar">
+  <a href="/" class="nav-item">
+    <div class="nav-icon"></div>
+    <div class="nav-label">Home</div>
+  </a>
+  <a href="/search" class="nav-item">
+    <div class="nav-icon"></div>
+    <div class="nav-label">Search</div>
+  </a>
+  <a href="/favorites" class="nav-item">
+    <div class="nav-icon"></div>
+    <div class="nav-label">Favorites</div>
+  </a>
+  <a href="/listingView">
+    <div class="nav-icon"></div>
+    <div class="nav-label">Notifications</div>
+  </a>
+</div>
 <div class="content">
 
   <div id="account" class="tab-content">
@@ -63,10 +81,23 @@ Skal tilføjes
   </div>
 
     <div id="listings" class="tab-content">
+      <div class="listing-list-container">
+        <div class="listing-card" th:each="listing : ${listings}">
+          <figure>
+            <img th:if="${listing.listingImage} ==null" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" th:else="${listing.listingImage}">
+            <figcaption>
+              <span>posting date: <span th:text="${listing.getListingDate}"></span>  price: <span th:text="${listing.price}"></span>Dkk</span>
+            </figcaption>
+          </figure>
+
+          <div class="listing-info">
+            <h3 th:text="${listing.listingTitle}"></h3>
+            <p th:text="${listing.listingDescription}"></p>
+      <!--
       <div class="myListing-section">
         <h2 class="section-title">
           <div th:if="${#lists.isEmpty(listings)}" class="listings-grid">
-          <div th:each="listing : ${listings}" th:if="${listings.listingStatus}" class="listing-card">
+          <div th:each="listing : ${listings}" class="listing-card">
             <div class="listing-image">
               <span th:if="${listing.listingImage}" th:text="'Image: ' + ${listing.listingTitle}"> Product Image</span>
             </div>
@@ -105,7 +136,7 @@ Skal tilføjes
             </div>
           </div>
           <div th:if="${#lists.isEmpty(listings)}" class="empty">
-
+            -->
           <div id="orders" class="tab-content">
             <h2 class="section-title">Order History</h2>
             <div class="empty">
@@ -114,24 +145,7 @@ Skal tilføjes
           </div>
           </div>
 
-          <div class="nav-bar">
-            <a href="/" class="nav-item">
-              <div class="nav-icon"></div>
-              <div class="nav-label">Home</div>
-            </a>
-            <a href="/search" class="nav-item">
-              <div class="nav-icon"></div>
-                <div class="nav-label">Search</div>
-            </a>
-            <a href="/favorites" class="nav-item">
-              <div class="nav-icon"></div>
-              <div class="nav-label">Favorites</div>
-            </a>
-            <a href="/listingView">
-              <div class="nav-icon"></div>
-              <div class="nav-label">Notifications</div>
-            </a>
-          </div>
+
           </div>
         </h2>
       </div>

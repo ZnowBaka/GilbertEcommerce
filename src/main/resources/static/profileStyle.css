@@ -96,7 +96,9 @@ header {
 .profile-button.edit {
     background-color: var(--accent-color);
 }
-
+input[type="radio"] {
+    display: none;
+}
 .tab-nav {
     display: flex;
     justify-content: center;
@@ -174,6 +176,7 @@ header {
     font-weight: bold;
 }
 
+/*
 .listing-card {
     display: flex;
     background-color: #f9f9f9;
@@ -229,6 +232,37 @@ header {
     text-align: center;
     color: #777;
     margin-top: 2rem;
+}
+*/
+.listing-list-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.listing-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid var(--text-color);
+    border-radius: 8px;
+    background-color: var(--text-color);
+    width: 100%; /* Ensures it stays inside container */
+    box-sizing: border-box; /* Includes padding inside width */
+}
+
+.listing-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.listing-info {
+    text-align: left;
+    flex-grow: 1; /* Ensures text area expands properly */
+    min-width: 150px; /* Prevents text from squishing */
 }
 
 .nav-bar {
