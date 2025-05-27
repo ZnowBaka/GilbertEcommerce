@@ -13,8 +13,8 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    public User getUserById(LoginInfo loginInfo) {
-        User loggedInUser = userRepo.getUserById(loginInfo);
+    public User getUserByEmail(LoginInfo loginInfo) {
+        User loggedInUser = userRepo.getUserByEmail(loginInfo);
         if(loggedInUser == null){
             return null;
         } else {
