@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +28,7 @@ public class GilbertEcommerceController {
     private final ProductListingService productListingService;
     private final CategoryTagMapService categoryTagMapService;
 
+
     public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService listingService, ProductListingService productListingService, CategoryTagMapService categoryTagMapService) {
         this.loginService = loginService;
         this.userService = userService;
@@ -38,20 +41,20 @@ public class GilbertEcommerceController {
 
 
     @GetMapping("/testTags")
-    public String testCategoryService(
-            Model model
-    ) {
-        model.addAttribute("SearchForm", new SearchForm());
-        model.addAttribute("TestTagMap", categoryTagMapService.buildTestCategoryTagsMap());
+    public String testCategoryService(Model model) {
+        SearchForm searchForm = new SearchForm();
+        Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
 
-     return "redirect:/testTags";
+        model.addAttribute("TestSearchForm", searchForm);
+        model.addAttribute("TestTagMap", mapToBeTested);
+
+        return "testTags";
     }
-
 
 
     @GetMapping("/")
     public String home(Model model) {
-        
+
         return "redirect:/welcomePage";
     }
 
@@ -125,22 +128,24 @@ public class GilbertEcommerceController {
 
     @GetMapping("/AdminMenu")
     public String getAdminMenu(Model model) {
-            User user = (User) session.getAttribute("user");
-            List<User> users = adminService.getAllUsers();
-            List<ProductListing> pendingListings = listingService.getAllPendingProductListings();
-            model.addAttribute("users", users);
-            model.addAttribute("pendingListings", pendingListings);
-            if(user.getRole().getRoleName().equals("Admin")) {
-                return "/AdminMenu";
-            }
-            return "redirect:/listingView";
+        User user = (User) session.getAttribute("user");
+        List<User> users = adminService.getAllUsers();
+        List<ProductListing> pendingListings = listingService.getAllPendingProductListings();
+        model.addAttribute("users", users);
+        model.addAttribute("pendingListings", pendingListings);
+        if (user.getRole().getRoleName().equals("Admin")) {
+            return "/AdminMenu";
+        }
+        return "redirect:/listingView";
     }
+
     @GetMapping("/AdminMenu/Approve/{Id}")
     public String postAdminMenu(@PathVariable("Id") int listingId, Model model) {
         System.out.println("approving listing: " + listingId);
         adminService.approveListing(listingId);
         return "redirect:/AdminMenu";
     }
+
     @GetMapping("/AdminMenu/Reject/{Id}")
     public String postAdminMenuReject(@PathVariable("Id") int listingId, Model model) {
         System.out.println("rejecting listing: " + listingId);
@@ -153,14 +158,15 @@ public class GilbertEcommerceController {
         model.addAttribute("listing", new ProductListing());
         return "/CreateNewListingForm";
     }
+
     @PostMapping("/listingView/create")
     public String postCreateForm(@ModelAttribute("listing") ProductListing listing, Model model) {
         User user = (User) session.getAttribute("user");
         System.out.println(user.getUserID());
         System.out.println(listing.getListingTitle());
         listing.setSellerID(user.getUserID());
-        model.addAttribute("error","all fields needed");
-        try{
+        model.addAttribute("error", "all fields needed");
+        try {
             productListingService.create(listing);
             return "redirect:/listingView";
         } catch (RuntimeException e) {
@@ -185,7 +191,7 @@ public class GilbertEcommerceController {
 
         User user = getLoggedInUser(session);
         ProductListing listing = listingService.getProductListing(listingID);
-        if(listing != null && listing.getSellerID() == user.getUserID()) {
+        if (listing != null && listing.getSellerID() == user.getUserID()) {
             listingService.delete(listingID);
         }
         return "redirect:/listingView";

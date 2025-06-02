@@ -18,6 +18,8 @@ public class CategoryTagMapService {
     private final TagRepo tagRepo;
     private final TagCategoryRepo catRepo;
 
+    // Doing this here keeps the controller clean, but man its annoying to map out
+    private final Map<String, String> categoryToFormFieldMap = new LinkedHashMap<>();
 
     private List<Tag> genderTags;
     private List<Tag> designerTags;
@@ -34,6 +36,8 @@ public class CategoryTagMapService {
     private List<Tag> shoeSizeTags;
 
 
+
+
     public CategoryTagMapService(TagRepo tagRepo, TagCategoryRepo catRepo) {
        try{
            this.tagRepo = tagRepo;
@@ -48,6 +52,7 @@ public class CategoryTagMapService {
     @PostConstruct
     public void init() {
         try {
+            // This actually gets the data from DB without killing the program
             System.out.println("Loading Tags from DB into CategoryTagMapService...");
             this.genderTags = tagDataFiller("Gender");
             this.designerTags = tagDataFiller("Designer");
@@ -63,6 +68,22 @@ public class CategoryTagMapService {
             this.internationalSizeTags = tagDataFiller("InternationalSize");
             this.shoeSizeTags = tagDataFiller("Shoe Size");
 
+            // Initialize "category to field" mappings, this is to link it with the SearchForm
+            System.out.println("Setting up field mappings...");
+            categoryToFormFieldMap.put("Gender", "gender");
+            categoryToFormFieldMap.put("Designer", "designer");
+            categoryToFormFieldMap.put("Home", "home");
+            categoryToFormFieldMap.put("Beauty", "beauty");
+            categoryToFormFieldMap.put("Brand", "brand");
+            categoryToFormFieldMap.put("Condition", "condition");
+            categoryToFormFieldMap.put("Clothing", "clothing");
+            categoryToFormFieldMap.put("Accessories", "accessories");
+            categoryToFormFieldMap.put("Shoes", "shoes");
+            categoryToFormFieldMap.put("Bags & Luggage", "bags_and_luggage");
+            categoryToFormFieldMap.put("Jewelry", "jewelry");
+            categoryToFormFieldMap.put("InternationalSize", "international_size");
+            categoryToFormFieldMap.put("Shoe Size", "shoe_size");
+
             System.out.println("Initialized CategoryTagMapService");
         } catch (Exception e) {
             // Log and fail fast — this will stop Spring Boot if critical
@@ -71,14 +92,8 @@ public class CategoryTagMapService {
         }
     }
 
-    public List<TagCategory> getAllCategories() {
-        List<TagCategory> tagCategoryList = null;
-        tagCategoryList = catRepo.getAllTagCategory();
 
-        return tagCategoryList;
-    }
-
-    // This method should be able to fill our list
+    // This method should be able to fill our list with the data from DB
     public List<Tag> tagDataFiller(String categoryName) {
         List<Tag> tagsFromDB = tagRepo.getAllTagsFromCategory(categoryName);
         List<Tag> tagsList = new ArrayList<>();
@@ -89,6 +104,41 @@ public class CategoryTagMapService {
 
         return tagsList;
     }
+
+    // In turn this will be used to "normalise" the SearchForm data
+    public Map<String, String> getCategoryToFormFieldMap() {
+        return this.categoryToFormFieldMap;
+    }
+
+
+    public Map<String, List<Tag>> buildNormalizedCategoryTagsMap() {
+        Map<String, List<Tag>> normalizedMap = new LinkedHashMap<>();
+        Map<TagCategory, List<Tag>> originalMap = buildTestCategoryTagsMap();
+
+        for (Map.Entry<TagCategory, List<Tag>> entry : originalMap.entrySet()) {
+            String catName = entry.getKey().getName();
+            String fieldName = categoryToFormFieldMap.get(catName);
+            if (fieldName != null) {
+                normalizedMap.put(fieldName, entry.getValue());
+            }
+        }
+
+        return normalizedMap;
+    }
+
+    public List<TagCategory> getAllCategories() {
+        List<TagCategory> tagCategoryList = null;
+        tagCategoryList = catRepo.getAllTagCategory();
+
+        return tagCategoryList;
+    }
+
+
+
+
+
+
+
 
 
     // Section for map building, this is how we can define precisely what tags we want from where, and in what order.
