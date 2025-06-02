@@ -41,8 +41,8 @@ public class GilbertEcommerceController {
 
 
     @GetMapping("/testTags")
-    public String testCategoryService(Model model) {
-        SearchForm searchForm = new SearchForm();
+    public String testCategoryService(@ModelAttribute SearchForm searchForm, Model model) {
+        searchForm = new SearchForm();
         Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
 
         model.addAttribute("TestSearchForm", searchForm);
@@ -50,6 +50,26 @@ public class GilbertEcommerceController {
 
         return "testTags";
     }
+
+    /*
+    @GetMapping("/search")
+    public String searchProducts(@ModelAttribute SearchForm form, Model model) {
+        ProductSearchQueryBuilder builder = new ProductSearchQueryBuilder();
+        builder.buildFromForm(form);
+
+        // This is used for the main Query
+        String sqlWhere = builder.getSql();
+        List<Object> params = builder.getParams();
+
+        // That is a cgpt explanation
+        // You’d use these with a JdbcTemplate or similar:
+        String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
+        List<Listing> results = jdbcTemplate.query(fullSql, params.toArray(), new ListingRowMapper());
+
+        model.addAttribute("results", results);
+        return "searchResults";
+    }
+    */
 
 
     @GetMapping("/")
