@@ -1,3 +1,4 @@
+/* LoginStyles.css */
 @font-face {
     font-family: 'The Seasons';
     src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/webfonts/fa-regular-400.woff2') format('woff2');
@@ -20,7 +21,7 @@
 }
 
 body {
-    background-color: var(--text-color);
+    background-color: var(--light-accent);
     color: var(--primary-color);
     display: flex;
     align-items: center;
@@ -30,23 +31,38 @@ body {
 }
 
 .login-container {
-    background-color: white;
-    padding: 2.5rem;
-    border-radius: 0;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
+    background-color: var(--text-color);
+    padding: 2.5rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    max-width: 420px;
     width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: "";
+    display: block;
+    height: 6px;
+    width: 100%;
+    background-color: var(--primary-color);
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .login-container h2 {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.75rem;
     color: var(--primary-color);
-    font-size: 2rem;
+    font-size: 1.75rem;
+    letter-spacing: 1px;
 }
 
 .input-group {
     margin-bottom: 1.25rem;
+    text-align: center;
 }
 
 .input-group label {
@@ -54,22 +70,25 @@ body {
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: var(--primary-color);
+    font-size: 0.95rem;
 }
 
 .input-group input {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.75rem 0.9rem;
     border: 1px solid var(--light-accent);
-    background-color: #fff;
-    border-radius: 0;
+    background-color: #ffffff;
+    border-radius: 4px;
     font-size: 1rem;
     color: var(--primary-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .input-group input:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px var(--light-accent);
+    box-shadow: 0 0 0 3px var(--light-accent);
 }
 
 .button-group {
@@ -81,24 +100,26 @@ body {
     background-color: var(--primary-color);
     color: var(--text-color);
     border: none;
-    padding: 0.75rem 2rem;
+    padding: 0.75rem 2.5rem;
     font-size: 1rem;
     cursor: pointer;
-    border-radius: 0;
-    transition: background-color 0.3s ease;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .button-group button:hover {
     background-color: var(--accent-color);
+    transform: translateY(-2px);
 }
 
 .error-message {
-    margin-top: 1rem;
+    margin-top: 1.25rem;
     background-color: rgba(255, 0, 0, 0.1);
     padding: 0.75rem;
     color: red;
     font-size: 0.95rem;
-    border-radius: 0;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 0, 0, 0.3);
 }
 
 .login-link {
@@ -119,10 +140,37 @@ body {
 
 @media (max-width: 480px) {
     .login-container {
-        padding: 1.5rem;
+        padding: 1.5rem 1rem;
     }
 
     .login-container h2 {
         font-size: 1.5rem;
     }
+
+    .button-group button {
+        padding: 0.65rem 2rem;
+    }
+}
+
+.button-link {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 4px;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-color);
+    background-color: var(--primary-color);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    width: 60%;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1rem;
 }
