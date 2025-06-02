@@ -1,6 +1,7 @@
 package com.example.gilbertecommerce.Framework;
 
 import com.example.gilbertecommerce.Entity.Tag;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -25,11 +26,17 @@ public class TagRepo {
     }
 
     public Tag getTagById(int id) {
-        String sql = "SELECT * FROM tags WHERE tag_id = ?";
-        Tag tag = null;
-
-        tag = jdbcTemplate.queryForObject(sql, Tag.class, id);
-        return tag;
+        try {
+            String sql = "SELECT * FROM tags WHERE tag_id = ?";
+            return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
+                Tag tag = new Tag();
+                tag.setId(rs.getInt("tag_id"));
+                tag.setTagValue(rs.getString("tag_value"));
+                return tag;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public List<Tag> getAllTagsFromCategory(String categoryName) {

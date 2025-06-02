@@ -28,6 +28,7 @@ public class ProductListing {
         this.listingImage = ListingImage;
         this.listingStatus = listingStatus;
     }*/
+
     public ProductListing(String listingTitle, String listingDescription, double price){
         this.listingTitle = listingTitle;
         this.listingDescription = listingDescription;

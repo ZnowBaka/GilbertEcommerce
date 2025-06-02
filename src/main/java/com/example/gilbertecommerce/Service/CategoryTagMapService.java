@@ -4,6 +4,7 @@ import com.example.gilbertecommerce.Entity.Tag;
 import com.example.gilbertecommerce.Entity.TagCategory;
 import com.example.gilbertecommerce.Framework.TagCategoryRepo;
 import com.example.gilbertecommerce.Framework.TagRepo;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,39 +18,58 @@ public class CategoryTagMapService {
     private final TagRepo tagRepo;
     private final TagCategoryRepo catRepo;
 
+
+    private List<Tag> genderTags;
+    private List<Tag> designerTags;
+    private List<Tag> homeTags;
+    private List<Tag> beautyTags;
+    private List<Tag> brandTags;
+    private List<Tag> conditionTags;
+    private List<Tag> clothingTags;
+    private List<Tag> accessoryTags;
+    private List<Tag> shoeTags;
+    private List<Tag> bagsAndLuggageTags;
+    private List<Tag> jewelryTags;
+    private List<Tag> internationalSizeTags;
+    private List<Tag> shoeSizeTags;
+
+
     public CategoryTagMapService(TagRepo tagRepo, TagCategoryRepo catRepo) {
-        this.tagRepo = tagRepo;
-        this.catRepo = catRepo;
+       try{
+           this.tagRepo = tagRepo;
+           this.catRepo = catRepo;
+
+       } catch (Exception e) {
+           e.printStackTrace();
+           throw e;
+       }
     }
 
-    // Tag Categories are filled in from here
-    // It is very important that the names are 1-1 with the DB.
-    private final List<Tag> genderTags = tagDataFiller("Gender");
+    @PostConstruct
+    public void init() {
+        try {
+            System.out.println("Loading Tags from DB into CategoryTagMapService...");
+            this.genderTags = tagDataFiller("Gender");
+            this.designerTags = tagDataFiller("Designer");
+            this.homeTags = tagDataFiller("Home");
+            this.beautyTags = tagDataFiller("Beauty");
+            this.brandTags = tagDataFiller("Brand");
+            this.conditionTags = tagDataFiller("Condition");
+            this.clothingTags = tagDataFiller("Clothing");
+            this.accessoryTags = tagDataFiller("Accessories");
+            this.shoeTags = tagDataFiller("Shoes");
+            this.bagsAndLuggageTags = tagDataFiller("Bags & Luggage");
+            this.jewelryTags = tagDataFiller("Jewelry");
+            this.internationalSizeTags = tagDataFiller("InternationalSize");
+            this.shoeSizeTags = tagDataFiller("Shoe Size");
 
-    private final List<Tag> designerTags = tagDataFiller("Designer");
-
-    private final List<Tag> homeTags = tagDataFiller("Home");
-
-    private final List<Tag> beautyTags = tagDataFiller("Beauty");
-
-    private final List<Tag> brandTags = tagDataFiller("Brand");
-
-    private final List<Tag> conditionTags = tagDataFiller("Condition");
-
-    private final List<Tag> clothingTags = tagDataFiller("Clothing");
-
-    private final List<Tag> accessoryTags = tagDataFiller("Accessories");
-
-    private final List<Tag> shoeTags = tagDataFiller("Shoes");
-
-    private final List<Tag> bagsAndLuggageTags = tagDataFiller("Bags & Luggage");
-
-    private final List<Tag> jewelryTags = tagDataFiller("Jewelry");
-
-    private final List<Tag> internationalSizeTags = tagDataFiller("InternationalSize");
-
-    private final List<Tag> shoeSizeTags = tagDataFiller("Shoe Size");
-
+            System.out.println("Initialized CategoryTagMapService");
+        } catch (Exception e) {
+            // Log and fail fast — this will stop Spring Boot if critical
+            System.err.println("Failed to initialize CategoryTagMapService: " + e.getMessage());
+            throw e;
+        }
+    }
 
     public List<TagCategory> getAllCategories() {
         List<TagCategory> tagCategoryList = null;
@@ -58,6 +78,7 @@ public class CategoryTagMapService {
         return tagCategoryList;
     }
 
+    // This method should be able to fill our list
     public List<Tag> tagDataFiller(String categoryName) {
         List<Tag> tagsFromDB = tagRepo.getAllTagsFromCategory(categoryName);
         List<Tag> tagsList = new ArrayList<>();
@@ -72,7 +93,7 @@ public class CategoryTagMapService {
 
     // Section for map building, this is how we can define precisely what tags we want from where, and in what order.
     // By using a LinkedHashMap we can control the order that the Category buttons appear while also able to make predefined templates when you build a Listing
-    public Map<TagCategory, List<Tag>> buildCategoryTagsMap() {
+    public Map<TagCategory, List<Tag>> buildTestCategoryTagsMap() {
         Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
         map.put(new TagCategory("Gender"), genderTags);
         map.put(new TagCategory("Designer"), designerTags);

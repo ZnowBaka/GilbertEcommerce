@@ -2,10 +2,7 @@ package com.example.gilbertecommerce.Controller;
 
 import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
 import com.example.gilbertecommerce.CustomException.UserNotLoggedIn;
-import com.example.gilbertecommerce.Entity.LoginInfo;
-import com.example.gilbertecommerce.Entity.ProductListing;
-import com.example.gilbertecommerce.Entity.RegistrationForm;
-import com.example.gilbertecommerce.Entity.User;
+import com.example.gilbertecommerce.Entity.*;
 import com.example.gilbertecommerce.Framework.TagCategoryRepo;
 import com.example.gilbertecommerce.Service.*;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class GilbertEcommerceController {
@@ -27,10 +25,8 @@ public class GilbertEcommerceController {
     private final ProductListingService listingService;
     private final ProductListingService productListingService;
     private final CategoryTagMapService categoryTagMapService;
-    private final TagCategoryRepo tagCategoryRepo;
 
-
-    public GilbertEcommerceController(ProductListingService listingService, LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService productListingService, CategoryTagMapService categoryTagMapService, TagCategoryRepo tagCategoryRepo) {
+    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService listingService, ProductListingService productListingService, CategoryTagMapService categoryTagMapService) {
         this.loginService = loginService;
         this.userService = userService;
         this.session = session;
@@ -38,8 +34,20 @@ public class GilbertEcommerceController {
         this.listingService = listingService;
         this.productListingService = productListingService;
         this.categoryTagMapService = categoryTagMapService;
-        this.tagCategoryRepo = tagCategoryRepo;
     }
+
+
+    @GetMapping("/testTags")
+    public String testCategoryService(
+            Model model
+    ) {
+        model.addAttribute("SearchForm", new SearchForm());
+        model.addAttribute("TestTagMap", categoryTagMapService.buildTestCategoryTagsMap());
+
+     return "redirect:/testTags";
+    }
+
+
 
     @GetMapping("/")
     public String home(Model model) {
