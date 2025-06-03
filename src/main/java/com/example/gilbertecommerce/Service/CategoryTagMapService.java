@@ -7,10 +7,8 @@ import com.example.gilbertecommerce.Framework.TagRepo;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryTagMapService {
@@ -52,7 +50,6 @@ public class CategoryTagMapService {
     @PostConstruct
     public void init() {
         try {
-            // This actually gets the data from DB without killing the program
             System.out.println("Loading Tags from DB into CategoryTagMapService...");
             this.genderTags = tagDataFiller("Gender");
             this.designerTags = tagDataFiller("Designer");
@@ -68,7 +65,6 @@ public class CategoryTagMapService {
             this.internationalSizeTags = tagDataFiller("InternationalSize");
             this.shoeSizeTags = tagDataFiller("Shoe Size");
 
-            // Initialize "category to field" mappings, this is to link it with the SearchForm
             System.out.println("Setting up field mappings...");
             categoryToFormFieldMap.put("Gender", "gender");
             categoryToFormFieldMap.put("Designer", "designer");
@@ -84,11 +80,11 @@ public class CategoryTagMapService {
             categoryToFormFieldMap.put("InternationalSize", "international_size");
             categoryToFormFieldMap.put("Shoe Size", "shoe_size");
 
-            System.out.println("Initialized CategoryTagMapService");
+            System.out.println("CategoryTagMapService Initialized successfully");
         } catch (Exception e) {
-            // Log and fail fast — this will stop Spring Boot if critical
-            System.err.println("Failed to initialize CategoryTagMapService: " + e.getMessage());
-            throw e;
+            System.err.println("Error in CategoryTagMapService.init(): " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to initialize CategoryTagMapService", e);
         }
     }
 
@@ -99,7 +95,8 @@ public class CategoryTagMapService {
         List<Tag> tagsList = new ArrayList<>();
 
         for (Tag tag : tagsFromDB) {
-            tagsList.add(new Tag(tag.getId(), tag.getTagValue()));
+            String formattedValue = formatTagValue(tag.getTagValue());
+            tagsList.add(new Tag(tag.getId(), formattedValue));
         }
 
         return tagsList;
@@ -124,6 +121,13 @@ public class CategoryTagMapService {
         }
 
         return normalizedMap;
+    }
+
+    private String formatTagValue(String raw) {
+        return Arrays.stream(raw.split("_"))
+                .filter(part -> !part.isBlank())
+                .map(part -> part.substring(0, 1).toUpperCase() + part.substring(1))
+                .collect(Collectors.joining(" "));
     }
 
     public List<TagCategory> getAllCategories() {

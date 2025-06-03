@@ -1,5 +1,7 @@
 package com.example.gilbertecommerce.Entity;
 
+import jakarta.annotation.PostConstruct;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +40,24 @@ public class SearchForm {
         this.international_size = international_size;
         this.shoe_size = shoe_size;
     }
+
+    @PostConstruct
+    public void initializeTagSelections() {
+        tagSelections.put("gender", gender);
+        tagSelections.put("designer", designer);
+        tagSelections.put("home", home);
+        tagSelections.put("beauty", beauty);
+        tagSelections.put("brand", brand);
+        tagSelections.put("condition", condition);
+        tagSelections.put("clothing", clothing);
+        tagSelections.put("accessories", accessories);
+        tagSelections.put("shoes", shoes);
+        tagSelections.put("bags_and_luggage", bags_and_luggage);
+        tagSelections.put("jewelry", jewelry);
+        tagSelections.put("international_size", international_size);
+        tagSelections.put("shoe_size", shoe_size);
+    }
+
 
     public Map<String, String> getTagSelections() {
         return tagSelections;

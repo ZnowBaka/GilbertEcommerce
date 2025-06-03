@@ -12,9 +12,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -52,33 +56,69 @@ public class GilbertEcommerceController {
         SearchForm form = new SearchForm();
         Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
 
+        // Create a map for pretty display names
+        Map<String, String> prettyNameMap = new HashMap<>();
+        mapToBeTested.keySet().forEach(key -> {
+            prettyNameMap.put(key, formatDisplayName(key));
+        });
+
         model.addAttribute("TestSearchForm", form);
         model.addAttribute("TestTagMap", mapToBeTested);
+        model.addAttribute("PrettyNames", prettyNameMap);
+
 
         return "testTags";
     }
 
+    // This formats "bags_and_luggage" -> "Bags And Luggage"
+    private String formatDisplayName(String key) {
+        if (key == null || key.isBlank()) {
+            return "Unknown";
+        }
+
+        return Arrays.stream(key.split("_"))
+                .filter(part -> !part.isBlank())
+                .map(part -> part.substring(0, 1).toUpperCase() + part.substring(1))
+                .collect(Collectors.joining(" "));
+    }
+
 
     @PostMapping("/search/")
-    public String searchProducts(@RequestParam(name = "TestSearchForm") SearchForm form, Model model) {
-        queryService.buildFromForm(form);
+    public String searchProducts(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
+        form.setTagSelections(extractTagSelections(form));
 
-        // This is used for the main Query
+        // continue building the query
+        queryService.buildFromForm(form);
         String sqlWhere = queryService.getSql();
         List<Object> params = queryService.getParams();
-
-        // You’d use these with a JdbcTemplate or similar:
         String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
+        List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
 
-        List<ProductListing> results;
-        results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
-        System.out.println("Search Text: " + form.getSearchText());
-        form.getTagSelections().forEach((key, value) -> {
-            System.out.println("Category: " + key + " -> Selected: " + value);
-        });
         model.addAttribute("results", results);
         return "redirect:/searchResults";
     }
+
+    private Map<String, String> extractTagSelections(SearchForm form) {
+        Map<String, String> selections = new HashMap<>();
+        for (Field field : form.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                String name = field.getName();
+                if (!name.equals("searchText") && !name.equals("tagSelections")) {
+                    Object value = field.get(form);
+                    if (value != null) {
+                        selections.put(name, value.toString());
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace(); // or log properly
+            }
+        }
+        return selections;
+    }
+
+
+
 
 
     @GetMapping("/")
