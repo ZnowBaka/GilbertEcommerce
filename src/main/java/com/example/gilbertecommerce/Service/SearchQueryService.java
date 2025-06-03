@@ -49,8 +49,14 @@ public class SearchQueryService {
         addSearchText(form.getSearchText());
         addTagFilter(form.getGender(), "Gender");
         addTagFilter(form.getDesigner(), "Designer");
+        addTagFilter(form.getHome(), "Home");
+        addTagFilter(form.getBeauty(), "Beauty");
         addTagFilter(form.getBrand(), "Brand");
         addTagFilter(form.getCondition(), "Condition");
+        addTagFilter(form.getAccessories(), "Accessories");
+        addTagFilter(form.getShoes(), "Shoes");
+        addTagFilter(form.getBags_and_luggage(), "Bags & Luggage");
+        addTagFilter(form.getJewelry(), "Jewelry");
         addTagFilter(form.getInternational_size(), "International Size");
         addTagFilter(form.getShoe_size(), "Shoe Size");
 
@@ -71,7 +77,7 @@ public class SearchQueryService {
     // Previously this was at the very top, but just underneath, the giant query block; it is just for product name searching.
     private void addSearchText(String searchText) {
         if (searchText != null && !searchText.isBlank()) {
-            sql.append(" AND pl.name LIKE ? ");
+            sql.append(" AND productListing.title LIKE ? ");
             params.add("%" + searchText.trim() + "%");
         }
     }
@@ -96,14 +102,14 @@ public class SearchQueryService {
         // for future use, other than that don't ask me why.
         // Also left joins are not needed here because we specifically look for Listing with tag relations.
         sql.append("""
-        AND EXISTS (
-            SELECT 1 FROM product_tags connectedTags
-            JOIN tags tag ON connectedTags.tag_id = tag.tag_id
-            JOIN tag_has_category connectedCategory ON tag.tag_id = connectedCategory.tag_id
-            JOIN tag_category tagCategory ON connectedCategory.cat_id = tagCategory.tag_id
-            WHERE connectedTags.listing_id = productListing.listing_id
-              AND tagCategory.category_name = ?
-              AND tag.tag_value = ?
+          AND EXISTS (
+         SELECT 1
+         FROM product_tags connectedTags
+          JOIN tags tag ON connectedTags.tag_id = tag.tag_id
+         JOIN tag_has_category connectedCategory ON tag.tag_id = connectedCategory.tag_id
+         JOIN tag_category tagCategory ON connectedCategory.cat_id = tagCategory.cat_id
+         WHERE tagCategory.category_name = ?
+         AND tag.tag_value = ?
         )
         """);
         params.add(tagCategory);

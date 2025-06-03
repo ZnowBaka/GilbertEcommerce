@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/IndexStyles.css">
+    <style>
+        body {
+            background-color: #f8f0e5;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 40px 20px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .collection-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-img {
+            height: 220px;
+            background-color: #e6e6e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .card-content {
+            padding: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.4rem;
+        }
+
+        .card-price {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .card-brand {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-seller {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .seller-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .no-results {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #999;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="logo">Gilbert</div>
+    <div class="tagline">Refined Results • Filtered Fashion</div>
+</header>
+
+<main>
+    <section>
+        <h2 class="section-title">Search Results</h2>
+
+        <div th:if="${#lists.isEmpty(productListings)}" class="no-results">
+            No products matched your search.
+        </div>
+
+        <div class="collection-cards" th:if="${!#lists.isEmpty(productListings)}">
+            <div class="card" th:each="product : ${productListings}">
+                <div class="card-img">
+                    <span th:text="${product.listingTitle} + ' image'">Image</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title" th:text="${product.listingTitle}">Title</h3>
+                    <p class="card-price" th:text="${product.price} + ' DKK'">Price</p>
+                    <p class="card-brand" th:text="${product.brand} ?: 'Unknown Brand'">Brand</p>
+                    <div class="card-seller">
+                        <div class="seller-avatar" th:text="${product.sellerInitials ?: 'U'}">U</div>
+                        <span class="seller-name" th:text="${product.sellerName ?: 'Unknown'}">Seller</span>
+                        <span class="trust-score" th:text="${product.trustScore ?: '—'} + '%'">Score</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-nav">
+        <a href="/" class="footer-link">Back to Home</a>
+        <a href="#" class="footer-link">Support</a>
+    </div>
+    <div class="copyright">
+        © 2025 Gilbert - All rights reserved
+    </div>
+</footer>
+</body>
+</html>

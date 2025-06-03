@@ -3,15 +3,17 @@ package com.example.gilbertecommerce.Controller;
 import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
 import com.example.gilbertecommerce.CustomException.UserNotLoggedIn;
 import com.example.gilbertecommerce.Entity.*;
-import com.example.gilbertecommerce.Framework.TagCategoryRepo;
 import com.example.gilbertecommerce.Service.*;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.SQLException;
 
+import java.time.DayOfWeek;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,8 +30,13 @@ public class GilbertEcommerceController {
     private final ProductListingService productListingService;
     private final CategoryTagMapService categoryTagMapService;
 
+    private SearchQueryService queryService;
 
-    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService listingService, ProductListingService productListingService, CategoryTagMapService categoryTagMapService) {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+
+    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService listingService, ProductListingService productListingService, CategoryTagMapService categoryTagMapService,JdbcTemplate jdbcTemplate, SearchQueryService queryService) {
         this.loginService = loginService;
         this.userService = userService;
         this.session = session;
@@ -37,6 +44,8 @@ public class GilbertEcommerceController {
         this.listingService = listingService;
         this.productListingService = productListingService;
         this.categoryTagMapService = categoryTagMapService;
+        this.jdbcTemplate = jdbcTemplate;
+        this.queryService = queryService;
     }
 
 
@@ -51,25 +60,26 @@ public class GilbertEcommerceController {
         return "testTags";
     }
 
-    /*
+
     @GetMapping("/search")
     public String searchProducts(@ModelAttribute SearchForm form, Model model) {
-        ProductSearchQueryBuilder builder = new ProductSearchQueryBuilder();
-        builder.buildFromForm(form);
+        queryService.buildFromForm(form);
 
         // This is used for the main Query
-        String sqlWhere = builder.getSql();
-        List<Object> params = builder.getParams();
+        String sqlWhere = queryService.getSql();
+        List<Object> params = queryService.getParams();
 
-        // That is a cgpt explanation
         // You’d use these with a JdbcTemplate or similar:
         String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
-        List<Listing> results = jdbcTemplate.query(fullSql, params.toArray(), new ListingRowMapper());
+
+        List<ProductListing> results;
+        results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
 
         model.addAttribute("results", results);
         return "searchResults";
     }
-    */
+
+
 
 
     @GetMapping("/")
