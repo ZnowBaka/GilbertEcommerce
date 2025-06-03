@@ -4,20 +4,18 @@ import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
 import com.example.gilbertecommerce.CustomException.UserNotLoggedIn;
 import com.example.gilbertecommerce.Entity.*;
 import com.example.gilbertecommerce.Service.*;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.SQLException;
+import jakarta.servlet.http.HttpSession;
 
-import java.time.DayOfWeek;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
 
 @Controller
 public class GilbertEcommerceController {
@@ -50,19 +48,19 @@ public class GilbertEcommerceController {
 
 
     @GetMapping("/testTags")
-    public String testCategoryService(@ModelAttribute SearchForm searchForm, Model model) {
-        searchForm = new SearchForm();
+    public String testCategoryService(Model model) {
+        SearchForm form = new SearchForm();
         Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
 
-        model.addAttribute("TestSearchForm", searchForm);
+        model.addAttribute("TestSearchForm", form);
         model.addAttribute("TestTagMap", mapToBeTested);
 
         return "testTags";
     }
 
 
-    @GetMapping("/search")
-    public String searchProducts(@ModelAttribute SearchForm form, Model model) {
+    @PostMapping("/search/")
+    public String searchProducts(@RequestParam(name = "TestSearchForm") SearchForm form, Model model) {
         queryService.buildFromForm(form);
 
         // This is used for the main Query
@@ -74,12 +72,13 @@ public class GilbertEcommerceController {
 
         List<ProductListing> results;
         results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
-
+        System.out.println("Search Text: " + form.getSearchText());
+        form.getTagSelections().forEach((key, value) -> {
+            System.out.println("Category: " + key + " -> Selected: " + value);
+        });
         model.addAttribute("results", results);
-        return "searchResults";
+        return "redirect:/searchResults";
     }
-
-
 
 
     @GetMapping("/")

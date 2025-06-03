@@ -46,6 +46,7 @@ public class SearchQueryService {
     TagCategories, as we map what they are called in the program vs the DB.
      */
     public void buildFromForm(SearchForm form) {
+        System.out.println("Started Building Form: ");
         addSearchText(form.getSearchText());
         addTagFilter(form.getGender(), "Gender");
         addTagFilter(form.getDesigner(), "Designer");

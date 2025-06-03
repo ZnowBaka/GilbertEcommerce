@@ -1,5 +1,8 @@
 package com.example.gilbertecommerce.Entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SearchForm {
     private String searchText;  // for text-based searching
     private String gender;
@@ -15,6 +18,8 @@ public class SearchForm {
     private String jewelry;
     private String international_size;
     private String shoe_size;
+
+    private Map<String, String> tagSelections = new HashMap<>();
 
     public SearchForm() {}
     public SearchForm(String searchText, String gender, String designer, String home, String beauty, String brand, String condition, String clothing, String accessories, String shoes, String bags_and_luggage, String jewelry, String international_size, String shoe_size) {
@@ -32,6 +37,14 @@ public class SearchForm {
         this.jewelry = jewelry;
         this.international_size = international_size;
         this.shoe_size = shoe_size;
+    }
+
+    public Map<String, String> getTagSelections() {
+        return tagSelections;
+    }
+
+    public void setTagSelections(Map<String, String> tagSelections) {
+        this.tagSelections = tagSelections;
     }
 
     public String getSearchText() {
