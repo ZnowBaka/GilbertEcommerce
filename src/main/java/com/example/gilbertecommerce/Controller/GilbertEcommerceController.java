@@ -82,20 +82,29 @@ public class GilbertEcommerceController {
                 .collect(Collectors.joining(" "));
     }
 
+    @GetMapping("/searchResults")
+    public String showSearchResults(Model model) {
+        return "searchResults";
+    }
 
     @PostMapping("/search/")
     public String searchProducts(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
-        form.setTagSelections(extractTagSelections(form));
+        try {
+            form.setTagSelections(extractTagSelections(form));
+            queryService.buildFromForm(form);
+            String sqlWhere = queryService.getSql();
+            List<Object> params = queryService.getParams();
+            String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
 
-        // continue building the query
-        queryService.buildFromForm(form);
-        String sqlWhere = queryService.getSql();
-        List<Object> params = queryService.getParams();
-        String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
-        List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
+            List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
+            model.addAttribute("results", results);
 
-        model.addAttribute("results", results);
-        return "redirect:/searchResults";
+            return "redirect:/searchResults";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Search failed: " + e.getMessage());
+            return "testTags"; // or your fallback page
+        }
     }
 
     private Map<String, String> extractTagSelections(SearchForm form) {
