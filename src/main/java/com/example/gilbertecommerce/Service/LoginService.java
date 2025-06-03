@@ -1,7 +1,8 @@
 package com.example.gilbertecommerce.Service;
 
-import com.example.gilbertecommerce.CustomException.UserAlreadyExistException;
+import com.example.gilbertecommerce.CustomException.*;
 import com.example.gilbertecommerce.Entity.LoginInfo;
+import com.example.gilbertecommerce.Entity.RegistrationForm;
 import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Framework.SecurityConfig;
 import com.example.gilbertecommerce.Framework.UserRepo;
@@ -45,4 +46,47 @@ public class LoginService {
             throw new RuntimeException(e);
         }
     }
+
+    public void validateRegistrationForm(RegistrationForm rForm) throws Exception {
+        validateUser(rForm.getUser());
+        validatePassword(rForm.getLoginInfo().getLoginPass(), rForm.getPasswordConfirmation());
+        validateLoginInfo(rForm.getLoginInfo());
+    }
+
+    public void validateLoginInfo(LoginInfo loginInfo) throws Exception{
+        if(loginInfo.getLoginEmail() == null || loginInfo.getLoginEmail().isEmpty()) {
+            throw new EmptyFieldException("The email is required for a successful registration", "User tried registration without an email");
+        }
+        if(loginInfo.getLoginPass() == null || loginInfo.getLoginPass().isEmpty()) {
+            throw new EmptyFieldException("The password is required for a successful registration", "User tried registration without a password");
+        }
+    }
+
+    public void validateUser(User user) throws Exception{
+        if(user.getFirstName() == null || user.getFirstName().isEmpty()) {
+            throw new EmptyFieldException("The first name is required for a successful registration", "User tried registration without a first name");
+        }
+        if(user.getLastName() == null || user.getLastName().isEmpty()) {
+            throw new EmptyFieldException("The last name is required for a successful registration", "User tried registration without a last name");
+        }
+        if(user.getDisplayName() == null || user.getDisplayName().isEmpty()) {
+            throw new EmptyFieldException("Please select a display name, it is required for a successful registration", "User tried registration without a display name");
+        }
+    }
+
+    public void validatePassword(String password, String passwordConfirmation) throws Exception{
+        if(password == null || password.isEmpty()) {
+            throw new EmptyPasswordException("Password is required for a successful registration", "User tried registration without a password");
+        }
+        if(password.length() < 6) {
+            throw new WeakPasswordException("Password must exceed length of 6 characters", "User put in too short password");
+        }
+        if (password.length() > 24 ){
+            throw new WeakPasswordException("Password cannot be over 24 characters", "User put in too long password");
+        }
+        if(!(password.equals(passwordConfirmation))){
+            throw new PasswordMismatchException("Passwords do not match", "Passwords do not match");
+        }
+    }
 }
+

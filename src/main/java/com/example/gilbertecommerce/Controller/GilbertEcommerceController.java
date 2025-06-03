@@ -1,7 +1,5 @@
 package com.example.gilbertecommerce.Controller;
 
-import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
-import com.example.gilbertecommerce.CustomException.UserNotLoggedIn;
 import com.example.gilbertecommerce.Entity.LoginInfo;
 import com.example.gilbertecommerce.Entity.ProductListing;
 import com.example.gilbertecommerce.Entity.RegistrationForm;

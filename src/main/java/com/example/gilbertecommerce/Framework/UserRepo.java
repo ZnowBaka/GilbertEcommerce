@@ -1,11 +1,9 @@
 package com.example.gilbertecommerce.Framework;
 
-import com.example.gilbertecommerce.CustomException.UserAlreadyExistException;
 import com.example.gilbertecommerce.Entity.LoginInfo;
 import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Entity.UserRole;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -57,7 +55,7 @@ public class UserRepo {
             jdbcTemplate.update(sql, id, loginInfo.getLoginEmail(), loginInfo.getLoginPass());
 
         } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+          throw new RuntimeException(e);
         }
         return true;
     }
@@ -78,6 +76,7 @@ public class UserRepo {
             return userFromdb;
         });
     }
+
     public List<User> getAllUsers() {
         String sql = "SELECT * FROM USER";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {

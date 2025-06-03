@@ -1,9 +1,14 @@
 package com.example.gilbertecommerce.Framework;
 
-
-
 import com.example.gilbertecommerce.CustomException.*;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.gilbertecommerce.CustomException.AuthenticationException.*;
+import com.example.gilbertecommerce.CustomException.DatabaseExceptionS.DatabaseConnectionException;
+import com.example.gilbertecommerce.CustomException.ValidationExceptions.EmptyFieldException;
+import com.example.gilbertecommerce.CustomException.ValidationExceptions.EmptyPasswordException;
+import com.example.gilbertecommerce.CustomException.ValidationExceptions.PasswordMismatch;
+import com.example.gilbertecommerce.CustomException.ValidationExceptions.WeakPasswordException;
+import com.example.gilbertecommerce.Service.LoggerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.ui.Model;
@@ -12,47 +17,106 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(IncorrectPasswordException.class)
-    public String handleIncorrectPassword(Model model, IncorrectPasswordException e) {
+    @Autowired
+    private LoggerService logger;
+
+
+    @ExceptionHandler(EmptyFieldException.class)
+    public String handleEmptyFieldException(EmptyFieldException e, Model model) {
+        logger.logException(e);
         model.addAttribute("error", e.getMessage());
-        return "/loginPage"; // This should return to where-ever the error happened
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "redirect:/registerNewProfile";
+    }
+
+    @ExceptionHandler(EmptyPasswordException.class)
+    public String handleEmptyPasswordException(EmptyPasswordException e, Model model) {
+        logger.logException(e);
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "redirect:/registerNewProfile";
+    }
+
+    @ExceptionHandler(WeakPasswordException.class)
+    public String handleWeakPasswordException(WeakPasswordException e, Model model) {
+        logger.logException(e);
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "redirect:/registerNewProfile";
+    }
+
+    @ExceptionHandler(PasswordMismatch.class)
+    public String handlePasswordMismatchException(PasswordMismatch e, Model model) {
+        logger.logException(e);
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "redirect:/registerNewProfile";
+    }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public String handleIncorrectPasswordException(IncorrectPasswordException e, Model model) {
+        logger.logException(e);
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "redirect:/registerNewProfile";
     }
 
     @ExceptionHandler(UserAlreadyExistException.class)
-    public String handleUserAlreadyExist(Model model, UserAlreadyExistException e) {
+    public String handleUserAlreadyExistException(UserAlreadyExistException e, Model model) {
+        logger.logException(e);
         model.addAttribute("error", e.getMessage());
-        return "/registerNewProfile"; // This should return to where-ever the error happened
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "redirect:/registerNewProfile";
     }
 
     @ExceptionHandler(UserDoesNotExistException.class)
-    public String handleUserDoesNotExist(Model model, UserDoesNotExistException e) {
-        model.addAttribute("ErrorMessage", e.getMessage());
-        return "userDoesNotExist"; // This should return to where-ever the error happened
+    public String handleUserDoesNotExistException(UserDoesNotExistException e, Model model) {
+        logger.logException(e);
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "redirect:/registerNewProfile";
     }
 
-    @ExceptionHandler(UserNameAlreadyExistException.class)
-    public String handleIncorrectPassword(Model model, UserNameAlreadyExistException e) {
-        model.addAttribute("ErrorMessage", e.getMessage());
-        return "userNameAlreadyExist"; // This should return to where-ever the error happened
+    @ExceptionHandler(UserNotLoggedInException.class)
+    public String handleException(UserNotLoggedInException e, Model model) {
+        logger.logException(e);
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "redirect:/registerNewProfile";
     }
 
-    @ExceptionHandler(ListingNotFoundException.class)
-    public String handleListingNotFound(Model model, ListingNotFoundException e) {
-        model.addAttribute("ErrorMessage", e.getMessage());
-        return ""; //Tilføje siden, hvor fejlen skete, så vi forbliver på samme
-    }
-
-    @ExceptionHandler(InvalidListingException.class)
-    public String handleInvalidListing(Model model, InvalidListingException e) {
-        model.addAttribute("ErrorMessage", e.getMessage());
-        model.addAttribute("errorField", e.getField());
-        model.addAttribute("source", e.getSource());
-        return e.getSource().equals("update") ? "editListingForm" : "createListingForm"; //Defineret else if
-    }
-
-    @ExceptionHandler(UserNotLoggedIn.class)
-    public String handleUserNotLoggedIn(UserNotLoggedIn e, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("ErrorMessage", e.getMessage()); //Implementerede med model i starten, men model er kun "live" i den nuværende request. Flash sikrer den kun er aktiv i et request
+    @ExceptionHandler(InvalidEmailException.class)
+    public String handleException(InvalidEmailException e, Model model) {
+        logger.logException(e);
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", e.getErrorCode());
         return "redirect:/loginPage";
+    }
+
+    @ExceptionHandler(DatabaseConnectionException.class)
+    public String handleException(DatabaseConnectionException e, Model model) {
+        logger.logException(e);
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "error/systemError";
+    }
+
+    @ExceptionHandler(AAGilbertException.class)
+    public String handleException(AAGilbertException e, Model model) {
+        logger.logException(e);
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", e.getErrorCode());
+        return "error/generalError";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception e, Model model) {
+        AAGilbertException wrapperException = new AAGilbertException("Unexpected system error", "SYS_001",
+                "Unhandled exception: " + e.getMessage(), "SystemLevel") {
+        };
+        logger.logException(wrapperException, "Unhandled exception caught");
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("errorCode", wrapperException.getErrorCode());
+        return "error/systemError";
     }
 }
