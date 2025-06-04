@@ -41,6 +41,7 @@ public class TagCategoryRepo {
         }
     }
 
+
     public List<TagCategory> getAllTagCategory() {
         String sql = "SELECT * FROM tag_category ORDER BY cat_id";
         List<TagCategory> categories = null;
@@ -67,6 +68,10 @@ public class TagCategoryRepo {
         int affectRows = jdbcTemplate.update(sql, id);
 
         return affectRows > 0;
+    }
+    public void addTagToListing(int tagId, int listingId) {
+        String sql = "INSERT INTO product_tags (product_tag, tag_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, listingId, tagId);
     }
 
 }

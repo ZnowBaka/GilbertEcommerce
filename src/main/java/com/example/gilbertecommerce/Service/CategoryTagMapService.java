@@ -2,6 +2,7 @@ package com.example.gilbertecommerce.Service;
 
 import com.example.gilbertecommerce.Entity.Tag;
 import com.example.gilbertecommerce.Entity.TagCategory;
+import com.example.gilbertecommerce.Entity.TagInsertForm;
 import com.example.gilbertecommerce.Framework.TagCategoryRepo;
 import com.example.gilbertecommerce.Framework.TagRepo;
 import jakarta.annotation.PostConstruct;
@@ -166,6 +167,21 @@ public class CategoryTagMapService {
         map.put(new TagCategory("Brand"), brandTags);
         return map;
     }
+    public List<Tag> getTagsBySelection(TagInsertForm form, Map<String, List<Tag>> map) {
+        List<Tag> result = new ArrayList<>();
 
+        for (String selectedValue : form.getTagSelections().values()) {
+            List<Tag> tags = map.get(selectedValue);
+            if (tags != null) {
+                for (Tag tag : tags) {
+                    if (tag.getTagValue().equals(selectedValue)) {
+                        result.add(tag);
+                        break; // assuming only one match per group is needed
+                    }
+                }
+            }
+        }
+        return result;
+    }
 
 }

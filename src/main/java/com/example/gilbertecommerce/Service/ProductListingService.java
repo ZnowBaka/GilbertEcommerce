@@ -3,18 +3,23 @@ package com.example.gilbertecommerce.Service;
 import com.example.gilbertecommerce.CustomException.InvalidListingException;
 import com.example.gilbertecommerce.CustomException.ListingNotFoundException;
 import com.example.gilbertecommerce.Entity.ProductListing;
+import com.example.gilbertecommerce.Entity.Tag;
 import com.example.gilbertecommerce.Framework.ProductListingRepo;
+import com.example.gilbertecommerce.Framework.TagCategoryRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class ProductListingService {
 
     private ProductListingRepo repo;
+    private TagCategoryRepo catRepo;
 
-    public ProductListingService(ProductListingRepo repo) {
+    public ProductListingService(ProductListingRepo repo, TagCategoryRepo catRepo) {
         this.repo = repo;
+        this.catRepo = catRepo;
     }
 
     public List<ProductListing> getAllListings() {
@@ -32,6 +37,12 @@ public class ProductListingService {
     public void create(ProductListing listing) {
         validateListing(listing, "create");
         repo.save(listing);
+    }
+    public void insertTags(List<Tag> tags, String listingTitle, int userId) {
+        int listingId = repo.findResentListing(userId, listingTitle);
+        for(Tag tag : tags){
+            catRepo.addTagToListing(tag.getId(), listingId);
+        }
     }
 
     public void update(int id, ProductListing listing) {
@@ -64,5 +75,6 @@ public class ProductListingService {
     public List<ProductListing> getAllPendingProductListings() {
         return repo.getAllPendingProductListings();
     }
+
     }
 

@@ -245,12 +245,25 @@ public class GilbertEcommerceController {
 
     @GetMapping("/listingView/create")
     public String showCreateForm(Model model) {
+        TagInsertForm form = new TagInsertForm();
+        Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
+
+        // Create a map for pretty display names
+        Map<String, String> prettyNameMap = new HashMap<>();
+        mapToBeTested.keySet().forEach(key -> {
+            prettyNameMap.put(key, formatDisplayName(key));
+        });
+
+        model.addAttribute("TestSearchForm", form);
+        model.addAttribute("TestTagMap", mapToBeTested);
+        model.addAttribute("PrettyNames", prettyNameMap);
+
         model.addAttribute("listing", new ProductListing());
         return "/CreateNewListingForm";
     }
 
     @PostMapping("/listingView/create")
-    public String postCreateForm(@ModelAttribute("listing") ProductListing listing, Model model) {
+    public String postCreateForm(@ModelAttribute("listing") ProductListing listing,@ModelAttribute("TestSearchForm") TagInsertForm form,@ModelAttribute("TestTagMap") Map<String, List<Tag>> mapWithID,Model model) {
         User user = (User) session.getAttribute("user");
         System.out.println(user.getUserID());
         System.out.println(listing.getListingTitle());
@@ -258,10 +271,13 @@ public class GilbertEcommerceController {
         model.addAttribute("error", "all fields needed");
         try {
             productListingService.create(listing);
+            List<Tag> tags = categoryTagMapService.getTagsBySelection(form, mapWithID);
+            productListingService.insertTags(tags, listing.getListingTitle(), user.getUserID());
             return "redirect:/listingView";
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @GetMapping("/listingView")
