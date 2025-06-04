@@ -4,15 +4,13 @@ import com.example.gilbertecommerce.Entity.SearchForm;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SearchQueryService {
     /*
     So this class turned out differently from expected...
-    Originally we wanted to just use a giant Query that took the entire Form and used every part  from it, -
+    Originally we wanted to just use a giant Query that took the entire Form and used every part from it, -
     but that would be a huge query that is not really flexible enough to suit our needs.
 
     Therefor we made a new type, that also has to deal with the form names & DB names for categories not being a 1-1...
@@ -20,6 +18,7 @@ public class SearchQueryService {
 
     private final StringBuilder sql;
     private final List<Object> params;
+    private final Set<String> uniqueTagFilters = new HashSet<>();
 
 
     public SearchQueryService() {
@@ -95,27 +94,37 @@ public class SearchQueryService {
      */
 
     private void addTagFilter(String tagValue, String tagCategory) {
-        if (tagValue == null || tagValue.isBlank()) {
-            return;
-        }
-        // If you are confused as to why we start from the "product_tags" instead of the listing it is because that will -
-        // be called from the controller, it is because like the TagCategoryMaps, you can define specific searches this way
-        // for future use, other than that don't ask me why.
-        // Also left joins are not needed here because we specifically look for Listing with tag relations.
+        if (tagValue == null || tagValue.isBlank()) return;
+
+        String key = tagCategory + "|" + tagValue;
+        if (!uniqueTagFilters.add(key)) return; // Already added, skip
+
         sql.append("""
-          AND EXISTS (
-         SELECT 1
-         FROM product_tags connectedTags
-          JOIN tags tag ON connectedTags.tag_id = tag.tag_id
-         JOIN tag_has_category connectedCategory ON tag.tag_id = connectedCategory.tag_id
-         JOIN tag_category tagCategory ON connectedCategory.cat_id = tagCategory.cat_id
-         WHERE tagCategory.category_name = ?
-         AND tag.tag_value = ?
-        )
-        """);
+              AND EXISTS (
+                SELECT 1
+                FROM product_tags pt
+                JOIN tags t ON pt.tag_id = t.tag_id
+                JOIN tag_has_category thc ON t.tag_id = thc.tag_id
+                JOIN tag_category tc ON thc.cat_id = tc.cat_id
+                WHERE pt.product_tag = productListing.listing_id
+                  AND tc.category_name = ?
+                  AND t.tag_value = ?
+              )
+          """);
         params.add(tagCategory);
         params.add(tagValue);
     }
+//
+//    AND EXISTS (
+//            SELECT 1
+//                    FROM product_tags connectedTags
+//                    JOIN tags tag ON connectedTags.tag_id = tag.tag_id
+//                    JOIN tag_has_category connectedCategory ON tag.tag_id = connectedCategory.tag_id
+//                    JOIN tag_category tagCategory ON connectedCategory.cat_id = tagCategory.cat_id
+//                    WHERE tagCategory.category_name = ?
+//                    AND tag.tag_value = ?
+//    )
+//
 
     /**
      * Unrefined explanation

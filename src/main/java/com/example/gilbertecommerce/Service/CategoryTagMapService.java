@@ -154,6 +154,7 @@ public class CategoryTagMapService {
         map.put(new TagCategory("Brand"), brandTags);
         map.put(new TagCategory("Condition"), conditionTags);
         map.put(new TagCategory("Bags & Luggage"), bagsAndLuggageTags);
+        map.put(new TagCategory("Shoe Size"), shoeSizeTags);
         return map;
     }
 
