@@ -4,10 +4,8 @@ import com.example.gilbertecommerce.Entity.LoginInfo;
 import com.example.gilbertecommerce.Entity.ProductListing;
 import com.example.gilbertecommerce.Entity.RegistrationForm;
 import com.example.gilbertecommerce.Entity.User;
-import com.example.gilbertecommerce.Service.AdminService;
-import com.example.gilbertecommerce.Service.LoginService;
-import com.example.gilbertecommerce.Service.ProductListingService;
-import com.example.gilbertecommerce.Service.UserService;
+import com.example.gilbertecommerce.Framework.TagCategoryRepo;
+import com.example.gilbertecommerce.Service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,19 +24,24 @@ public class GilbertEcommerceController {
     private final AdminService adminService;
     private final ProductListingService listingService;
     private final ProductListingService productListingService;
+    private final CategoryTagMapService categoryTagMapService;
+    private final TagCategoryRepo tagCategoryRepo;
 
-    public GilbertEcommerceController(ProductListingService listingService, LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService productListingService) {
+
+    public GilbertEcommerceController(ProductListingService listingService, LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService productListingService, CategoryTagMapService categoryTagMapService, TagCategoryRepo tagCategoryRepo) {
         this.loginService = loginService;
         this.userService = userService;
         this.session = session;
         this.adminService = adminService;
         this.listingService = listingService;
         this.productListingService = productListingService;
+        this.categoryTagMapService = categoryTagMapService;
+        this.tagCategoryRepo = tagCategoryRepo;
     }
 
     @GetMapping("/")
     public String home(Model model) {
-
+        
         return "redirect:/welcomePage";
     }
 
@@ -48,7 +51,6 @@ public class GilbertEcommerceController {
 
         return "welcomePage";
     }
-
 
     // registerNewProfile GET & POST
     @GetMapping("/registerNewProfile")

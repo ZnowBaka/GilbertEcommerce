@@ -38,24 +38,6 @@ Skal tilføjes
   <label for="tab-orders">Order History</label>
 </div>
 
-<div class="nav-bar">
-  <a href="/" class="nav-item">
-    <div class="nav-icon"></div>
-    <div class="nav-label">Home</div>
-  </a>
-  <a href="/search" class="nav-item">
-    <div class="nav-icon"></div>
-    <div class="nav-label">Search</div>
-  </a>
-  <a href="/favorites" class="nav-item">
-    <div class="nav-icon"></div>
-    <div class="nav-label">Favorites</div>
-  </a>
-  <a href="/listingView">
-    <div class="nav-icon"></div>
-    <div class="nav-label">Notifications</div>
-  </a>
-</div>
 <div class="content">
 
   <div id="account" class="tab-content">
@@ -117,7 +99,7 @@ Skal tilføjes
           <div th:if="${#lists.isEmpty(listings)}" class="empty">
             <p> You have no active listings.</p>
           </div>
-
+-->
           <div class="listings-section">
             <h2 class="section-title">Previously Sold Products</h2>
             <div th:if="${!#lists.isEmpty(listings)}" class="listings-grid">
@@ -136,7 +118,7 @@ Skal tilføjes
             </div>
           </div>
           <div th:if="${#lists.isEmpty(listings)}" class="empty">
-            -->
+
           <div id="orders" class="tab-content">
             <h2 class="section-title">Order History</h2>
             <div class="empty">
@@ -144,13 +126,33 @@ Skal tilføjes
             </div>
           </div>
           </div>
+            <div class="nav-bar">
+              <a href="/productListingPage" class="nav-item active">
+                <div class="nav-icon"><img src="/Icons/home-1-svgrepo-com.svg" width="20" height="20"></div>
+              </a>
+              <a href="#" class="nav-item">
+                <div class="nav-icon"><img src="/Icons/search-alt-2-svgrepo-com.svg" width="20" height="20"></div>
+              </a>
+              <a href="#" class="nav-item">
+                <div class="nav-icon"><img src="/Icons/heart-svgrepo-com.svg" width="20" height="20"></div>
 
+              </a>
+              <a href="/listingView" class="nav-item">
+                <div class="nav-icon"><img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" width="20" height="20"></div>
+
+              </a>
+              <a href="#" class="nav-item">
+                <div class="nav-icon"><img src="/Icons/bell-alt-svgrepo-com.svg" width="20" height="20"></div>
+
+              </a>
+            </div>
 
           </div>
         </h2>
       </div>
     </div>
   </div>
+</div>
   </body>
 </html>
 
