@@ -19,12 +19,10 @@ public class ProductListingRepo {
 
     private JdbcTemplate jdbcTemplate;
     private final LoggerService logger;
-    private final ProductListingService listingService;
 
-    public ProductListingRepo(JdbcTemplate jdbcTemplate, LoggerService logger, ProductListingService listingService) {
+    public ProductListingRepo(JdbcTemplate jdbcTemplate, LoggerService logger) {
         this.jdbcTemplate = jdbcTemplate;
         this.logger = logger;
-        this.listingService = listingService;
     }
 
 
@@ -66,7 +64,6 @@ public class ProductListingRepo {
     @Transactional
     public void save(ProductListing productListing) {
         try {
-            listingService.validateListing(productListing, "create");
             String sql = "insert into Listings (owner_id, title, description, postingDate, price) values (?,?,?,?,?)";
             int rowsAffected = jdbcTemplate.update(sql,
                     productListing.getSellerID(),
@@ -92,7 +89,6 @@ public class ProductListingRepo {
 
     public void update(ProductListing productListing) {
         try {
-            listingService.validateListing(productListing, "update");
             String sql = "update Listings set title =?, description =?, postingDate =?, price=? where listing_id = ?";
             int rowsAffected = jdbcTemplate.update(sql,
                     productListing.getListingTitle(),
@@ -102,12 +98,10 @@ public class ProductListingRepo {
                     productListing.getListingID());
 
             if(rowsAffected == 0){
-                ListingNotFoundException ex = new ListingNotFoundException(
+                throw new ListingNotFoundException(
                         "No listing to update with id " + productListing.getListingID(),
                         "Potentially unsuccessful attempt at editing a listing. No rows affected" + productListing.getListingID()
                 );
-                logger.logException(ex);
-                throw ex;
             }
         } catch(DataAccessException e) {
             DataIntegrityException ex = new DataIntegrityException(

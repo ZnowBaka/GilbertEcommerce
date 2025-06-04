@@ -52,15 +52,15 @@ public class ProductListingService {
     public void validateListing(ProductListing productListing, String source) {
 
         if(productListing.getListingTitle() == null || productListing.getListingTitle().isEmpty()) {
-            throw new InvalidListingException("The title of your listing is empty, but must be provided.", "User tried to create listing without title", "title", source);
+            throw new InvalidListingException("The title of your listing is empty, but must be provided.", "User tried to create listing without title", "title", "ProductListingRepo");
         }
 
         if(productListing.getListingDescription() == null || productListing.getListingDescription().isEmpty()) {
-            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "User tried to create listing without description","description", source);
+            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "User tried to create listing without description","description", "ProductListingRepo");
         }
 
         if(productListing.getPrice() <= 0){
-            throw new InvalidListingException("The price of your listing is less than or equal to zero.", "User tried to create listing without price", "price", source);
+            throw new InvalidListingException("The price of your listing is less than or equal to zero.", "User tried to create listing without price", "price", "ProductListingRepo");
         }
     }
     public List<ProductListing> getAllPendingProductListings() {
