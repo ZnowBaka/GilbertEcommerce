@@ -20,9 +20,11 @@
 </header>
 
 <main>
+
+    </div>
     <div class="listing-creation-container">
         <form th:action="@{/listingView/create}" th:object="${listing}" method="post">
-
+            <div style="float: left;">
             <div class="input-group">
                 <label for="title">Title</label>
                 <input type="text" id="title" th:field="*{listingTitle}" required />
@@ -37,7 +39,20 @@
                 <label for="price">Price</label>
                 <input type="number" id="price" th:field="*{price}" required/>
             </div>
+            </div>
+            <div style="float: right;">
+                <div class="input-group">
 
+                </div>
+
+                <div class="input-group">
+
+                </div>
+
+                <div class="input-group">
+
+                </div>
+            </div>
             <div class="button-group">
                 <button type="submit">Create Listing</button>
             </div>

@@ -2,22 +2,24 @@ package com.example.gilbertecommerce.Controller;
 
 import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
 import com.example.gilbertecommerce.CustomException.UserNotLoggedIn;
-import com.example.gilbertecommerce.Entity.LoginInfo;
-import com.example.gilbertecommerce.Entity.ProductListing;
-import com.example.gilbertecommerce.Entity.RegistrationForm;
-import com.example.gilbertecommerce.Entity.User;
-import com.example.gilbertecommerce.Service.AdminService;
-import com.example.gilbertecommerce.Service.LoginService;
-import com.example.gilbertecommerce.Service.ProductListingService;
-import com.example.gilbertecommerce.Service.UserService;
-import jakarta.servlet.http.HttpSession;
+import com.example.gilbertecommerce.Entity.*;
+import com.example.gilbertecommerce.Service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import jakarta.servlet.http.HttpSession;
+
+import java.lang.reflect.Field;
 import java.sql.SQLException;
-
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 @Controller
 public class GilbertEcommerceController {
@@ -28,15 +30,117 @@ public class GilbertEcommerceController {
     private final AdminService adminService;
     private final ProductListingService listingService;
     private final ProductListingService productListingService;
+    private final CategoryTagMapService categoryTagMapService;
 
-    public GilbertEcommerceController(ProductListingService listingService, LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService productListingService) {
+    private SearchQueryService queryService;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+
+    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService listingService, ProductListingService productListingService, CategoryTagMapService categoryTagMapService,JdbcTemplate jdbcTemplate, SearchQueryService queryService) {
         this.loginService = loginService;
         this.userService = userService;
         this.session = session;
         this.adminService = adminService;
         this.listingService = listingService;
         this.productListingService = productListingService;
+        this.categoryTagMapService = categoryTagMapService;
+        this.jdbcTemplate = jdbcTemplate;
+        this.queryService = queryService;
     }
+
+
+    @GetMapping("/testTags")
+    public String testCategoryService(Model model) {
+        SearchForm form = new SearchForm();
+        Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
+
+        // Create a map for pretty display names
+        Map<String, String> prettyNameMap = new HashMap<>();
+        mapToBeTested.keySet().forEach(key -> {
+            prettyNameMap.put(key, formatDisplayName(key));
+        });
+
+        model.addAttribute("TestSearchForm", form);
+        model.addAttribute("TestTagMap", mapToBeTested);
+        model.addAttribute("PrettyNames", prettyNameMap);
+
+
+        return "testTags";
+    }
+
+    // This formats "bags_and_luggage" -> "Bags And Luggage"
+    private String formatDisplayName(String key) {
+        if (key == null || key.isBlank()) {
+            return "Unknown";
+        }
+
+        return Arrays.stream(key.split("_"))
+                .filter(part -> !part.isBlank())
+                .map(part -> part.substring(0, 1).toUpperCase() + part.substring(1))
+                .collect(Collectors.joining(" "));
+    }
+
+    @GetMapping("/searchResults")
+    public String showSearchResults(Model model) {
+        return "searchResults";
+    }
+
+    @PostMapping("/search/")
+    public String searchProducts(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
+        try {
+            form.setTagSelections(extractTagSelections(form));
+            queryService.buildFromForm(form);
+
+            String sqlWhere = queryService.getSql();
+            List<Object> params = queryService.getParams();
+            String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
+
+            List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
+
+            // Gets the tags for each Listing and add their tags.
+            for (ProductListing product : results) {
+                List<Tag> tags = categoryTagMapService.getTagsByListingId(product.getListingID());
+                product.setTags(tags);
+            }
+
+            model.addAttribute("results", results);
+            model.addAttribute("TestSearchForm", form);
+            model.addAttribute("executedSql", fullSql);
+            model.addAttribute("sqlParams", params);
+
+            return "searchResults";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Search failed: " + e.getMessage());
+            return "testTags"; // or your fallback page
+        }
+    }
+
+    private Map<String, String> extractTagSelections(SearchForm form) {
+        Map<String, String> selections = new HashMap<>();
+        for (Field field : form.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                String name = field.getName();
+                if (!name.equals("searchText") && !name.equals("tagSelections")) {
+                    Object value = field.get(form);
+                    if (value != null) {
+                        selections.put(name, value.toString());
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace(); // or log properly
+            }
+        }
+        return selections;
+    }
+
+
+
+
 
     @GetMapping("/")
     public String home(Model model) {
@@ -50,7 +154,6 @@ public class GilbertEcommerceController {
 
         return "welcomePage";
     }
-
 
     // registerNewProfile GET & POST
     @GetMapping("/registerNewProfile")
@@ -115,22 +218,24 @@ public class GilbertEcommerceController {
 
     @GetMapping("/AdminMenu")
     public String getAdminMenu(Model model) {
-            User user = (User) session.getAttribute("user");
-            List<User> users = adminService.getAllUsers();
-            List<ProductListing> pendingListings = listingService.getAllPendingProductListings();
-            model.addAttribute("users", users);
-            model.addAttribute("pendingListings", pendingListings);
-            if(user.getRole().getRoleName().equals("Admin")) {
-                return "/AdminMenu";
-            }
-            return "redirect:/listingView";
+        User user = (User) session.getAttribute("user");
+        List<User> users = adminService.getAllUsers();
+        List<ProductListing> pendingListings = listingService.getAllPendingProductListings();
+        model.addAttribute("users", users);
+        model.addAttribute("pendingListings", pendingListings);
+        if (user.getRole().getRoleName().equals("Admin")) {
+            return "/AdminMenu";
+        }
+        return "redirect:/listingView";
     }
+
     @GetMapping("/AdminMenu/Approve/{Id}")
     public String postAdminMenu(@PathVariable("Id") int listingId, Model model) {
         System.out.println("approving listing: " + listingId);
         adminService.approveListing(listingId);
         return "redirect:/AdminMenu";
     }
+
     @GetMapping("/AdminMenu/Reject/{Id}")
     public String postAdminMenuReject(@PathVariable("Id") int listingId, Model model) {
         System.out.println("rejecting listing: " + listingId);
@@ -143,14 +248,15 @@ public class GilbertEcommerceController {
         model.addAttribute("listing", new ProductListing());
         return "/CreateNewListingForm";
     }
+
     @PostMapping("/listingView/create")
     public String postCreateForm(@ModelAttribute("listing") ProductListing listing, Model model) {
         User user = (User) session.getAttribute("user");
         System.out.println(user.getUserID());
         System.out.println(listing.getListingTitle());
         listing.setSellerID(user.getUserID());
-        model.addAttribute("error","all fields needed");
-        try{
+        model.addAttribute("error", "all fields needed");
+        try {
             productListingService.create(listing);
             return "redirect:/listingView";
         } catch (RuntimeException e) {
@@ -175,7 +281,7 @@ public class GilbertEcommerceController {
 
         User user = getLoggedInUser(session);
         ProductListing listing = listingService.getProductListing(listingID);
-        if(listing != null && listing.getSellerID() == user.getUserID()) {
+        if (listing != null && listing.getSellerID() == user.getUserID()) {
             listingService.delete(listingID);
         }
         return "redirect:/listingView";
