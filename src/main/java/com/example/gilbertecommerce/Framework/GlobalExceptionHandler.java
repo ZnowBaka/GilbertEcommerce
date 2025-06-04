@@ -20,7 +20,6 @@ public class GlobalExceptionHandler {
     @Autowired
     private LoggerService logger;
 
-
     @ExceptionHandler(EmptyFieldException.class)
     public String handleEmptyFieldException(EmptyFieldException e, Model model) {
         logger.logException(e);
