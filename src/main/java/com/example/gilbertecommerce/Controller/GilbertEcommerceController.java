@@ -98,8 +98,9 @@ public class GilbertEcommerceController {
 
             List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
             model.addAttribute("results", results);
+            model.addAttribute("TestSearchForm", form);
+            return "searchResults";
 
-            return "redirect:/searchResults";
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "Search failed: " + e.getMessage());

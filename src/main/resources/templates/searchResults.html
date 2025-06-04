@@ -99,12 +99,12 @@
     <section>
         <h2 class="section-title">Search Results</h2>
 
-        <div th:if="${#lists.isEmpty(productListings)}" class="no-results">
+        <div th:if="${#lists.isEmpty(results)}" class="no-results">
             No products matched your search.
         </div>
 
-        <div class="collection-cards" th:if="${!#lists.isEmpty(productListings)}">
-            <div class="card" th:each="product : ${productListings}">
+        <div class="collection-cards" th:if="${!#lists.isEmpty(results)}">
+            <div class="card" th:each="product : ${results}">
                 <div class="card-img">
                     <span th:text="${product.listingTitle} + ' image'">Image</span>
                 </div>
@@ -121,6 +121,50 @@
             </div>
         </div>
     </section>
+
+    <!-- Display for the search data -->
+    <section class="search-summary">
+        <h2>Search Summary</h2>
+        <div>
+            <h3>Form Data:</h3>
+            <ul>
+                <li><strong>Search Text:</strong> <span th:text="${TestSearchForm.searchText}">-</span></li>
+                <li th:each="entry : ${TestSearchForm.tagSelections}">
+                    <strong th:text="${#strings.capitalize(entry.key)}">Category</strong>:
+                    <span th:text="${entry.value}">Value</span>
+                </li>
+            </ul>
+        </div>
+
+        <div>
+            <h3>Executed SQL Query:</h3>
+            <pre th:text="${executedSql}">SQL will show here</pre>
+
+            <h3>Parameters:</h3>
+            <ul>
+                <li th:each="param : ${sqlParams}" th:text="${param}">Param</li>
+            </ul>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="results">
+        <h2>Results</h2>
+        <div th:if="${#lists.isEmpty(results)}">
+            <p>No listings matched your criteria.</p>
+        </div>
+
+        <div th:each="listing : ${results}">
+            <div class="listing-box">
+                <h3 th:text="${listing.listingTitle}">Product Title</h3>
+                <p th:text="${listing.description}">Product description</p>
+                <p><strong>Price:</strong> $<span th:text="${listing.price}">0.00</span></p>
+            </div>
+        </div>
+    </section>
+
+
 </main>
 
 <footer>
