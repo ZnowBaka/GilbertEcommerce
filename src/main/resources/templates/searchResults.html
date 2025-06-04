@@ -111,12 +111,9 @@
                 <div class="card-content">
                     <h3 class="card-title" th:text="${product.listingTitle}">Title</h3>
                     <p class="card-price" th:text="${product.price} + ' DKK'">Price</p>
-                    <p class="card-brand" th:text="${product.brand} ?: 'Unknown Brand'">Brand</p>
-                    <div class="card-seller">
-                        <div class="seller-avatar" th:text="${product.sellerInitials ?: 'U'}">U</div>
-                        <span class="seller-name" th:text="${product.sellerName ?: 'Unknown'}">Seller</span>
-                        <span class="trust-score" th:text="${product.trustScore ?: '—'} + '%'">Score</span>
-                    </div>
+                    <ul class="tag-list" th:if="${product.tags}">
+                        <li th:each="tag : ${product.tags}" th:text="${tag.tagValue}">Tag</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -142,7 +139,7 @@
 
             <h3>Parameters:</h3>
             <ul>
-                <li th:each="param : ${sqlParams}" th:text="${param}">Param</li>
+                <li th:each="p : ${sqlParams}" th:text="${p}">Param</li>
             </ul>
         </div>
     </section>
@@ -158,7 +155,7 @@
         <div th:each="listing : ${results}">
             <div class="listing-box">
                 <h3 th:text="${listing.listingTitle}">Product Title</h3>
-                <p th:text="${listing.description}">Product description</p>
+                <p th:text="${listing.listingDescription}">Product description</p>
                 <p><strong>Price:</strong> $<span th:text="${listing.price}">0.00</span></p>
             </div>
         </div>

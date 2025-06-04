@@ -137,6 +137,14 @@ public class CategoryTagMapService {
         return tagCategoryList;
     }
 
+    public List<Tag> getTagsByListingId(int listingId) {
+        List<Tag> tagList = new ArrayList<>();
+        tagList = tagRepo.getTagsByListingId(listingId);
+
+        return tagList;
+    }
+
+
     // Section for map building, this is how we can define precisely what tags we want from where, and in what order.
     // By using a LinkedHashMap we can control the order that the Category buttons appear while also able to make predefined templates when you build a Listing
     public Map<TagCategory, List<Tag>> buildTestCategoryTagsMap() {

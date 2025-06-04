@@ -54,6 +54,16 @@ public class TagRepo {
         return tags;
     }
 
+    public List<Tag> getTagsByListingId(int listingId) {
+        String sql = """
+                    SELECT tag.tag_id AS tagId, tag.tag_value AS tagValue
+                    FROM tags tag
+                             JOIN product_tags tagConnection ON tag.tag_id = tagConnection.tag_id
+                    WHERE tagConnection.product_tag = ?
+                """;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Tag.class), listingId);
+    }
+
     public boolean updateTagById(Tag tag, int id) {
         String sql = "UPDATE tags SET tag_value = ? WHERE tag_id = ?";
         int affectRows = jdbcTemplate.update(sql, tag.getTagValue(), id);

@@ -3,6 +3,8 @@ package com.example.gilbertecommerce.Entity;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductListing {
 
@@ -14,7 +16,9 @@ public class ProductListing {
     private String listingDescription;
     private String listingImage;
     private String listingStatus;
-    
+
+    private List<Tag> tags = new ArrayList<>();
+
     public ProductListing() {}
 /*
     public ProductListing(int listingID, double price, int sellerID, int productID, LocalDateTime listingDate,String listingTitle, String ListingDescription, String ListingImage, boolean listingStatus) {
@@ -45,6 +49,15 @@ public class ProductListing {
         this.listingDescription = ListingDescription;
         this.listingImage = ListingImage;
     }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
 
     public int getListingID() {return listingID;}
     public void setListingID(int listingID) {

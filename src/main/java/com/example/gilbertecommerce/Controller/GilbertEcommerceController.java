@@ -92,13 +92,24 @@ public class GilbertEcommerceController {
         try {
             form.setTagSelections(extractTagSelections(form));
             queryService.buildFromForm(form);
+
             String sqlWhere = queryService.getSql();
             List<Object> params = queryService.getParams();
             String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
 
             List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
+
+            // Gets the tags for each Listing and add their tags.
+            for (ProductListing product : results) {
+                List<Tag> tags = categoryTagMapService.getTagsByListingId(product.getListingID());
+                product.setTags(tags);
+            }
+
             model.addAttribute("results", results);
             model.addAttribute("TestSearchForm", form);
+            model.addAttribute("executedSql", fullSql);
+            model.addAttribute("sqlParams", params);
+
             return "searchResults";
 
         } catch (Exception e) {
