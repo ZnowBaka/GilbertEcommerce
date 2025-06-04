@@ -16,10 +16,12 @@ public class CategoryTagMapService {
 
     private final TagRepo tagRepo;
     private final TagCategoryRepo catRepo;
+    private final LoggerService logger;
 
-    public CategoryTagMapService(TagRepo tagRepo, TagCategoryRepo catRepo) {
+    public CategoryTagMapService(TagRepo tagRepo, TagCategoryRepo catRepo, LoggerService logger) {
         this.tagRepo = tagRepo;
         this.catRepo = catRepo;
+        this.logger = logger;
     }
 
     // Tag Categories are filled in from here

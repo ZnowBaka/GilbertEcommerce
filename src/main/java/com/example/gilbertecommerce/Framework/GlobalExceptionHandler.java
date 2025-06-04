@@ -2,6 +2,9 @@ package com.example.gilbertecommerce.Framework;
 
 import com.example.gilbertecommerce.CustomException.*;
 import com.example.gilbertecommerce.CustomException.AuthenticationException.*;
+import com.example.gilbertecommerce.CustomException.BusinessExceptions.InvalidListingException;
+import com.example.gilbertecommerce.CustomException.BusinessExceptions.ListingNotFoundException;
+import com.example.gilbertecommerce.CustomException.DatabaseExceptionS.DataIntegrityException;
 import com.example.gilbertecommerce.CustomException.DatabaseExceptionS.DatabaseConnectionException;
 import com.example.gilbertecommerce.CustomException.ValidationExceptions.EmptyFieldException;
 import com.example.gilbertecommerce.CustomException.ValidationExceptions.EmptyPasswordException;
@@ -9,6 +12,7 @@ import com.example.gilbertecommerce.CustomException.ValidationExceptions.Passwor
 import com.example.gilbertecommerce.CustomException.ValidationExceptions.WeakPasswordException;
 import com.example.gilbertecommerce.Service.LoggerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.ui.Model;
@@ -21,101 +25,127 @@ public class GlobalExceptionHandler {
     private LoggerService logger;
 
     @ExceptionHandler(EmptyFieldException.class)
-    public String handleEmptyFieldException(EmptyFieldException e, Model model) {
+    public String handleEmptyFieldException(EmptyFieldException e,  RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
         return "redirect:/registerNewProfile";
     }
 
     @ExceptionHandler(EmptyPasswordException.class)
-    public String handleEmptyPasswordException(EmptyPasswordException e, Model model) {
+    public String handleEmptyPasswordException(EmptyPasswordException e, RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
         return "redirect:/registerNewProfile";
     }
 
     @ExceptionHandler(WeakPasswordException.class)
-    public String handleWeakPasswordException(WeakPasswordException e, Model model) {
+    public String handleWeakPasswordException(WeakPasswordException e, RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
         return "redirect:/registerNewProfile";
     }
 
     @ExceptionHandler(PasswordMismatch.class)
-    public String handlePasswordMismatchException(PasswordMismatch e, Model model) {
+    public String handlePasswordMismatchException(PasswordMismatch e, RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
-        return "redirect:/registerNewProfile";
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
+        return "redirect:/loginPage";
     }
 
     @ExceptionHandler(IncorrectPasswordException.class)
-    public String handleIncorrectPasswordException(IncorrectPasswordException e, Model model) {
+    public String handleIncorrectPasswordException(IncorrectPasswordException e, RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
-        return "redirect:/registerNewProfile";
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
+        return "redirect:/loginPage";
     }
 
     @ExceptionHandler(UserAlreadyExistException.class)
-    public String handleUserAlreadyExistException(UserAlreadyExistException e, Model model) {
+    public String handleUserAlreadyExistException(UserAlreadyExistException e, RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
         return "redirect:/registerNewProfile";
     }
 
     @ExceptionHandler(UserDoesNotExistException.class)
-    public String handleUserDoesNotExistException(UserDoesNotExistException e, Model model) {
+    public String handleUserDoesNotExistException(UserDoesNotExistException e, RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
-        return "redirect:/registerNewProfile";
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
+        return "redirect:/loginPage";
     }
 
     @ExceptionHandler(UserNotLoggedInException.class)
-    public String handleException(UserNotLoggedInException e, Model model) {
+    public String handleException(UserNotLoggedInException e, RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
         return "redirect:/registerNewProfile";
     }
 
     @ExceptionHandler(InvalidEmailException.class)
-    public String handleException(InvalidEmailException e, Model model) {
+    public String handleException(InvalidEmailException e, RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
         return "redirect:/loginPage";
     }
 
-    @ExceptionHandler(DatabaseConnectionException.class)
-    public String handleException(DatabaseConnectionException e, Model model) {
-        logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
-        return "error/systemError";
-    }
-
+    //Standard exception. Hierakiet går defineret ex -> Standard -> catch all
     @ExceptionHandler(AAGilbertException.class)
-    public String handleException(AAGilbertException e, Model model) {
+    public String handleException(AAGilbertException e, RedirectAttributes model) {
         logger.logException(e);
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", e.getErrorCode());
-        return "error/generalError";
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
+        return "redirect:/error/systemError";
     }
 
+    //Catch all metode, hvis der mangler at blive defineret en custom exception
     @ExceptionHandler(Exception.class)
-    public String handleException(Exception e, Model model) {
+    public String handleUnexpectedException(Exception e, RedirectAttributes model) {
         AAGilbertException wrapperException = new AAGilbertException("Unexpected system error", "SYS_001",
                 "Unhandled exception: " + e.getMessage(), "SystemLevel") {
         };
         logger.logException(wrapperException, "Unhandled exception caught");
-        model.addAttribute("error", e.getMessage());
-        model.addAttribute("errorCode", wrapperException.getErrorCode());
-        return "error/systemError";
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", wrapperException.getErrorCode());
+        return "redirect:/error/systemError";
+    }
+
+    @ExceptionHandler
+    public String handleDatabaseConnectionException(DatabaseConnectionException e, RedirectAttributes model) {
+        logger.logException(e);
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
+        return "redirect:/error/systemError";
+    }
+
+    @ExceptionHandler
+    public String handleDataIntegrityException(DataIntegrityException e, RedirectAttributes model) {
+        logger.logException(e);
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
+        return "redirect:/error/systemError";
+    }
+
+    @ExceptionHandler
+    public String handleException(InvalidListingException e, RedirectAttributes model) {
+        logger.logException(e);
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
+        return "redirect:/CreateNewListingForm";
+    }
+
+    @ExceptionHandler
+    public String handleException(ListingNotFoundException e, RedirectAttributes model) {
+        logger.logException(e);
+        model.addFlashAttribute("error", e.getMessage());
+        model.addFlashAttribute("errorCode", e.getErrorCode());
+        return "redirect:/productListingPage";
     }
 }

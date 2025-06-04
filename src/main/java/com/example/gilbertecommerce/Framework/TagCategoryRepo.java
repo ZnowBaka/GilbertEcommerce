@@ -2,6 +2,7 @@ package com.example.gilbertecommerce.Framework;
 
 import com.example.gilbertecommerce.Entity.Tag;
 import com.example.gilbertecommerce.Entity.TagCategory;
+import com.example.gilbertecommerce.Service.LoggerService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,7 +19,7 @@ public class TagCategoryRepo {
     private final JdbcOperations jdbcOperations;
     private JdbcTemplate jdbcTemplate;
 
-    public TagCategoryRepo(JdbcTemplate jdbcTemplate, JdbcOperations jdbcOperations) {
+    public TagCategoryRepo(JdbcTemplate jdbcTemplate, JdbcOperations jdbcOperations, LoggerService logger) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcOperations = jdbcOperations;
     }

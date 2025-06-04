@@ -11,10 +11,12 @@ import java.util.List;
 @Service
 public class ProductListingService {
 
-    private ProductListingRepo repo;
+    private final ProductListingRepo repo;
+    private final LoggerService logger;
 
-    public ProductListingService(ProductListingRepo repo) {
+    public ProductListingService(ProductListingRepo repo, LoggerService logger) {
         this.repo = repo;
+        this.logger = logger;
     }
 
     public List<ProductListing> getAllListings() {
@@ -50,15 +52,15 @@ public class ProductListingService {
     public void validateListing(ProductListing productListing, String source) {
 
         if(productListing.getListingTitle() == null || productListing.getListingTitle().isEmpty()) {
-            throw new InvalidListingException("The title of your listing is empty, but must be provided.", "User tried to create listing without title");
+            throw new InvalidListingException("The title of your listing is empty, but must be provided.", "User tried to create listing without title", "title", source);
         }
 
         if(productListing.getListingDescription() == null || productListing.getListingDescription().isEmpty()) {
-            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "User tried to create listing without description");
+            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "User tried to create listing without description","description", source);
         }
 
         if(productListing.getPrice() <= 0){
-            throw new InvalidListingException("The price of your listing is less than or equal to zero.", "User tried to create listing without price");
+            throw new InvalidListingException("The price of your listing is less than or equal to zero.", "User tried to create listing without price", "price", source);
         }
     }
     public List<ProductListing> getAllPendingProductListings() {

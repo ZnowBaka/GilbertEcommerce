@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import org.slf4j.Logger;
 
-
 @Service
 public class LoggerService {
 
@@ -22,7 +21,6 @@ public class LoggerService {
         logBasedOnSeverity(logMessage, exception);
     }
 
-
     public void logBasedOnSeverity(String logMessage, AAGilbertException exception) {
         if (isCriticalError(exception.getErrorCode())) {
             logger.error("CRITICAL ERROR: " + logMessage, exception);
@@ -32,7 +30,6 @@ public class LoggerService {
             logger.info("ERROR: " + logMessage, exception);
         }
     }
-
 
     public boolean isCriticalError(String errorCode){
         return errorCode.startsWith("DB_") || errorCode.startsWith("SYS_");

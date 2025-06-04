@@ -1,6 +1,10 @@
 package com.example.gilbertecommerce.Service;
 
 import com.example.gilbertecommerce.CustomException.*;
+import com.example.gilbertecommerce.CustomException.AuthenticationException.UserAlreadyExistException;
+import com.example.gilbertecommerce.CustomException.ValidationExceptions.EmptyFieldException;
+import com.example.gilbertecommerce.CustomException.ValidationExceptions.EmptyPasswordException;
+import com.example.gilbertecommerce.CustomException.ValidationExceptions.WeakPasswordException;
 import com.example.gilbertecommerce.Entity.LoginInfo;
 import com.example.gilbertecommerce.Entity.RegistrationForm;
 import com.example.gilbertecommerce.Entity.User;
@@ -10,13 +14,17 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 
-@Service
+    @Service
 public class LoginService {
-    private UserRepo userRepo;
-    private SecurityConfig securityConfig;
-    public LoginService(UserRepo userRepo, SecurityConfig securityConfig) {
+    private final UserRepo userRepo;
+    private final SecurityConfig securityConfig;
+    private final LoggerService logger;
+
+    public LoginService(UserRepo userRepo, SecurityConfig securityConfig, LoggerService logger) {
         this.userRepo = userRepo;
         this.securityConfig = securityConfig;
+        this.logger =  logger;
+
     }
     public boolean checkLogin(LoginInfo loginInfo) throws SQLException {
         LoginInfo loginInfo1 = userRepo.getLoginInfo(loginInfo);

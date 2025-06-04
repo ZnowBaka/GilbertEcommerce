@@ -1,6 +1,7 @@
 package com.example.gilbertecommerce.Framework;
 
 import com.example.gilbertecommerce.Entity.Tag;
+import com.example.gilbertecommerce.Service.LoggerService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,7 @@ public class TagRepo {
 
     private JdbcTemplate jdbcTemplate;
 
-    public TagRepo(JdbcTemplate jdbcTemplate) {
+    public TagRepo(JdbcTemplate jdbcTemplate, LoggerService logger) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
