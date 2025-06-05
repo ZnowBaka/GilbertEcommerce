@@ -45,7 +45,7 @@ public class TagRepo {
                 LEFT JOIN tag_has_category tagConnection ON tag.tag_id = tagConnection.tag_id
                 LEFT JOIN tag_category tagCategory ON tagConnection.cat_id = tagCategory.cat_id
                 WHERE tagCategory.category_name = ?
-                ORDER BY tag.tag_value
+                ORDER BY tag.tag_value asc
                 """);
 
         List<Tag> tags = null;
