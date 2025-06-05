@@ -102,17 +102,17 @@ public class SearchQueryService {
         if (!uniqueTagFilters.add(key)) return; // Already added, skip
 
         sql.append("""
-              AND EXISTS (
+                 AND EXISTS (
                 SELECT 1
                 FROM product_tags pt
                 JOIN tags t ON pt.tag_id = t.tag_id
                 JOIN tag_has_category thc ON t.tag_id = thc.tag_id
                 JOIN tag_category tc ON thc.cat_id = tc.cat_id
                 WHERE pt.product_tag = productListing.listing_id
-                  AND tc.category_name = ?
-                  AND t.tag_value = ?
-              )
-          """);
+                AND tc.category_name = ?
+                AND t.tag_value = ?
+                )
+                """);
         params.add(tagCategory);
         params.add(tagValue);
     }
