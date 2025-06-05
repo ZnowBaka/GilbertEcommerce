@@ -89,13 +89,18 @@ public class GilbertEcommerceController {
 
     @PostMapping("/search/")
     public String searchProducts(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
+
         try {
+            // This should now "refresh" the custom build sql, so that we no longer get duplicates in our search.
+            queryService.clear();
+
             form.setTagSelections(extractTagSelections(form));
             queryService.buildFromForm(form);
 
             String sqlWhere = queryService.getSql();
             List<Object> params = queryService.getParams();
             String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
+
 
             List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
 
@@ -123,6 +128,7 @@ public class GilbertEcommerceController {
         Map<String, String> selections = new HashMap<>();
         for (Field field : form.getClass().getDeclaredFields()) {
             field.setAccessible(true);
+
             try {
                 String name = field.getName();
                 if (!name.equals("searchText") && !name.equals("tagSelections")) {
