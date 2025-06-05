@@ -42,7 +42,4 @@ public abstract class AAGilbertException extends RuntimeException {
     public String getErrorCode() {
         return errorCode;
     }
-
-
-
 }
