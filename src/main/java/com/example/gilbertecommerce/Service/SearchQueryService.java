@@ -164,6 +164,7 @@ public class SearchQueryService {
         sql.setLength(0);           // Setting the size to 0 works, it clears the whole sql
         sql.append("WHERE 1=1");    // We need to re-add the constructor build statement otherwise sql will die
         params.clear();             // Clears parameter list, ready to be filled out again.
+        uniqueTagFilters.clear();   // This is now needed after we added the (!uniqueTagFilters.add(key)) to prevent duplicates, if not cleared correctly the form skipped values.
     }
 
 

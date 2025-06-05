@@ -97,11 +97,12 @@ public class GilbertEcommerceController {
             form.setTagSelections(extractTagSelections(form));
             queryService.buildFromForm(form);
 
+            // This Likely still needs to be in the service layer as it is only the form that is needed...
             String sqlWhere = queryService.getSql();
             List<Object> params = queryService.getParams();
             String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
 
-
+            // We need to make a service & a Repo method for this.
             List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
 
             // Gets the tags for each Listing and add their tags.
