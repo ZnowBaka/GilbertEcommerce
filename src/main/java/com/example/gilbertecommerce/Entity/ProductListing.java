@@ -81,7 +81,7 @@ public class ProductListing {
     public void setListingDate(LocalDateTime listingDate) {
         this.listingDate = listingDate;
     }
-    public String isListingStatus() {
+    public String getListingStatus() {
         return listingStatus;
     }
     public void setListingStatus(String listingStatus) {

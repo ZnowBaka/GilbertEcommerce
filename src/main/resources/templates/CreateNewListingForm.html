@@ -42,24 +42,18 @@
                 <input type="number" id="price" th:field="*{price}" required/>
             </div>
             </div>
+
             <div th:each="entry : ${TestTagMap}"
-                 class="dropdown-box"
                  th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
 
-                <!--
-                input containing selected data, sets data into the filter object on submit
-                Turns out that the dynamic field names, th:field="*{__${...}__}", actually won't work, so you have to make that weird th:with="fieldName" on top instead
-                -->
-                <div class="selected-item">
-                    <label>
-                        <input th:id="${fieldName}" th:name="${fieldName}"
-                               th:field="*{__${fieldName}__}"
-                               th:placeholder="${prettyName}"
-                               readonly="readonly" />
-                    </label>
-                </div>
+                <input th:name="${fieldName}"
+                       th:id="${fieldName}"
+                       name="${fieldName}"
+                       id="${fieldName}"
+                       placeholder="..."
+                       readonly="readonly"
+                />
 
-                <!-- This div contains CSS-class for the input used to search in that specific category -->
                 <div class="dropdown-content">
                     <div class="search-input">
                         <label>
@@ -67,7 +61,6 @@
                         </label>
                     </div>
 
-                    <!-- For each "value"/Tag that the Category contains, create at list object contains its data. -->
                     <ul>
                         <li th:each="tag : ${entry.value}"
                             class="dropdown-item"
@@ -76,7 +69,9 @@
                         </li>
                     </ul>
                 </div>
-            </div>
+
+            </div> <!-- LUKKER entry-loop korrekt -->
+
             <div class="button-group">
                 <button type="submit">Create Listing</button>
             </div>

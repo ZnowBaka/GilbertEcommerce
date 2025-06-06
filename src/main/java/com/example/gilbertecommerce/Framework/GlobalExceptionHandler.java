@@ -117,7 +117,7 @@ public class GlobalExceptionHandler {
         return "redirect:/error/systemError";
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(DatabaseConnectionException.class)
     public String handleDatabaseConnectionException(DatabaseConnectionException e, RedirectAttributes model) {
         logger.logException(e);
         model.addFlashAttribute("error", e.getMessage());
@@ -125,7 +125,7 @@ public class GlobalExceptionHandler {
         return "redirect:/error/systemError";
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(DataIntegrityViolationException.class)
     public String handleDataIntegrityException(DataIntegrityException e, RedirectAttributes model) {
         logger.logException(e);
         model.addFlashAttribute("error", e.getMessage());
@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
         return "redirect:/error/systemError";
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(InvalidListingException.class)
     public String handleException(InvalidListingException e, RedirectAttributes model) {
         logger.logException(e);
         model.addFlashAttribute("error", e.getMessage());
@@ -141,7 +141,7 @@ public class GlobalExceptionHandler {
         return "redirect:/CreateNewListingForm";
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ListingNotFoundException.class)
     public String handleException(ListingNotFoundException e, RedirectAttributes model) {
         logger.logException(e);
         model.addFlashAttribute("error", e.getMessage());

@@ -163,16 +163,10 @@
             <h3 class="filter-title">Filters</h3>
             <div class="filters-row">
 
-                <!-- Render a dropdown for each category -->
-                <!-- Had to redo how the th:with is used, we cannot to nested stuff here :/ -->
                 <div th:each="entry : ${TestTagMap}"
                      class="dropdown-box"
                      th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
 
-                    <!--
-                    input containing selected data, sets data into the filter object on submit
-                    Turns out that the dynamic field names, th:field="*{__${...}__}", actually won't work, so you have to make that weird th:with="fieldName" on top instead
-                    -->
                     <div class="selected-item">
                         <input th:id="${fieldName}" th:name="${fieldName}"
                                th:field="*{__${fieldName}__}"
@@ -180,7 +174,6 @@
                                readonly="readonly" />
                     </div>
 
-                    <!-- This div contains CSS-class for the input used to search in that specific category -->
                     <div class="dropdown-content">
                         <div class="search-input">
                             <label>
@@ -188,7 +181,6 @@
                             </label>
                         </div>
 
-                        <!-- For each "value"/Tag that the Category contains, create at list object contains its data. -->
                         <ul>
                             <li th:each="tag : ${entry.value}"
                                 class="dropdown-item"
@@ -199,7 +191,6 @@
                     </div>
                 </div>
 
-                <!-- Sets searched input data into the filter object on submit -->
                 <label for="FilterSearchInput">Search</label>
                 <input id="FilterSearchInput" type="text"
                        th:field="*{searchText}" placeholder="Search..." />

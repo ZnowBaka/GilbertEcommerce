@@ -8,25 +8,25 @@
 <body>
 
 <header>
-  <div class ="logo">Gilbert</div>
-  <div class ="tagline">Quality Sustainability Preloved</div>
+  <div class="logo">Gilbert</div>
+  <div class="tagline">Quality Sustainability Preloved</div>
 </header>
 
-<div class="profile-header"></div>
-  <div class="profile-info"></div>
-    <div class="profile-avatar"></div>
+<div class="profile-header">
+  <div class="profile-info">
+    <div class="profile-avatar">
       <span th:text="${user.firstName != null ? user.firstName.substring(0,1).toUpperCase() : 'U'}">U</span>
-    <div clas="profile-details">
-      <h1 th:text="${user.displayName != null ? user.displayName : user.firstName + ' ' + user.lastName}">Username</h1>
-     <p><Strong>Active listings:</Strong> <span th:text="${activeListingCount}">0</span></p>
     </div>
-    <div class="profile-actions"></div>
-      <a href="/listingView/create" class="profile-button"> Create New Listing</a>
-
-<!--
-Skal tilføjes
--->
-<a href="/listingView/profileEdit" class="Another-profile-button">Edit Profile</a>
+    <div class="profile-details">
+      <h1 th:text="${user.displayName != null ? user.displayName : user.firstName + ' ' + user.lastName}">Username</h1>
+      <p><strong>Active listings:</strong> <span th:text="${activeListingCount}">0</span></p>
+    </div>
+    <div class="profile-actions">
+      <a href="/listingView/create" class="profile-button">Create New Listing</a>
+      <a href="/listingView/profileEdit" class="Another-profile-button">Edit Profile</a>
+    </div>
+  </div>
+</div>
 
 <input type="radio" name="tab" id="tab-account" checked>
 <input type="radio" name="tab" id="tab-listings">
@@ -39,121 +39,109 @@ Skal tilføjes
 </div>
 
 <div class="content">
-
+  <!-- Account Tab -->
   <div id="account" class="tab-content">
-  <h2>Personal Information</h2>
-
-  <div class="account-info-grid"></div>
-    <div class ="account-info-card"></div>
-      <div class="account-info-icon">
-        <img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" width="80" height="80">
+    <h2>Personal Information</h2>
+    <div class="account-info-grid">
+      <div class="account-info-card">
+        <div class="account-info-icon">
+          <img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" width="80" height="80">
+        </div>
+        <div class="account-info-text">
+          <div class="account-info-title">Name</div>
+          <div class="account-info-value" th:text="${user.firstName + ' ' + user.lastName}">First Last</div>
+        </div>
       </div>
-      <div class="account-info-text"></div>
-      <div class="account-info-title">Name</div>
-      <div class="account-info-value" th:text="${user.firstName + ' ' + user.lastName}">First Last</div>
-  </div>
-  <div class="account-info-card">
-    <div class="account-info-icon">
-      <img src="/Icons/home-1-svgrepo-com.svg" width="80" height="80">
-    </div>
-    <div class="account-info-text">
-      <div class="account-info-title">Email</div>
-      <div class="account-info-value" th:text="${user.email}"> ATEST@email</div>
-    </div>
-  </div>
-
-    <div id="listings" class="tab-content">
-      <div class="listing-list-container">
-        <div class="listing-card" th:each="listing : ${listings}">
-          <figure>
-            <img th:if="${listing.listingImage} ==null" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" th:else="${listing.listingImage}">
-            <figcaption>
-              <span>posting date: <span th:text="${listing.getListingDate}"></span>  price: <span th:text="${listing.price}"></span>Dkk</span>
-            </figcaption>
-          </figure>
-
-          <div class="listing-info">
-            <h3 th:text="${listing.listingTitle}"></h3>
-            <p th:text="${listing.listingDescription}"></p>
-      <!--
-      <div class="myListing-section">
-        <h2 class="section-title">
-          <div th:if="${#lists.isEmpty(listings)}" class="listings-grid">
-          <div th:each="listing : ${listings}" class="listing-card">
-            <div class="listing-image">
-              <span th:if="${listing.listingImage}" th:text="'Image: ' + ${listing.listingTitle}"> Product Image</span>
-            </div>
-            <div class="listing-content">
-              <h3 class="listing-title" th:text="${listing.listingTitle}"> Product Title </h3>
-              <p class="listing-price">
-                <span th:text="${listing.price}">0</span>DKK
-              </p>
-              <div class="listing-actions">
-                <form th:action="@{'/listingView/delete/' + ${listing.listingID}}" method="post" style="display: inline">
-                  <button type="submit" class="listing-button delete-button">Delete</button>
-                </form>
-                <a th:href="@{'/listingView/edit/' + ${listing.listingID}}" class="listing-button edit-button">Edit</a>
-              </div>
-            </div>
-          </div>
-          <div th:if="${#lists.isEmpty(listings)}" class="empty">
-            <p> You have no active listings.</p>
-          </div>
--->
-          <div class="listings-section">
-            <h2 class="section-title">Previously Sold Products</h2>
-            <div th:if="${!#lists.isEmpty(listings)}" class="listings-grid">
-              <div th:each="listing : ${listings}" th:if="${!listing.listingStatus}" class="listing-card sold">
-                <div class="listing-image">
-                  <span th:if="${listing.listingImage}" th:text="'Image: ' + ${listing.listingTitle}">Product Image</span>
-                  <span th:unless="${listing.listingImage}">No Image</span>
-                </div>
-                <div class="listing-content">
-                  <h3 class="listing-title" th:text="${listing.listingTitle}">Product Title</h3>
-                  <p class="listing-price">
-                    Sold for: <span th:text="${listing.price}">0</span> DKK
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div th:if="${#lists.isEmpty(listings)}" class="empty">
-
-          <div id="orders" class="tab-content">
-            <h2 class="section-title">Order History</h2>
-            <div class="empty">
-              <p>No Previous Purchases.</p>
-            </div>
-          </div>
-          </div>
-            <div class="nav-bar">
-              <a href="/productListingPage" class="nav-item active">
-                <div class="nav-icon"><img src="/Icons/home-1-svgrepo-com.svg" width="20" height="20"></div>
-              </a>
-              <a href="#" class="nav-item">
-                <div class="nav-icon"><img src="/Icons/search-alt-2-svgrepo-com.svg" width="20" height="20"></div>
-              </a>
-              <a href="#" class="nav-item">
-                <div class="nav-icon"><img src="/Icons/heart-svgrepo-com.svg" width="20" height="20"></div>
-
-              </a>
-              <a href="/listingView" class="nav-item">
-                <div class="nav-icon"><img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" width="20" height="20"></div>
-
-              </a>
-              <a href="#" class="nav-item">
-                <div class="nav-icon"><img src="/Icons/bell-alt-svgrepo-com.svg" width="20" height="20"></div>
-
-              </a>
-            </div>
-
-          </div>
-        </h2>
+      <div class="account-info-card">
+        <div class="account-info-icon">
+          <img src="/Icons/home-1-svgrepo-com.svg" width="80" height="80">
+        </div>
+        <div class="account-info-text">
+          <div class="account-info-title">Email</div>
+          <div class="account-info-value" th:text="${user.email}">ATEST@email</div>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Listings Tab -->
+  <div id="listings" class="tab-content">
+    <h2 class="section-title">My Active Listings</h2>
+    <div class="listing-list-container">
+      <div class="listing-card" th:each="listing : ${listings}">
+      <figure>
+        <img th:if="${listing.listingImage == null}" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg"
+             th:src="${listing.listingImage}" alt="Product Image">
+        <figcaption>
+          <span>Posting date: <span th:text="${listing.getListingDate}"></span> | Price: <span th:text="${listing.price}"></span> DKK</span>
+        </figcaption>
+      </figure>
+      <div class="listing-info">
+        <h3 th:text="${listing.listingTitle}">Product Title</h3>
+        <p th:text="${listing.listingDescription}">Product Description</p>
+        <div class="listing-actions">
+          <form th:action="@{'/listingView/delete/' + ${listing.listingID}}" method="post" style="display: inline">
+            <button type="submit" class="listing-button delete-button">Delete</button>
+          </form>
+          <a th:href="@{'/listingView/edit/' + ${listing.listingID}}" class="listing-button edit-button">Edit</a>
+        </div>
+      </div>
+    </div>
+      <div th:if="${#lists.isEmpty(listings)}" class="empty">
+        <p>You have no active listings.</p>
+      </div>
+    </div>
+
+    <!-- Previously Sold Products -->
+    <div class="listings-section">
+      <h2 class="section-title">Previously Sold Products</h2>
+      <div th:if="${!#lists.isEmpty(listings)}" class="listings-grid">
+        <div th:each="listing : ${listings}" class="listing-card sold">
+          <div class="listing-image">
+            <img th:if="${listing.listingImage != null}" th:src="${listing.listingImage}" alt="Product Image">
+            <span th:if="${listing.listingImage == null}">No Image</span>
+          </div>
+          <div class="listing-content">
+            <h3 class="listing-title" th:text="${listing.listingTitle}">Product Title</h3>
+            <p class="listing-price">
+              Sold for: <span th:text="${listing.price}">0</span> DKK
+            </p>
+          </div>
+        </div>
+      </div>
+      <div th:if="${#lists.isEmpty(listings)}" class="empty">
+        <p>No sold products yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders Tab -->
+  <div id="orders" class="tab-content">
+    <h2 class="section-title">Order History</h2>
+    <div class="empty">
+      <p>No Previous Purchases.</p>
     </div>
   </div>
 </div>
-  </body>
+
+<!-- Navigation Bar -->
+<div class="nav-bar">
+  <a href="/productListingPage" class="nav-item active">
+    <div class="nav-icon"><img src="/Icons/home-1-svgrepo-com.svg" width="20" height="20"></div>
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-icon"><img src="/Icons/search-alt-2-svgrepo-com.svg" width="20" height="20"></div>
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-icon"><img src="/Icons/heart-svgrepo-com.svg" width="20" height="20"></div>
+  </a>
+  <a href="/listingView" class="nav-item">
+    <div class="nav-icon"><img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" width="20" height="20"></div>
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-icon"><img src="/Icons/bell-alt-svgrepo-com.svg" width="20" height="20"></div>
+  </a>
+</div>
+
+</body>
 </html>
-
-
