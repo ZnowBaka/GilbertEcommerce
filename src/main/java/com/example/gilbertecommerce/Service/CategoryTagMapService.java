@@ -109,8 +109,8 @@ public class CategoryTagMapService {
     }
 
 
-    public Map<String, List<Tag>> buildNormalizedCategoryTagsMap() {
-        Map<String, List<Tag>> normalizedMap = new LinkedHashMap<>();
+    public HashMap<String, List<Tag>> buildNormalizedCategoryTagsMap() {
+        LinkedHashMap<String, List<Tag>> normalizedMap = new LinkedHashMap<>();
         Map<TagCategory, List<Tag>> originalMap = buildTestCategoryTagsMap();
 
         for (Map.Entry<TagCategory, List<Tag>> entry : originalMap.entrySet()) {
@@ -170,18 +170,21 @@ public class CategoryTagMapService {
     public List<Tag> getTagsBySelection(TagInsertForm form, Map<String, List<Tag>> map) {
         List<Tag> result = new ArrayList<>();
 
-        for (String selectedValue : form.getTagSelections().values()) {
-            List<Tag> tags = map.get(selectedValue);
-            if (tags != null) {
-                for (Tag tag : tags) {
-                    if (tag.getTagValue().equals(selectedValue)) {
-                        result.add(tag);
-                        break; // assuming only one match per group is needed
-                    }
+        for (Map.Entry<String, String> entry : form.getTagSelections().entrySet()) {
+            String categoryKey = entry.getKey();
+            String selectedValue = entry.getValue();
+
+            List<Tag> tags = map.get(categoryKey);
+
+            for (Tag tag : tags) {
+                if (tag.getTagValue().trim().equalsIgnoreCase(selectedValue.trim())) {
+                    System.out.println("Match found: " + tag.getTagValue());
+                    result.add(tag);
+                    break;
                 }
             }
         }
+
         return result;
     }
-
 }

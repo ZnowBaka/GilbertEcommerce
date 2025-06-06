@@ -188,7 +188,7 @@ public class ProductListingRepo {
         }
     }
     public int findResentListing(int userId, String listingTitle) {
-        String sql = "select id from Listings where owner_id = ? and title = ? and status = 'pending' limit 1";
+        String sql = "select listing_id from Listings where owner_id = ? and title = ? and status = 'pending' limit 1";
         return jdbcTemplate.queryForObject(sql, Integer.class, userId, listingTitle);
     }
 }
