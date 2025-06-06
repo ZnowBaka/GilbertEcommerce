@@ -48,10 +48,13 @@ public class TagRepo {
                 ORDER BY tag.tag_value
                 """);
 
-        List<Tag> tags = null;
-        tags = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Tag.class), categoryName);
 
-        return tags;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Tag tag = new Tag();
+            tag.setId(rs.getInt("tag_id"));           // map tag_id to id explicitly
+            tag.setTagValue(rs.getString("tag_value"));
+            return tag;
+        }, categoryName);
     }
 
     public List<Tag> getTagsByListingId(int listingId) {

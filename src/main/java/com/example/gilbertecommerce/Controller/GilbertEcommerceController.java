@@ -21,10 +21,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -251,10 +248,10 @@ public class GilbertEcommerceController {
         public String showCreateForm (Model model){
             loginService.getLoggedInUser(session);
             TagInsertForm form = new TagInsertForm();
-            Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
+            HashMap<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
 
             // Create a map for pretty display names
-            Map<String, String> prettyNameMap = new HashMap<>();
+            HashMap<String, String> prettyNameMap = new HashMap<>();
             mapToBeTested.keySet().forEach(key -> {
                 prettyNameMap.put(key, formatDisplayName(key));
             });
@@ -266,27 +263,35 @@ public class GilbertEcommerceController {
             model.addAttribute("listing", new ProductListing());
             return "/CreateNewListingForm";
         }
+
         @PostMapping("/listingView/create")
-        public String postCreateForm (@ModelAttribute("listing") ProductListing
-        listing, @ModelAttribute("TestSearchForm") TagInsertForm
-        form, @ModelAttribute("TestTagMap") Map < String, List < Tag >> mapWithID, Model model){
+        public String postCreateForm(@ModelAttribute("listing") ProductListing listing,
+                                     @ModelAttribute("TestSearchForm") TagInsertForm form,
+                                     Model model) {
 
             User user = loginService.getLoggedInUser(session);
 
+            HashMap<String, List<Tag>> mapWithID = categoryTagMapService.buildNormalizedCategoryTagsMap();
             listingService.validateListing(listing, "GilbertController.postCreateForm");
             listing.setSellerID(user.getUserID());
             model.addAttribute("error", "all fields needed");
             try {
                 listingService.create(listing);
                 List<Tag> tags = categoryTagMapService.getTagsBySelection(form, mapWithID);
+                for(Tag tag : tags){
+                    System.out.println(tag.getTagValue());
+                    System.out.println(tag.getId());
+                }
                 listingService.insertTags(tags, listing.getListingTitle(), user.getUserID());
+
+
                 return "redirect:/listingView";
             } catch (RuntimeException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        @GetMapping("/listingView")
+    @GetMapping("/listingView")
         public String showOwnListings (Model model, HttpSession session){
             User user = loginService.getLoggedInUser(session);
             if (user.getRole().getRoleName().equals("Admin")) {

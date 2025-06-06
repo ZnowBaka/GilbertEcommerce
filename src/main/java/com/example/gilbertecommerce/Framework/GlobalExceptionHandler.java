@@ -105,17 +105,17 @@ public class GlobalExceptionHandler {
         return "redirect:/error/systemError";
     }
 
-    //Catch all metode, hvis der mangler at blive defineret en custom exception
-    @ExceptionHandler(Exception.class)
-    public String handleUnexpectedException(Exception e, RedirectAttributes model) {
-        AAGilbertException wrapperException = new AAGilbertException("Unexpected system error", "SYS_001",
-                "Unhandled exception: " + e.getMessage(), "SystemLevel") {
-        };
-        logger.logException(wrapperException, "Unhandled exception caught");
-        model.addFlashAttribute("error", e.getMessage());
-        model.addFlashAttribute("errorCode", wrapperException.getErrorCode());
-        return "redirect:/error/systemError";
-    }
+//    //Catch all metode, hvis der mangler at blive defineret en custom exception
+//    @ExceptionHandler(Exception.class)
+//    public String handleUnexpectedException(Exception e, RedirectAttributes model) {
+//        AAGilbertException wrapperException = new AAGilbertException("Unexpected system error", "SYS_001",
+//                "Unhandled exception: " + e.getMessage(), "SystemLevel") {
+//        };
+//        logger.logException(wrapperException, "Unhandled exception caught");
+//        model.addFlashAttribute("error", e.getMessage());
+//        model.addFlashAttribute("errorCode", wrapperException.getErrorCode());
+//        return "redirect:/error/systemError";
+//    }
 
     @ExceptionHandler(DatabaseConnectionException.class)
     public String handleDatabaseConnectionException(DatabaseConnectionException e, RedirectAttributes model) {

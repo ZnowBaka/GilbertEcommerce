@@ -41,10 +41,17 @@ public class ProductListingService {
         repo.save(listing);
     }
     public void insertTags(List<Tag> tags, String listingTitle, int userId) {
+        System.out.println(2);;
         int listingId = repo.findResentListing(userId, listingTitle);
+        System.out.println(3);
+        if(tags.isEmpty()){
+            System.out.println("scuffed");
+        }
         for(Tag tag : tags){
+            System.out.println(tag.getId());
             catRepo.addTagToListing(tag.getId(), listingId);
         }
+
     }
 
     public void update(int id, ProductListing listing) {

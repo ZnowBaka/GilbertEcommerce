@@ -27,49 +27,52 @@
     <div class="listing-creation-container">
         <form th:action="@{/listingView/create}" th:object="${listing}" method="post">
             <div style="float: left;">
-            <div class="input-group">
-                <label for="title">Title</label>
-                <input type="text" id="title" th:field="*{listingTitle}" required />
-            </div>
-
-            <div class="input-group">
-                <label for="listingDescription">Listing Description</label>
-                <input type="text" id="listingDescription" th:field="*{listingDescription}" required />
-            </div>
-
-            <div class="input-group">
-                <label for="price">Price</label>
-                <input type="number" id="price" th:field="*{price}" required/>
-            </div>
-            </div>
-
-            <div th:each="entry : ${TestTagMap}"
-                 th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
-
-                <input th:name="${fieldName}"
-                       th:id="${fieldName}"
-                       name="${fieldName}"
-                       id="${fieldName}"
-                       placeholder="..."
-                       readonly="readonly"
-                />
-
-                <div class="dropdown-content">
-                    <div class="search-input">
-                        <label>
-                            <input type="text" placeholder="Search tags..." />
-                        </label>
-                    </div>
-
-                    <ul>
-                        <li th:each="tag : ${entry.value}"
-                            class="dropdown-item"
-                            th:data-value="${tag.tagValue}"
-                            th:text="${tag.tagValue}">
-                        </li>
-                    </ul>
+            <div style="float: left;">
+                <div class="input-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" th:field="*{listingTitle}" required/>
                 </div>
 
+                <div class="input-group">
+                    <label for="listingDescription">Listing Description</label>
+                    <input type="text" id="listingDescription" th:field="*{listingDescription}" required/>
+                </div>
+
+                <div class="input-group">
+                    <label for="price">Price</label>
+                    <input type="number" id="price" th:field="*{price}" required/>
+                </div>
+            </div>
+            </div>
+            <div style="float: right;">
+                <div th:each="entry : ${TestTagMap}"
+                     class="dropdown-box"
+                     th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
+                    <h5 th:text="${prettyName}"></h5>
+                    <div class="selected-item">
+                        <!-- Notice the name attribute binding to tagSelections[fieldName] -->
+                        <input type="text"
+                               th:name="'tagSelections[' + ${fieldName} + ']'"
+                               th:id="${fieldName}"
+                               placeholder="..."
+                               readonly="readonly" />
+                    </div>
+                    <div class="dropdown-content">
+                        <div class="search-input">
+                            <label>
+                                <input type="text" placeholder="Search tags..."/>
+                            </label>
+                        </div>
+
+                        <ul>
+                            <li th:each="tag : ${entry.value}"
+                                class="dropdown-item"
+                                th:data-value="${tag.tagValue}"
+                                th:text="${tag.tagValue}">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div> <!-- LUKKER entry-loop korrekt -->
 
             <div class="button-group">
@@ -119,6 +122,54 @@
         © 2025 Gilbert - All rights reserved
     </div>
 </footer>
+<script>
+    // Some Explanation, this simply waits until the entire pages is fully loaded before running this script.
+    // Then we use the same trick as we have used before to select specific CSS classes.
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // When a dropdown item is clicked, it's value is put into the input.
+        document.querySelectorAll(".dropdown-item").forEach(item => {
+            item.addEventListener("click", function () {
+                const selectedValue = this.getAttribute("data-value");
+                const container = this.closest(".dropdown-box");
+                const input = container.querySelector("input[readonly]");
+
+                // This is what sets the input value.
+                if (input) {
+                    input.value = selectedValue;
+                }
+
+                // This is adding a highlight for the chosen item. If another item was highlighted, then remove it (the highlight).
+                container.querySelectorAll(".dropdown-item").forEach(i => i.classList.remove("active"));
+                this.classList.add("active");
+
+                // Simply closes the dropdown box
+                container.classList.remove("active");
+            });
+        });
+
+        // When the selected-item (the visible input box) is clicked, we find its parent dropdown-box
+        // and toggle its "active" class to show or hide the list of tag options
+        document.querySelectorAll(".selected-item").forEach(selected => {
+            selected.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const box = this.closest(".dropdown-box");
+                box.classList.toggle("active");
+            });
+        });
+
+        // If a user clicks outside the dropdown box, then it should close automatically.
+        window.addEventListener("click", function (e) {
+            document.querySelectorAll(".dropdown-box").forEach(box => {
+                if (!box.contains(e.target)) {
+                    box.classList.remove("active");
+                }
+            });
+        });
+
+    });
+
+</script>
 </body>
 </html>
 </body>
