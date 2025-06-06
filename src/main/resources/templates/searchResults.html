@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/IndexStyles.css">
+    <style>
+        body {
+            background-color: #f8f0e5;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 40px 20px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .collection-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-img {
+            height: 220px;
+            background-color: #e6e6e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .card-content {
+            padding: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.4rem;
+        }
+
+        .card-price {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .card-brand {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-seller {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .seller-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .no-results {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #999;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="logo">Gilbert</div>
+    <div class="tagline">Refined Results • Filtered Fashion</div>
+</header>
+
+<main>
+    <section>
+        <h2 class="section-title">Search Results</h2>
+
+        <div th:if="${#lists.isEmpty(results)}" class="no-results">
+            No products matched your search.
+        </div>
+
+        <div class="collection-cards" th:if="${!#lists.isEmpty(results)}">
+            <div class="card" th:each="product : ${results}">
+                <div class="card-img">
+                    <span th:text="${product.listingTitle} + ' image'">Image</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title" th:text="${product.listingTitle}">Title</h3>
+                    <p class="card-price" th:text="${product.price} + ' DKK'">Price</p>
+                    <ul class="tag-list" th:if="${product.tags}">
+                        <li th:each="tag : ${product.tags}" th:text="${tag.tagValue}">Tag</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Display for the search data -->
+    <section class="search-summary">
+        <h2>Search Summary</h2>
+        <div>
+            <h3>Form Data:</h3>
+            <ul>
+                <li><strong>Search Text:</strong> <span th:text="${TestSearchForm.searchText}">-</span></li>
+                <li th:each="entry : ${TestSearchForm.tagSelections}">
+                    <strong th:text="${#strings.capitalize(entry.key)}">Category</strong>:
+                    <span th:text="${entry.value}">Value</span>
+                </li>
+            </ul>
+        </div>
+
+        <div>
+            <h3>Executed SQL Query:</h3>
+            <pre th:text="${executedSql}">SQL will show here</pre>
+
+            <h3>Parameters:</h3>
+            <ul>
+                <li th:each="p : ${sqlParams}" th:text="${p}">Param</li>
+            </ul>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="results">
+        <h2>Results</h2>
+        <div th:if="${#lists.isEmpty(results)}">
+            <p>No listings matched your criteria.</p>
+        </div>
+
+        <div th:each="listing : ${results}">
+            <div class="listing-box">
+                <h3 th:text="${listing.listingTitle}">Product Title</h3>
+                <p th:text="${listing.listingDescription}">Product description</p>
+                <p><strong>Price:</strong> $<span th:text="${listing.price}">0.00</span></p>
+            </div>
+        </div>
+    </section>
+
+
+</main>
+
+<footer>
+    <div class="footer-nav">
+        <a href="/" class="footer-link">Back to Home</a>
+        <a href="#" class="footer-link">Support</a>
+    </div>
+    <div class="copyright">
+        © 2025 Gilbert - All rights reserved
+    </div>
+</footer>
+</body>
+</html>

@@ -14,15 +14,19 @@
     <div class="logo">Gilbert</div>
     <div class="tagline">Quality • Sustainability • Preloved</div>
     <div class="search-bar">
-        <input type="text" placeholder="Search for products, brands or designers...">
+        <label>
+            <input type="text" placeholder="Search for products, brands or designers...">
+        </label>
         <button>Search</button>
     </div>
 </header>
 
 <main>
+
+
     <div class="listing-creation-container">
         <form th:action="@{/listingView/create}" th:object="${listing}" method="post">
-
+            <div style="float: left;">
             <div class="input-group">
                 <label for="title">Title</label>
                 <input type="text" id="title" th:field="*{listingTitle}" required />
@@ -37,7 +41,42 @@
                 <label for="price">Price</label>
                 <input type="number" id="price" th:field="*{price}" required/>
             </div>
+            </div>
+            <div th:each="entry : ${TestTagMap}"
+                 class="dropdown-box"
+                 th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
 
+                <!--
+                input containing selected data, sets data into the filter object on submit
+                Turns out that the dynamic field names, th:field="*{__${...}__}", actually won't work, so you have to make that weird th:with="fieldName" on top instead
+                -->
+                <div class="selected-item">
+                    <label>
+                        <input th:id="${fieldName}" th:name="${fieldName}"
+                               th:field="*{__${fieldName}__}"
+                               th:placeholder="${prettyName}"
+                               readonly="readonly" />
+                    </label>
+                </div>
+
+                <!-- This div contains CSS-class for the input used to search in that specific category -->
+                <div class="dropdown-content">
+                    <div class="search-input">
+                        <label>
+                            <input type="text" placeholder="Search tags..." />
+                        </label>
+                    </div>
+
+                    <!-- For each "value"/Tag that the Category contains, create at list object contains its data. -->
+                    <ul>
+                        <li th:each="tag : ${entry.value}"
+                            class="dropdown-item"
+                            th:data-value="${tag.tagValue}"
+                            th:text="${tag.tagValue}">
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <div class="button-group">
                 <button type="submit">Create Listing</button>
             </div>

@@ -1,7 +1,7 @@
 package com.example.gilbertecommerce.Framework;
 
 import com.example.gilbertecommerce.Entity.Tag;
-import com.example.gilbertecommerce.Service.LoggerService;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -13,7 +13,7 @@ public class TagRepo {
 
     private JdbcTemplate jdbcTemplate;
 
-    public TagRepo(JdbcTemplate jdbcTemplate, LoggerService logger) {
+    public TagRepo(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -26,11 +26,17 @@ public class TagRepo {
     }
 
     public Tag getTagById(int id) {
-        String sql = "SELECT * FROM tags WHERE tag_id = ?";
-        Tag tag = null;
-
-        tag = jdbcTemplate.queryForObject(sql, Tag.class, id);
-        return tag;
+        try {
+            String sql = "SELECT * FROM tags WHERE tag_id = ?";
+            return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
+                Tag tag = new Tag();
+                tag.setId(rs.getInt("tag_id"));
+                tag.setTagValue(rs.getString("tag_value"));
+                return tag;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public List<Tag> getAllTagsFromCategory(String categoryName) {
@@ -46,6 +52,16 @@ public class TagRepo {
         tags = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Tag.class), categoryName);
 
         return tags;
+    }
+
+    public List<Tag> getTagsByListingId(int listingId) {
+        String sql = """
+                    SELECT tag.tag_id AS tagId, tag.tag_value AS tagValue
+                    FROM tags tag
+                             JOIN product_tags tagConnection ON tag.tag_id = tagConnection.tag_id
+                    WHERE tagConnection.product_tag = ?
+                """;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Tag.class), listingId);
     }
 
     public boolean updateTagById(Tag tag, int id) {

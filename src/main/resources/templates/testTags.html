@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TEST TAGS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="sell and buy high end clothing">
+    <meta name="keywords" content="Clothing, High fashion, Fashion,">
+    <meta name="author" content="GilbertInc">
+    <link rel="stylesheet" href="/IndexStyles.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 200px;
+            background-color: #f8f0e5;
+        }
+
+        .dropdown-box {
+            width: 100px;
+            border-radius: 5px;
+            background-color: #f8f0e5;
+            position: relative;
+        }
+
+        .dropdown-box input {
+            width: 100%;
+            border: 1px solid rgb(120, 120, 120);
+            border-radius: 12px;
+            outline: none;
+            padding: 3px 5px;
+            color: rgba(0, 0, 0, 1);
+            font-weight: bold;
+            font-family: Segoe UI, sans-serif;
+
+        }
+
+        .dropdown-box .selected-item {
+            position: relative;
+        }
+
+        .dropdown-box .selected-item::after {
+            content: " ";
+            width: 3px;
+            height: 3px;
+            border: 2px solid;
+            border-color: transparent rgb(120, 120, 120) rgb(120, 120, 120) transparent;
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translatey(-70%) rotate(45deg);
+        }
+
+        .dropdown-box .selected-item,
+        .dropdown-box .selected-item input {
+            cursor: pointer;
+        }
+
+        .dropdown-box .dropdown-content {
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            background-color: rgb(255, 255, 255);
+            border-radius: 5px;
+            max-height: 256px;
+            overflow: auto;
+            display: none;
+            position: absolute;
+            z-index: 99;
+        }
+
+        .dropdown-box.active .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-box .dropdown-content .search-input {
+            padding: 5px;
+        }
+
+        .dropdown-box .dropdown-content ul {
+            list-style: none;
+        }
+
+        .dropdown-box .dropdown-content ul li {
+            font-size: 0.8rem;
+            padding: 2px 5px;
+            cursor: pointer;
+        }
+
+        .dropdown-box .dropdown-content ul li.hide {
+            display: none;
+        }
+
+        .dropdown-box .dropdown-content ul li:hover {
+            background-color: rgba(66, 58, 38, 0.1);
+        }
+
+        .dropdown-box .dropdown-content ul li.active {
+            background-color: rgba(66, 58, 38, 0.85);
+            color: #f8f0e5;
+        }
+
+        .filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-submit-btn {
+            font-size: 16px;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            width: 30%;
+            color: #f8f0e5;
+            background-color: #333;
+            border: 1px solid #333;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            margin-top: 1.4rem;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Gilbert</div>
+    <div class="tagline">Quality • Sustainability • Preloved</div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search for products, brands or designers...">
+        <button>Search</button>
+    </div>
+</header>
+
+<main>
+    <section class="category-section">
+        <div class="category-card">
+            <h2 class="category-title">Women</h2>
+            <p class="category-description">Discover high-end clothing and accessories for women</p>
+        </div>
+        <div class="category-card">
+            <h2 class="category-title">Men</h2>
+            <p class="category-description">Find the best brands and designs for men</p>
+        </div>
+        <div class="category-card">
+            <h2 class="category-title">Home</h2>
+            <p class="category-description">Luxurious items for your home</p>
+        </div>
+    </section>
+
+    <section class="filter-section">
+        <form method="post" th:action="@{'/search/'}" th:object="${TestSearchForm}">
+            <h3 class="filter-title">Filters</h3>
+            <div class="filters-row">
+
+                <!-- Render a dropdown for each category -->
+                <!-- Had to redo how the th:with is used, we cannot to nested stuff here :/ -->
+                <div th:each="entry : ${TestTagMap}"
+                     class="dropdown-box"
+                     th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
+
+                    <!--
+                    input containing selected data, sets data into the filter object on submit
+                    Turns out that the dynamic field names, th:field="*{__${...}__}", actually won't work, so you have to make that weird th:with="fieldName" on top instead
+                    -->
+                    <div class="selected-item">
+                        <input th:id="${fieldName}" th:name="${fieldName}"
+                               th:field="*{__${fieldName}__}"
+                               th:placeholder="${prettyName}"
+                               readonly="readonly" />
+                    </div>
+
+                    <!-- This div contains CSS-class for the input used to search in that specific category -->
+                    <div class="dropdown-content">
+                        <div class="search-input">
+                            <label>
+                                <input type="text" placeholder="Search tags..." />
+                            </label>
+                        </div>
+
+                        <!-- For each "value"/Tag that the Category contains, create at list object contains its data. -->
+                        <ul>
+                            <li th:each="tag : ${entry.value}"
+                                class="dropdown-item"
+                                th:data-value="${tag.tagValue}"
+                                th:text="${tag.tagValue}">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Sets searched input data into the filter object on submit -->
+                <label for="FilterSearchInput">Search</label>
+                <input id="FilterSearchInput" type="text"
+                       th:field="*{searchText}" placeholder="Search..." />
+
+                <button type="submit" class="filter-submit-btn">Apply Filters</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="featured-collections">
+        <h2 class="section-title">Recommended Products</h2>
+        <div class="collection-cards">
+            <div class="card">
+                <div class="card-img"
+                     style="background-color: #e6e6e6; display: flex; align-items: center; justify-content: center;">
+                    Product Image
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Cashmere Sweater</h3>
+                    <p class="card-price">1,200 DKK</p>
+                    <p class="card-brand">Acne Studios</p>
+                    <div class="card-seller">
+                        <div class="seller-avatar"
+                             style="background-color: #ccc; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+                            A
+                        </div>
+                        <span class="seller-name">JohanneK</span>
+                        <span class="trust-score">98%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">Leather Handbag</h3>
+                    <p class="card-price">3,500 DKK</p>
+                    <p class="card-brand">Ganni</p>
+                    <div class="card-seller">
+                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
+                        <span class="seller-name">MikkelP</span>
+                        <span class="trust-score">95%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">Wool Blazer</h3>
+                    <p class="card-price">950 DKK</p>
+                    <p class="card-brand">COS</p>
+                    <div class="card-seller">
+                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
+                        <span class="seller-name">SofieA</span>
+                        <span class="trust-score">100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">Ceramic Candle Holder</h3>
+                    <p class="card-price">450 DKK</p>
+                    <p class="card-brand">HAY</p>
+                    <div class="card-seller">
+                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
+                        <span class="seller-name">LarsH</span>
+                        <span class="trust-score">97%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-collections">
+        <h2 class="section-title">New Arrivals</h2>
+        <div class="collection-cards">
+            <div class="card">
+                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">Silk Shirt</h3>
+                    <p class="card-price">860 DKK</p>
+                    <p class="card-brand">Hilfinger</p>
+                    <div class="card-seller">
+                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
+                        <span class="seller-name">AnneM</span>
+                        <span class="trust-score">96%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">Sneakers</h3>
+                    <p class="card-price">1,800 DKK</p>
+                    <p class="card-brand">Common Projects</p>
+                    <div class="card-seller">
+                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
+                        <span class="seller-name">ThomasL</span>
+                        <span class="trust-score">94%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">Jeans</h3>
+                    <p class="card-price">750 DKK</p>
+                    <p class="card-brand">Levis</p>
+                    <div class="card-seller">
+                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
+                        <span class="seller-name">MajaB</span>
+                        <span class="trust-score">99%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">Vase</h3>
+                    <p class="card-price">380 DKK</p>
+                    <p class="card-brand">Kähler</p>
+                    <div class="card-seller">
+                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
+                        <span class="seller-name">JensK</span>
+                        <span class="trust-score">100%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="nav-bar">
+    <a href="#" class="nav-item active">
+        <div class="nav-icon"><img src="/Icons/home-1-svgrepo-com.svg" width="20" height="20"></div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/search-alt-2-svgrepo-com.svg" width="20" height="20"></div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/heart-svgrepo-com.svg" width="20" height="20"></div>
+
+    </a>
+    <a href="/listingView" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" width="20" height="20"></div>
+
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/bell-alt-svgrepo-com.svg" width="20" height="20"></div>
+
+    </a>
+</div>
+
+<footer>
+    <div class="footer-nav">
+        <a href="#" class="footer-link">About Gilbert</a>
+        <a href="#" class="footer-link">How It Works</a>
+        <a href="#" class="footer-link">Sustainability</a>
+        <a href="#" class="footer-link">FAQ</a>
+        <a href="#" class="footer-link">Contact</a>
+        <a href="#" class="footer-link">Terms</a>
+    </div>
+    <div class="copyright">
+        © 2025 Gilbert - All rights reserved
+    </div>
+</footer>
+
+<script>
+    // Some Explanation, this simply waits until the entire pages is fully loaded before running this script.
+    // Then we use the same trick as we have used before to select specific CSS classes.
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // When a dropdown item is clicked, it's value is put into the input.
+        document.querySelectorAll(".dropdown-item").forEach(item => {
+            item.addEventListener("click", function () {
+                const selectedValue = this.getAttribute("data-value");
+                const container = this.closest(".dropdown-box");
+                const input = container.querySelector("input[readonly]");
+
+                // This is what sets the input value.
+                if (input) {
+                    input.value = selectedValue;
+                }
+
+                // This is adding a highlight for the chosen item. If another item was highlighted, then remove it (the highlight).
+                container.querySelectorAll(".dropdown-item").forEach(i => i.classList.remove("active"));
+                this.classList.add("active");
+
+                // Simply closes the dropdown box
+                container.classList.remove("active");
+            });
+        });
+
+        // When the selected-item (the visible input box) is clicked, we find its parent dropdown-box
+        // and toggle its "active" class to show or hide the list of tag options
+        document.querySelectorAll(".selected-item").forEach(selected => {
+            selected.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const box = this.closest(".dropdown-box");
+                box.classList.toggle("active");
+            });
+        });
+
+        // If a user clicks outside the dropdown box, then it should close automatically.
+        window.addEventListener("click", function (e) {
+            document.querySelectorAll(".dropdown-box").forEach(box => {
+                if (!box.contains(e.target)) {
+                    box.classList.remove("active");
+                }
+            });
+        });
+
+        // This compares the searched input with the dropdown options in real-time.
+        // It does this by simmply hiding options that don't match.
+        document.querySelectorAll(".search-input input").forEach(input => {
+            input.addEventListener("keyup", function () {
+                const filter = this.value.toLowerCase();
+                const listItems = this.closest(".dropdown-content").querySelectorAll(".dropdown-item");
+                listItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(filter) ? "block" : "none";
+                });
+            });
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

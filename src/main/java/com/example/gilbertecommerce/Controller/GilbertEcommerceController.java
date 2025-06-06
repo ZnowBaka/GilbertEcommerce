@@ -1,303 +1,8 @@
-//package com.example.gilbertecommerce.Controller;
-//
-//import com.example.gilbertecommerce.CustomException.AAGilbertException;
-//import com.example.gilbertecommerce.CustomException.AuthenticationException.IncorrectPasswordException;
-//import com.example.gilbertecommerce.CustomException.AuthenticationException.UserAlreadyExistException;
-//import com.example.gilbertecommerce.CustomException.AuthenticationException.UserDoesNotExistException;
-//import com.example.gilbertecommerce.CustomException.AuthenticationException.UserNotLoggedInException;
-//import com.example.gilbertecommerce.CustomException.BusinessExceptions.ListingNotFoundException;
-//import com.example.gilbertecommerce.CustomException.DatabaseExceptionS.DataIntegrityException;
-//import com.example.gilbertecommerce.CustomException.ValidationExceptions.PasswordMismatch;
-//import com.example.gilbertecommerce.Entity.LoginInfo;
-//import com.example.gilbertecommerce.Entity.ProductListing;
-//import com.example.gilbertecommerce.Entity.RegistrationForm;
-//import com.example.gilbertecommerce.Entity.User;
-//import com.example.gilbertecommerce.Framework.TagCategoryRepo;
-//import com.example.gilbertecommerce.Service.*;
-//import jakarta.servlet.http.HttpSession;
-//import org.springframework.dao.DataAccessException;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.sql.SQLException;
-//
-//import java.util.List;
-//
-//@Controller
-//public class GilbertEcommerceController {
-//
-//    private final LoginService loginService;
-//    private final UserService userService;
-//    private final HttpSession session;
-//    private final AdminService adminService;
-//    private final ProductListingService listingService;
-//    private final CategoryTagMapService categoryTagMapService;
-//    private final TagCategoryRepo tagCategoryRepo;
-//    private final LoggerService logger;
-//
-//
-//    public GilbertEcommerceController(LoggerService logger, ProductListingService listingService, LoginService loginService, UserService userService, HttpSession session, AdminService adminService, CategoryTagMapService categoryTagMapService, TagCategoryRepo tagCategoryRepo) {
-//        this.loginService = loginService;
-//        this.userService = userService;
-//        this.session = session;
-//        this.adminService = adminService;
-//        this.listingService = listingService;
-//        this.categoryTagMapService = categoryTagMapService;
-//        this.tagCategoryRepo = tagCategoryRepo;
-//        this.logger = logger;
-//    }
-//
-//    @GetMapping("/")
-//    public String home(Model model) {
-//
-//        return "redirect:/welcomePage";
-//    }
-//
-//
-//    @GetMapping("/welcomePage")
-//    public String getWelcomePage(Model model) {
-//
-//        return "welcomePage";
-//    }
-//
-//    // registerNewProfile GET & POST
-//    @GetMapping("/registerNewProfile")
-//    public String getNewProfile(Model model) {
-//        model.addAttribute("registrationForm", new RegistrationForm());
-//        return "registerNewProfile";
-//    }
-//
-//
-//    @PostMapping("/registerNewProfile") //Omskrevet metoden, meget validering og fejlhåndtering sker nu på servicelaget
-//    public String postNewProfile(@ModelAttribute("registrationForm") RegistrationForm registrationForm, Model model) {
-//
-//        loginService.validateRegistrationForm(registrationForm);
-//        registrationForm.getLoginInfo().setLoginEmail(registrationForm.getUser().getEmail());
-//
-//        loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
-//        return "redirect:/welcomePage";
-//    }
-//
-////    public String postNewProfile(@ModelAttribute("registrationForm") RegistrationForm registrationForm, Model model) {
-////
-////        try {
-////            loginService.validateRegistrationForm(registrationForm);
-////            registrationForm.getLoginInfo().setLoginEmail(registrationForm.getUser().getEmail());
-////
-////            if (!loginService.doesLoginInfoExist(registrationForm.getLoginInfo().getLoginEmail())) {
-////                if (registrationForm.getLoginInfo().getLoginPass().equals(registrationForm.getPasswordConfirmation())) {
-////                    loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
-////                    return "redirect:/welcomePage";
-////                } else {
-////                    throw new PasswordMismatch(
-////                            "Passwords do not match",
-////                            "Password validation didnt match for email: "
-////                                    + registrationForm.getUser().getEmail()
-////                    );
-////
-////             {
-////                return "/registerNewProfile";
-////            }
-////        } catch (AAGilbertException e) {
-////            logger.logException(e);
-////            throw new AAGilbertException(
-////                    "Registration failed for unexpected reason, please try again",
-////                    "UNK_001",
-////                    "Unexpected error handling registration of a new user",
-////                    "GilbertController.postNewProfile") {
-////            };
-////        }
-////    }
-//
-//    @GetMapping("/loginPage")
-//    public String getLoginPage(Model model) {
-//        session.invalidate();
-//        model.addAttribute("loginInfo", new LoginInfo());
-//        return "/loginPage";
-//    }
-//
-//    @PostMapping("/loginPage")
-//    public String postLoginPage(@ModelAttribute("loginInfo") LoginInfo loginInfo, Model model) throws IncorrectPasswordException, SQLException {
-//        try {
-//            if (loginService.checkLogin(loginInfo)) {
-//
-//                LoginInfo actualFromDb = loginService.getLoginInfo(loginInfo);
-//                session.setAttribute("loginInfo", loginInfo);
-//
-//                User user = userService.getUserByEmail(actualFromDb);
-//                if (user == null) {
-//                    System.out.println("No user found for login ID: " + loginInfo.getLoginId());
-//                    model.addAttribute("error", "User not found.");
-//                    return "/loginPage";
-//                }
-//
-//                session.setAttribute("user", user);
-//                System.out.println("displayName: " + user.getDisplayName());
-//                return "redirect:/productListingPage";
-//            } else {
-//                throw new IncorrectPasswordException(
-//                        "Incorrect password or username",
-//                        "Failed login attempt for mail: " + loginInfo.getLoginEmail()
-//                );
-//            }
-//        } catch (AAGilbertException e) {
-//            logger.logException(e);
-//            throw new AAGilbertException(
-//                    "Unexpected error while logging in. Please try again.",
-//                    "UNK_002",
-//                    "Unexpected error posting login form",
-//                    "GilberController.postLoginPage") {
-//            };
-//        }
-//    }
-//
-//    @GetMapping("/productListingPage") //HOME
-//    public String getProductPage() {
-//        return "/productListingPage";
-//    }
-//
-//    @GetMapping("/AdminMenu")
-//    public String getAdminMenu(Model model) {
-//
-//            User user = (User) session.getAttribute("user");
-//        try {
-//            if (!user.getRole().getRoleName().equals("Admin")) {
-//                throw new UserNotLoggedInException(
-//                        "Access denied. Admin privilege required",
-//                        "A user with non admin role attempted admin: " + user.getEmail()
-//                );
-//            }
-//
-//            List<User> users = adminService.getAllUsers();
-//            List<ProductListing> pendingListings = listingService.getAllPendingProductListings();
-//            model.addAttribute("users", users);
-//            model.addAttribute("pendingListings", pendingListings);
-//            if (user.getRole().getRoleName().equals("Admin")) {
-//                return "/AdminMenu";
-//            }
-//        } catch (AAGilbertException e) {
-//            logger.logException(e);
-//            throw new AAGilbertException(
-//                    "Unexpected error while logging in onto Admin menu. Please try again.",
-//                    "UNK_003",
-//                    "Unexpected error posting AdminMenu",
-//                    "GilbertController.postAdminMenu") {
-//            };
-//        }
-//        return "redirect:/listingView";
-//    }
-//
-//    @GetMapping("/AdminMenu/Approve/{Id}")
-//    public String postAdminMenu(@PathVariable("Id") int listingId, Model model) {
-//        System.out.println("approving listing: " + listingId);
-//        adminService.approveListing(listingId);
-//        return "redirect:/AdminMenu";
-//    }
-//
-//    @GetMapping("/AdminMenu/Reject/{Id}")
-//    public String postAdminMenuReject(@PathVariable("Id") int listingId, Model model) {
-//        System.out.println("rejecting listing: " + listingId);
-//        adminService.rejectListing(listingId);
-//        return "redirect:/AdminMenu";
-//    }
-//
-//    @GetMapping("/listingView/create")
-//    public String showCreateForm(Model model) {
-//        try {
-//            model.addAttribute("listing", new ProductListing());
-//            return "/CreateNewListingForm";
-//        } catch (ListingNotFoundException e) {
-//            logger.logException(e);
-//            throw new ListingNotFoundException(
-//                    "There's no listing found with matching data",
-//                    "User tried to access a listing but couldn't"
-//            );
-//        }
-//    }
-//
-//    @PostMapping("/listingView/create")
-//    public String postCreateForm(@ModelAttribute("listing") ProductListing listing, Model model) {
-//
-//        try {
-//            User user = (User) session.getAttribute("user");
-//            listingService.validateListing(listing, "GilbertController.postCreateForm");
-//            System.out.println(user.getUserID());
-//            System.out.println(listing.getListingTitle());
-//            listing.setSellerID(user.getUserID());
-//
-//            listingService.create(listing);
-//
-//            return "redirect:/listingView";
-//
-//        } catch (DataIntegrityException e) {
-//            logger.logException(e);
-//            throw new DataIntegrityException(
-//                    "Error while creating listing",
-//                    "Database error creating listing");
-//        }
-//    }
-//
-//    @GetMapping("/listingView")
-//        public String showOwnListings (Model model, HttpSession session){
-//
-//        User user = (User) session.getAttribute("user");
-//        try{
-//        if (user.getRole().getRoleName().equals("Admin")) {
-//            return "redirect:/AdminMenu";
-//        }
-//        model.addAttribute("user", user);
-//        List<ProductListing> listings = listingService.getListingsByUser(user.getUserID());
-//        model.addAttribute("listings", listings);
-//        return "/listingView";
-//    } catch(UserNotLoggedInException e) {
-//            logger.logException(e);
-//            throw new UserNotLoggedInException(
-//                    "You cannot acces this page without logging in",
-//                    "User tried to acces without login in session"
-//            );
-//        }
-//    }
-//
-//    @PostMapping("/listingView/delete/{id}")
-//    public String deleteListing(@PathVariable("id") int listingID, HttpSession session, Model model) {
-//        try {
-//            User user = getLoggedInUser(session);
-//            ProductListing listing = listingService.getProductListing(listingID);
-//            if (listing == null  ) {
-//               throw new ListingNotFoundException(
-//                       "The listing you're trying to delete doesnt exist",
-//                       "User tried deleting non existing listing: "+ + listingID);
-//            }
-//            if(listing.getSellerID() != user.getUserID()) {
-//                throw new UserNotLoggedInException(
-//                        "You're attempting to delete a listing you don't own.",
-//                        "User: " + user.getUserID() + " tried deleting a listing they dont own: "+  listingID
-//                );
-//            }
-//            listingService.delete(listingID);
-//            return "redirect:/listingView";
-//        } catch(DataIntegrityException e) {
-//            logger.logException(e);
-//            throw new DataIntegrityException(
-//                    "There was a database error deleting the listing. Please try again.",
-//                    "DB failure upon deleting a listing: " + listingID
-//            );
-//        }
-//    }
-//
-//    private User getLoggedInUser(HttpSession session) {
-//
-//            User user = (User) session.getAttribute("user");
-//            if (user == null) {
-//                throw new UserNotLoggedInException(
-//                        "You cannot acces this page as a guest. Please create an account or log in",
-//                        "User didnt log in");
-//            } return user;
-//        }
-//    }
 package com.example.gilbertecommerce.Controller;
 
+import com.example.gilbertecommerce.CustomException.IncorrectPasswordException;
+import com.example.gilbertecommerce.CustomException.UserNotLoggedIn;
+import com.example.gilbertecommerce.Entity.*;
 import com.example.gilbertecommerce.CustomException.AAGilbertException;
 import com.example.gilbertecommerce.CustomException.AuthenticationException.IncorrectPasswordException;
 import com.example.gilbertecommerce.CustomException.AuthenticationException.UserNotLoggedInException;
@@ -308,12 +13,22 @@ import com.example.gilbertecommerce.Entity.RegistrationForm;
 import com.example.gilbertecommerce.Entity.User;
 import com.example.gilbertecommerce.Framework.TagCategoryRepo;
 import com.example.gilbertecommerce.Service.*;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import jakarta.servlet.http.HttpSession;
+
+import java.lang.reflect.Field;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 @Controller
 public class GilbertEcommerceController {
@@ -330,27 +45,133 @@ public class GilbertEcommerceController {
     private final TagCategoryRepo tagCategoryRepo;
     private final LoggerService logger;
 
+    private SearchQueryService queryService;
+
     public GilbertEcommerceController(LoggerService logger, ProductListingService listingService, LoginService loginService, UserService userService, HttpSession session, AdminService adminService, CategoryTagMapService categoryTagMapService, TagCategoryRepo tagCategoryRepo) {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+
+    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService listingService, ProductListingService productListingService, CategoryTagMapService categoryTagMapService,JdbcTemplate jdbcTemplate, SearchQueryService queryService) {
         this.loginService = loginService;
         this.userService = userService;
         this.session = session;
         this.adminService = adminService;
         this.listingService = listingService;
+        this.productListingService = productListingService;
         this.categoryTagMapService = categoryTagMapService;
         this.tagCategoryRepo = tagCategoryRepo;
         this.logger = logger;
+        this.jdbcTemplate = jdbcTemplate;
+        this.queryService = queryService;
     }
 
+
+    @GetMapping("/testTags")
+    public String testCategoryService(Model model) {
+        SearchForm form = new SearchForm();
+        Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
+
+        // Create a map for pretty display names
+        Map<String, String> prettyNameMap = new HashMap<>();
+        mapToBeTested.keySet().forEach(key -> {
+            prettyNameMap.put(key, formatDisplayName(key));
+        });
+
+        model.addAttribute("TestSearchForm", form);
+        model.addAttribute("TestTagMap", mapToBeTested);
+        model.addAttribute("PrettyNames", prettyNameMap);
+
+
+        return "testTags";
+    }
+
+    // This formats "bags_and_luggage" -> "Bags And Luggage"
+    private String formatDisplayName(String key) {
+        if (key == null || key.isBlank()) {
+            return "Unknown";
+        }
+
+        return Arrays.stream(key.split("_"))
+                .filter(part -> !part.isBlank())
+                .map(part -> part.substring(0, 1).toUpperCase() + part.substring(1))
+                .collect(Collectors.joining(" "));
+    }
+
+    @GetMapping("/searchResults")
+    public String showSearchResults(Model model) {
+        return "searchResults";
+    }
+
+    @PostMapping("/search/")
+    public String searchProducts(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
+        try {
+            form.setTagSelections(extractTagSelections(form));
+            queryService.buildFromForm(form);
+
+            String sqlWhere = queryService.getSql();
+            List<Object> params = queryService.getParams();
+            String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
+
+            List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
+
+            // Gets the tags for each Listing and add their tags.
+            for (ProductListing product : results) {
+                List<Tag> tags = categoryTagMapService.getTagsByListingId(product.getListingID());
+                product.setTags(tags);
+            }
+
+            model.addAttribute("results", results);
+            model.addAttribute("TestSearchForm", form);
+            model.addAttribute("executedSql", fullSql);
+            model.addAttribute("sqlParams", params);
+
+            return "searchResults";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Search failed: " + e.getMessage());
+            return "testTags"; // or your fallback page
+        }
+    }
+
+    private Map<String, String> extractTagSelections(SearchForm form) {
+        Map<String, String> selections = new HashMap<>();
+        for (Field field : form.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                String name = field.getName();
+                if (!name.equals("searchText") && !name.equals("tagSelections")) {
+                    Object value = field.get(form);
+                    if (value != null) {
+                        selections.put(name, value.toString());
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace(); // or log properly
+            }
+        }
+        return selections;
+    }
+
+
+
+
+
     @GetMapping("/")
-    public String home() {
+    public String home(Model model) {
+
         return "redirect:/welcomePage";
     }
 
+
     @GetMapping("/welcomePage")
-    public String getWelcomePage() {
+    public String getWelcomePage(Model model) {
+
         return "welcomePage";
     }
 
+    // registerNewProfile GET & POST
     @GetMapping("/registerNewProfile")
     public String getNewProfile(Model model) {
         model.addAttribute("registrationForm", new RegistrationForm());
@@ -364,6 +185,7 @@ public class GilbertEcommerceController {
         loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
         return "redirect:/welcomePage";
     }
+
 
     @GetMapping("/loginPage")
     public String getLoginPage(Model model) {
@@ -398,13 +220,22 @@ public class GilbertEcommerceController {
         return "redirect:/productListingPage";
     }
 
-    @GetMapping("/productListingPage")
+    @GetMapping("/productListingPage") //HOME
     public String getProductPage() {
         return "/productListingPage";
     }
 
     @GetMapping("/AdminMenu")
     public String getAdminMenu(Model model) {
+        User user = (User) session.getAttribute("user");
+        List<User> users = adminService.getAllUsers();
+        List<ProductListing> pendingListings = listingService.getAllPendingProductListings();
+        model.addAttribute("users", users);
+        model.addAttribute("pendingListings", pendingListings);
+        if (user.getRole().getRoleName().equals("Admin")) {
+            return "/AdminMenu";
+        }
+        return "redirect:/listingView";
         User user = loginService.getLoggedInUser(session);
 
         if (user.getRole() == null || !user.getRole().getRoleName().equalsIgnoreCase("admin")) {
@@ -421,14 +252,12 @@ public class GilbertEcommerceController {
 
         return "/AdminMenu";
     }
-
     @GetMapping("/AdminMenu/Approve/{Id}")
     public String approveAdminListing(@PathVariable("Id") int listingId) {
         loginService.getLoggedInUser(session);
         adminService.approveListing(listingId);
         return "redirect:/AdminMenu";
     }
-
     @GetMapping("/AdminMenu/Reject/{Id}")
     public String rejectAdminListing(@PathVariable("Id") int listingId) {
         loginService.getLoggedInUser(session);
@@ -439,16 +268,39 @@ public class GilbertEcommerceController {
     @GetMapping("/listingView/create")
     public String showCreateForm(Model model) {
         loginService.getLoggedInUser(session);
+        TagInsertForm form = new TagInsertForm();
+        Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
+
+        // Create a map for pretty display names
+        Map<String, String> prettyNameMap = new HashMap<>();
+        mapToBeTested.keySet().forEach(key -> {
+            prettyNameMap.put(key, formatDisplayName(key));
+        });
+
+        model.addAttribute("TestSearchForm", form);
+        model.addAttribute("TestTagMap", mapToBeTested);
+        model.addAttribute("PrettyNames", prettyNameMap);
+
         model.addAttribute("listing", new ProductListing());
         return "/CreateNewListingForm";
     }
-
     @PostMapping("/listingView/create")
-    public String postCreateForm(@ModelAttribute("listing") ProductListing listing) {
+    public String postCreateForm(@ModelAttribute("listing") ProductListing listing,@ModelAttribute("TestSearchForm") TagInsertForm form,@ModelAttribute("TestTagMap") Map<String, List<Tag>> mapWithID,Model model) {
+        
         User user = loginService.getLoggedInUser(session);
 
         listingService.validateListing(listing, "GilbertController.postCreateForm");
         listing.setSellerID(user.getUserID());
+        model.addAttribute("error", "all fields needed");
+        try {
+            productListingService.create(listing);
+            List<Tag> tags = categoryTagMapService.getTagsBySelection(form, mapWithID);
+            productListingService.insertTags(tags, listing.getListingTitle(), user.getUserID());
+            return "redirect:/listingView";
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+
         listingService.create(listing);
 
         return "redirect:/listingView";
@@ -456,16 +308,13 @@ public class GilbertEcommerceController {
 
     @GetMapping("/listingView")
     public String showOwnListings(Model model, HttpSession session) {
-        User user = loginService.getLoggedInUser(session);
-
-        if (user.getRole() != null && user.getRole().getRoleName().equalsIgnoreCase("admin")) {
+            User user = loginService.getLoggedInUser(session);
+            if (user.getRole().getRoleName().equals("Admin")) {
             return "redirect:/AdminMenu";
         }
-
         model.addAttribute("user", user);
         List<ProductListing> listings = listingService.getListingsByUser(user.getUserID());
         model.addAttribute("listings", listings);
-
         return "/listingView";
     }
 
@@ -490,4 +339,5 @@ public class GilbertEcommerceController {
         listingService.delete(listingID);
         return "redirect:/listingView";
     }
+}
 }
