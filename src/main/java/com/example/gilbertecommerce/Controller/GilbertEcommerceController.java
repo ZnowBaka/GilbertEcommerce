@@ -209,7 +209,11 @@ public class GilbertEcommerceController {
         }
 
         @GetMapping("/productListingPage") //HOME
-        public String getProductPage () {
+        public String getProductPage (Model model) {
+            List<ProductListing> approvedListings = listingService.getAllApprovedListings();
+            List<ProductListing> featuredListings = listingService.getAllFeaturedListings();
+            model.addAttribute("featuredListings", featuredListings);
+            model.addAttribute("approvedListings", approvedListings);
             return "/productListingPage";
         }
 
@@ -217,8 +221,10 @@ public class GilbertEcommerceController {
         public String getAdminMenu (Model model){
             List<User> users = adminService.getAllUsers();
             List<ProductListing> pendingListings = listingService.getAllPendingProductListings();
+            List<ProductListing> approvedListings = listingService.getAllApprovedListings();
             model.addAttribute("users", users);
             model.addAttribute("pendingListings", pendingListings);
+            model.addAttribute("approvedListings", approvedListings);
             User user = loginService.getLoggedInUser(session);
 
 
@@ -243,7 +249,16 @@ public class GilbertEcommerceController {
             adminService.rejectListing(listingId);
             return "redirect:/AdminMenu";
         }
-
+        @GetMapping("/AdminMenu/Feature/{Id}")
+        public String featureAdminListing ( @PathVariable("Id") int listingId){
+            listingService.updateFeatureStatus(listingId, true);
+            return "redirect:/AdminMenu";
+        }
+        @GetMapping("/AdminMenu/!Feature/{Id}")
+        public String unfeatureAdminListing ( @PathVariable("Id") int listingId){
+            listingService.updateFeatureStatus(listingId, false);
+        return "redirect:/AdminMenu";
+        }
         @GetMapping("/listingView/create")
         public String showCreateForm (Model model){
             loginService.getLoggedInUser(session);

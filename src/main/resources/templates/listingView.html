@@ -71,7 +71,7 @@
       <div class="listing-card" th:each="listing : ${listings}">
       <figure>
         <img th:if="${listing.listingImage == null}" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg"
-             th:src="${listing.listingImage}" alt="Product Image">
+             th:else="${listing.listingImage}" alt="Product Image">
         <figcaption>
           <span>Posting date: <span th:text="${listing.getListingDate}"></span> | Price: <span th:text="${listing.price}"></span> DKK</span>
         </figcaption>

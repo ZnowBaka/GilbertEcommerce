@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -190,5 +191,32 @@ public class ProductListingRepo {
     public int findResentListing(int userId, String listingTitle) {
         String sql = "select listing_id from Listings where owner_id = ? and title = ? and status = 'pending' limit 1";
         return jdbcTemplate.queryForObject(sql, Integer.class, userId, listingTitle);
+    }
+
+    public List<ProductListing> getAllApprovedFromDB(){
+        String sql = "select * from Listings where Status = 'approved'";
+        return jdbcTemplate.query(sql, new ProductListingMapper());
+    }
+    public List<ProductListing> getAllFeaturedFromDB(){
+        String sql = "select * from Listings where FeatureStatus = true";
+        return jdbcTemplate.query(sql, new ProductListingMapper());
+    }
+    public void updateFeatureStatus(int id, boolean status) {
+        try{
+            String sql = "update Listings set FeatureStatus = ? where listing_id = ?";
+            if (status){
+                int rowsAffected = jdbcTemplate.update(sql, 1, id);
+            } else{
+                int rowsAffected = jdbcTemplate.update(sql, 0, id);
+            }
+
+        } catch (DataAccessException e) {
+            DataIntegrityException ex = new DataIntegrityException(
+                    "Unsuccessful attempt at updating feature status with ID: " + id,
+                    "Database error when updating feature status on with ID: " + id
+            );
+            logger.logException(ex);
+            throw ex;
+        }
     }
 }
