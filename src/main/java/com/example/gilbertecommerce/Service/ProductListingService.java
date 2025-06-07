@@ -8,6 +8,7 @@ import com.example.gilbertecommerce.Framework.ProductListingRepo;
 import com.example.gilbertecommerce.Framework.TagCategoryRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,6 +84,10 @@ public class ProductListingService {
     }
     public List<ProductListing> getAllPendingProductListings() {
         return repo.getAllPendingProductListings();
+    }
+
+    public ArrayList<ProductListing> getAllApprovedListings(){
+        return repo.getAllApprovedFromDB();
     }
 
     }

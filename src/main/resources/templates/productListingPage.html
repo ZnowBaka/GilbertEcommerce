@@ -50,14 +50,15 @@
     <section class="featured-collections">
         <h2 class="section-title">Recommended Products</h2>
         <div class="collection-cards">
-            <div class="card">
+            <div class="card" th:each="listing : ${approvedListings}">
                 <div class="card-img"
                      style="background-color: #e6e6e6; display: flex; align-items: center; justify-content: center;">
-                    Product Image
+                    <img th:if="${listing.listingImage} ==null" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg"
+                         th:else="${listing.listingImage}" style="width: 100%; height: 100%;">
                 </div>
                 <div class="card-content">
-                    <h3 class="card-title">Cashmere Sweater</h3>
-                    <p class="card-price">1,200 DKK</p>
+                    <h3 class="card-title" th:text="${listing.getListingTitle()}"></h3>
+                    <p class="card-price" th:text="${listing.getPrice()}">Dkk</p>
                     <p class="card-brand">Acne Studios</p>
                     <div class="card-seller">
                         <div class="seller-avatar"
@@ -66,48 +67,6 @@
                         </div>
                         <span class="seller-name">JohanneK</span>
                         <span class="trust-score">98%</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
-                <div class="card-content">
-                    <h3 class="card-title">Leather Handbag</h3>
-                    <p class="card-price">3,500 DKK</p>
-                    <p class="card-brand">Ganni</p>
-                    <div class="card-seller">
-                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
-                        <span class="seller-name">MikkelP</span>
-                        <span class="trust-score">95%</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
-                <div class="card-content">
-                    <h3 class="card-title">Wool Blazer</h3>
-                    <p class="card-price">950 DKK</p>
-                    <p class="card-brand">COS</p>
-                    <div class="card-seller">
-                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
-                        <span class="seller-name">SofieA</span>
-                        <span class="trust-score">100%</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="/api/placeholder/200/320" alt="Product" class="card-img">
-                <div class="card-content">
-                    <h3 class="card-title">Ceramic Candle Holder</h3>
-                    <p class="card-price">450 DKK</p>
-                    <p class="card-brand">HAY</p>
-                    <div class="card-seller">
-                        <img src="/api/placeholder/30/30" alt="Seller" class="seller-avatar">
-                        <span class="seller-name">LarsH</span>
-                        <span class="trust-score">97%</span>
                     </div>
                 </div>
             </div>

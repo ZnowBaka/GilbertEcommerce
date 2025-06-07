@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -190,5 +191,10 @@ public class ProductListingRepo {
     public int findResentListing(int userId, String listingTitle) {
         String sql = "select listing_id from Listings where owner_id = ? and title = ? and status = 'pending' limit 1";
         return jdbcTemplate.queryForObject(sql, Integer.class, userId, listingTitle);
+    }
+
+    public ArrayList<ProductListing> getAllApprovedFromDB(){
+        String sql = "select * from Listings where status = 'approved'";
+        return (ArrayList<ProductListing>) jdbcTemplate.query(sql, new ProductListingMapper());
     }
 }

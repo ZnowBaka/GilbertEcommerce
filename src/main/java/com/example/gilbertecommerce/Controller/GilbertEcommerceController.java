@@ -209,7 +209,9 @@ public class GilbertEcommerceController {
         }
 
         @GetMapping("/productListingPage") //HOME
-        public String getProductPage () {
+        public String getProductPage (Model model) {
+            ArrayList<ProductListing> approvedListings = listingService.getAllApprovedListings();
+            model.addAttribute("approvedListings", approvedListings);
             return "/productListingPage";
         }
 
