@@ -228,11 +228,18 @@ footer .copyright {
     font-size: 0.9rem;
     opacity: 0.8;
 }
-.listing-list-container{
+.listing-container-box {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 1rem; /* Space between the two containers */
+    align-items: start;
+    margin-top: 1rem;
+}
+
+.listing-list-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1rem;
-    margin-top: 1rem;
 }
 .listing-card {
     display: flex;

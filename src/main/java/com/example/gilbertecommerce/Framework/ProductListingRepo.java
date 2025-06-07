@@ -193,8 +193,30 @@ public class ProductListingRepo {
         return jdbcTemplate.queryForObject(sql, Integer.class, userId, listingTitle);
     }
 
-    public ArrayList<ProductListing> getAllApprovedFromDB(){
-        String sql = "select * from Listings where status = 'approved'";
-        return (ArrayList<ProductListing>) jdbcTemplate.query(sql, new ProductListingMapper());
+    public List<ProductListing> getAllApprovedFromDB(){
+        String sql = "select * from Listings where Status = 'approved'";
+        return jdbcTemplate.query(sql, new ProductListingMapper());
+    }
+    public List<ProductListing> getAllFeaturedFromDB(){
+        String sql = "select * from Listings where FeatureStatus = true";
+        return jdbcTemplate.query(sql, new ProductListingMapper());
+    }
+    public void updateFeatureStatus(int id, boolean status) {
+        try{
+            String sql = "update Listings set FeatureStatus = ? where listing_id = ?";
+            if (status){
+                int rowsAffected = jdbcTemplate.update(sql, 1, id);
+            } else{
+                int rowsAffected = jdbcTemplate.update(sql, 0, id);
+            }
+
+        } catch (DataAccessException e) {
+            DataIntegrityException ex = new DataIntegrityException(
+                    "Unsuccessful attempt at updating feature status with ID: " + id,
+                    "Database error when updating feature status on with ID: " + id
+            );
+            logger.logException(ex);
+            throw ex;
+        }
     }
 }

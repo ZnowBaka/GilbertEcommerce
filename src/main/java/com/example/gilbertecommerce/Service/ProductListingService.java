@@ -86,9 +86,14 @@ public class ProductListingService {
         return repo.getAllPendingProductListings();
     }
 
-    public ArrayList<ProductListing> getAllApprovedListings(){
+    public List<ProductListing> getAllApprovedListings(){
         return repo.getAllApprovedFromDB();
     }
-
+    public List<ProductListing> getAllFeaturedListings(){
+        return repo.getAllFeaturedFromDB();
+    }
+    public void updateFeatureStatus(int id, Boolean status) {
+        repo.updateFeatureStatus(id, status);
+    }
     }
 

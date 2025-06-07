@@ -21,7 +21,11 @@ public class ProductListingMapper implements org.springframework.jdbc.core.RowMa
         //listing.setListingImage(rs.getString("image")); //SKAL TILFØJES I DB
         listing.setListingStatus(rs.getString("Status")); //SKAL TILFØJES I DB
         //listing.setListingDate(LocalDateTime.parse(postingDate));
-
+        if(rs.getInt("FeatureStatus") != 0) {
+            listing.setFeatureStatus(false);
+        }else{
+            listing.setFeatureStatus(false);
+        }
         return listing;
     }
 }
