@@ -67,10 +67,10 @@ public class TagRepo {
 
     public List<Tag> getTagsByListingId(int listingId) {
         String sql = """
-                    SELECT tag.tag_id AS tagId, tag.tag_value AS tagValue
-                    FROM tags tag
-                             JOIN product_tags tagConnection ON tag.tag_id = tagConnection.tag_id
-                    WHERE tagConnection.product_tag = ?
+                SELECT tag.tag_id AS tagId, tag.tag_value AS tagValue
+                FROM tags tag
+                JOIN product_tags tagConnection ON tag.tag_id = tagConnection.tag_id
+                WHERE tagConnection.product_tag = ?
                 """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Tag.class), listingId);
     }
