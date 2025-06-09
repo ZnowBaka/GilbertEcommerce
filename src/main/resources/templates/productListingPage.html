@@ -36,15 +36,45 @@
     </section>
 
     <section class="filter-section">
-        <h3 class="filter-title">Filter</h3>
-        <div class="filter-options">
-            <div class="filter-chip">Designer</div>
-            <div class="filter-chip">Material</div>
-            <div class="filter-chip">Color</div>
-            <div class="filter-chip">Size</div>
-            <div class="filter-chip">Price</div>
-            <div class="filter-chip">Condition</div>
-        </div>
+        <form method="post" th:action="@{'/search/'}" th:object="${TestSearchForm}">
+            <h3 class="filter-title">Filters</h3>
+            <div class="filters-row">
+
+                <div th:each="entry : ${TestTagMap}"
+                     class="dropdown-box"
+                     th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
+
+                    <div class="selected-item">
+                        <input th:id="${fieldName}" th:name="${fieldName}"
+                               th:field="*{__${fieldName}__}"
+                               th:placeholder="${prettyName}"
+                               readonly="readonly" />
+                    </div>
+
+                    <div class="dropdown-content">
+                        <div class="search-input">
+                            <label>
+                                <input type="text" placeholder="Search tags..." />
+                            </label>
+                        </div>
+
+                        <ul>
+                            <li th:each="tag : ${entry.value}"
+                                class="dropdown-item"
+                                th:data-value="${tag.tagValue}"
+                                th:text="${tag.tagValue}">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <label for="FilterSearchInput">Search</label>
+                <input id="FilterSearchInput" type="text"
+                       th:field="*{searchText}" placeholder="Search..." />
+
+                <button type="submit" class="filter-submit-btn">Apply Filters</button>
+            </div>
+        </form>
     </section>
 
     <section class="featured-collections">
@@ -134,5 +164,67 @@
         © 2025 Gilbert - All rights reserved
     </div>
 </footer>
+
 </body>
+
+<script>
+    // Some Explanation, this simply waits until the entire pages is fully loaded before running this script.
+    // Then we use the same trick as we have used before to select specific CSS classes.
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // When a dropdown item is clicked, it's value is put into the input.
+        document.querySelectorAll(".dropdown-item").forEach(item => {
+            item.addEventListener("click", function () {
+                const selectedValue = this.getAttribute("data-value");
+                const container = this.closest(".dropdown-box");
+                const input = container.querySelector("input[readonly]");
+
+                // This is what sets the input value.
+                if (input) {
+                    input.value = selectedValue;
+                }
+
+                // This is adding a highlight for the chosen item. If another item was highlighted, then remove it (the highlight).
+                container.querySelectorAll(".dropdown-item").forEach(i => i.classList.remove("active"));
+                this.classList.add("active");
+
+                // Simply closes the dropdown box
+                container.classList.remove("active");
+            });
+        });
+
+        // When the selected-item (the visible input box) is clicked, we find its parent dropdown-box
+        // and toggle its "active" class to show or hide the list of tag options
+        document.querySelectorAll(".selected-item").forEach(selected => {
+            selected.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const box = this.closest(".dropdown-box");
+                box.classList.toggle("active");
+            });
+        });
+
+        // If a user clicks outside the dropdown box, then it should close automatically.
+        window.addEventListener("click", function (e) {
+            document.querySelectorAll(".dropdown-box").forEach(box => {
+                if (!box.contains(e.target)) {
+                    box.classList.remove("active");
+                }
+            });
+        });
+
+        // This compares the searched input with the dropdown options in real-time.
+        // It does this by simmply hiding options that don't match.
+        document.querySelectorAll(".search-input input").forEach(input => {
+            input.addEventListener("keyup", function () {
+                const filter = this.value.toLowerCase();
+                const listItems = this.closest(".dropdown-content").querySelectorAll(".dropdown-item");
+                listItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(filter) ? "block" : "none";
+                });
+            });
+        });
+    });
+</script>
+
 </html>

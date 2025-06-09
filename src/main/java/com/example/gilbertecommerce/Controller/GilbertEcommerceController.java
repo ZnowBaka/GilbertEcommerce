@@ -219,10 +219,30 @@ public class GilbertEcommerceController {
 
     @GetMapping("/productListingPage") //HOME
     public String getProductPage(Model model) {
+
+        // Creates a new SearchForm Object so it is empty and ready to be used
+        SearchForm form = new SearchForm();
+        Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
+
+        // Gets the Specific Listing required for the page
         List<ProductListing> approvedListings = listingService.getAllApprovedListings();
         List<ProductListing> featuredListings = listingService.getAllFeaturedListings();
+
+        // Create a map for pretty display names
+        Map<String, String> prettyNameMap = new HashMap<>();
+        mapToBeTested.keySet().forEach(key -> {
+            prettyNameMap.put(key, formatDisplayName(key));
+        });
+
+        // For Listings
         model.addAttribute("featuredListings", featuredListings);
         model.addAttribute("approvedListings", approvedListings);
+
+        // For Filter Tags
+        model.addAttribute("TestSearchForm", form);
+        model.addAttribute("TestTagMap", mapToBeTested);
+        model.addAttribute("PrettyNames", prettyNameMap);
+
         return "/productListingPage";
     }
 
