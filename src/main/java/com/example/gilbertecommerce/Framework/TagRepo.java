@@ -39,13 +39,21 @@ public class TagRepo {
         }
     }
 
+    /*
+    Added some more SQL to order the tag values correctly
+    The "^" sign ensure that the ordering happen from the first char.
+    The [0-9] Checks for chars matching in that range I.E Numbers.
+    The "+" sign here checks for more digits in the String.
+    The "$" properly does the sam thing it does in the like %STRING% SQL, but idk what that is, likely just a stop block.
+    This should then first check for only numbers, then mixed numbers and then no numbers.
+    */
     public List<Tag> getAllTagsFromCategory(String categoryName) {
         String sql = ("""
                 SELECT DISTINCT tag.tag_id, tag.tag_value FROM tags tag
                 LEFT JOIN tag_has_category tagConnection ON tag.tag_id = tagConnection.tag_id
                 LEFT JOIN tag_category tagCategory ON tagConnection.cat_id = tagCategory.cat_id
                 WHERE tagCategory.category_name = ?
-                ORDER BY tag.tag_value asc
+                ORDER BY tag.tag_value REGEXP '^[0-9]+$' DESC, tag.tag_value + 0, tag.tag_value
                 """);
 
         List<Tag> tags = null;
