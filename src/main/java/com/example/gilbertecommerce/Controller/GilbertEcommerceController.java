@@ -234,19 +234,12 @@ public class GilbertEcommerceController {
 
         // Gets the tags for each Listing and add their tags.
         for (ProductListing product : approvedListings) {
-            List<Tag> tags = categoryTagMapService.getTagsByListingId(product.getListingID());
-            product.setTags(tags);
+            List<Tag> approvedListingsTags = categoryTagMapService.getTagsByListingId(product.getListingID());
+            product.setTags(approvedListingsTags);
         }
         for (ProductListing product : featuredListings) {
-            List<Tag> tags = categoryTagMapService.getTagsByListingId(product.getListingID());
-            product.setTags(tags);
-        }
-
-
-        // Gets the tags for each Listing and add their tags.
-        for (ProductListing product : approvedListings) {
-            List<Tag> tags = categoryTagMapService.getTagsByListingId(product.getListingID());
-            product.setTags(tags);
+            List<Tag> featuredListingsTags = categoryTagMapService.getTagsByListingId(product.getListingID());
+            product.setTags(featuredListingsTags);
         }
 
         // Create a map for pretty display names
