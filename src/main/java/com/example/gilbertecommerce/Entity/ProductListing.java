@@ -17,6 +17,7 @@ public class ProductListing {
     private String listingImage;
     private String listingStatus;
     private boolean featureStatus;
+    private String displayName;
 
     private List<Tag> tags = new ArrayList<>();
 
@@ -112,6 +113,13 @@ public class ProductListing {
     public void setListingTitle(String listingTitle) {
         this.listingTitle = listingTitle;
     }
+    public String getDisplayName() {
+        return displayName;
+    }
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
 
     @Override
     public String toString() {

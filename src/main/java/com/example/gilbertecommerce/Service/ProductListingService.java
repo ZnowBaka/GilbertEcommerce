@@ -89,11 +89,24 @@ public class ProductListingService {
     public List<ProductListing> getAllApprovedListings(){
         return repo.getAllApprovedFromDB();
     }
+
     public List<ProductListing> getAllFeaturedListings(){
         return repo.getAllFeaturedFromDB();
     }
+
     public void updateFeatureStatus(int id, Boolean status) {
         repo.updateFeatureStatus(id, status);
     }
+
+    public void getListingOwnerNameByListingId(List<ProductListing> listings) {
+        for (ProductListing productListing : listings) {
+            int Owner_ID = productListing.getSellerID();
+            String ownerName = repo.getOwnerNameByListingSellerID(Owner_ID);
+            productListing.setDisplayName(ownerName);
+        }
+    }
+
+
+
     }
 

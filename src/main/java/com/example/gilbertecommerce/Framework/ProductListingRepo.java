@@ -42,10 +42,10 @@ public class ProductListingRepo {
     }
 
     public ProductListing findById(int id) {
-        try{
-        String sql = "select * from Listings where listing_id = ?";
-        return jdbcTemplate.queryForObject(sql, new ProductListingMapper(), id);
-    }catch (EmptyResultDataAccessException e){
+        try {
+            String sql = "select * from Listings where listing_id = ?";
+            return jdbcTemplate.queryForObject(sql, new ProductListingMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
             ListingNotFoundException ex = new ListingNotFoundException(
                     "No listing found with id " + id,
                     "Attempt at finding a non existing listing with id " + id
@@ -72,7 +72,7 @@ public class ProductListingRepo {
                     productListing.getListingDescription(),
                     productListing.getListingDate(),
                     productListing.getPrice());
-            if(rowsAffected == 0){
+            if (rowsAffected == 0) {
                 throw new DataIntegrityException(
                         "Unsuccessful attempt at saving product listing in database",
                         "Database error when saving product listing, no rows affected" + productListing.getListingID()
@@ -98,13 +98,13 @@ public class ProductListingRepo {
                     productListing.getPrice(),
                     productListing.getListingID());
 
-            if(rowsAffected == 0){
+            if (rowsAffected == 0) {
                 throw new ListingNotFoundException(
                         "No listing to update with id " + productListing.getListingID(),
                         "Potentially unsuccessful attempt at editing a listing. No rows affected" + productListing.getListingID()
                 );
             }
-        } catch(DataAccessException e) {
+        } catch (DataAccessException e) {
             DataIntegrityException ex = new DataIntegrityException(
                     "Database error when updating product listing",
                     "Unsuccessful attempt at editing a listing with ID: " + productListing.getListingID()
@@ -167,21 +167,20 @@ public class ProductListingRepo {
     }
 
 
-
     public void updateStatus(int id, String status) {
-        try{
-        String sql = "update Listings set Status = ? where listing_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, status, id);
+        try {
+            String sql = "update Listings set Status = ? where listing_id = ?";
+            int rowsAffected = jdbcTemplate.update(sql, status, id);
 
-        if(rowsAffected == 0){
-            ListingNotFoundException ex = new ListingNotFoundException(
-                    "No listing to update status on with ID: " + id,
-                    "Error updating listings' status with ID: " + id
-            );
-            logger.logException(ex);
-            throw ex;
-        }
-    }catch (DataAccessException e) {
+            if (rowsAffected == 0) {
+                ListingNotFoundException ex = new ListingNotFoundException(
+                        "No listing to update status on with ID: " + id,
+                        "Error updating listings' status with ID: " + id
+                );
+                logger.logException(ex);
+                throw ex;
+            }
+        } catch (DataAccessException e) {
             DataIntegrityException ex = new DataIntegrityException(
                     "Unsuccessful attempt at updating status with ID: " + id,
                     "Database error when updating status on with ID: " + id
@@ -190,25 +189,41 @@ public class ProductListingRepo {
             throw ex;
         }
     }
+
     public int findResentListing(int userId, String listingTitle) {
         String sql = "select listing_id from Listings where owner_id = ? and title = ? and status = 'pending' limit 1";
         return jdbcTemplate.queryForObject(sql, Integer.class, userId, listingTitle);
     }
 
-    public List<ProductListing> getAllApprovedFromDB(){
+    public String getOwnerNameByListingSellerID(int sellerID) {
+        String sql = "select displayName from USER where user_id = ?";
+        String ownerName;
+        ownerName = "";
+        try {
+            ownerName = jdbcTemplate.queryForObject(sql, String.class, sellerID);
+            return ownerName;
+        } catch (EmptyResultDataAccessException e) {
+            return "No owner name found";
+        }
+    }
+
+
+    public List<ProductListing> getAllApprovedFromDB() {
         String sql = "select * from Listings where Status = 'approved'";
         return jdbcTemplate.query(sql, new ProductListingMapper());
     }
-    public List<ProductListing> getAllFeaturedFromDB(){
+
+    public List<ProductListing> getAllFeaturedFromDB() {
         String sql = "select * from Listings where FeatureStatus = true";
         return jdbcTemplate.query(sql, new ProductListingMapper());
     }
+
     public void updateFeatureStatus(int id, boolean status) {
-        try{
+        try {
             String sql = "update Listings set FeatureStatus = ? where listing_id = ?";
-            if (status){
+            if (status) {
                 int rowsAffected = jdbcTemplate.update(sql, 1, id);
-            } else{
+            } else {
                 int rowsAffected = jdbcTemplate.update(sql, 0, id);
             }
 

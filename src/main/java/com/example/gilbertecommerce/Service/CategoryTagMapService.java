@@ -1,5 +1,6 @@
 package com.example.gilbertecommerce.Service;
 
+import com.example.gilbertecommerce.Entity.ProductListing;
 import com.example.gilbertecommerce.Entity.Tag;
 import com.example.gilbertecommerce.Entity.TagCategory;
 import com.example.gilbertecommerce.Entity.TagInsertForm;

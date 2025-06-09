@@ -1,11 +1,13 @@
 package com.example.gilbertecommerce.Framework;
 
 import com.example.gilbertecommerce.Entity.Tag;
+import com.example.gilbertecommerce.Entity.TagMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -68,12 +70,19 @@ public class TagRepo {
 
     public List<Tag> getTagsByListingId(int listingId) {
         String sql = """
-                SELECT tag.tag_id AS tagId, tag.tag_value AS tagValue
+                SELECT tag.tag_id, tag.tag_value, connectedCategory.cat_id
                 FROM tags tag
-                JOIN product_tags tagConnection ON tag.tag_id = tagConnection.tag_id
+                    JOIN product_tags tagConnection ON tag.tag_id = tagConnection.tag_id
+                    JOIN tag_has_category connectedCategory ON tag.tag_id = connectedCategory.tag_id
                 WHERE tagConnection.product_tag = ?
                 """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Tag.class), listingId);
+
+        List<Tag> tagList = new ArrayList<>();
+        tagList = jdbcTemplate.query(sql, new TagMapper(), listingId);
+
+
+
+        return tagList;
     }
 
     public boolean updateTagById(Tag tag, int id) {

@@ -1,7 +1,5 @@
 package com.example.gilbertecommerce.Entity;
 
-import com.example.gilbertecommerce.Entity.ProductListing;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -22,7 +20,7 @@ public class ProductListingMapper implements org.springframework.jdbc.core.RowMa
         listing.setListingStatus(rs.getString("Status")); //SKAL TILFØJES I DB
         //listing.setListingDate(LocalDateTime.parse(postingDate));
         if(rs.getInt("FeatureStatus") != 0) {
-            listing.setFeatureStatus(false);
+            listing.setFeatureStatus(true);
         }else{
             listing.setFeatureStatus(false);
         }

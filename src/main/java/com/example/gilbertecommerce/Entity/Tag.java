@@ -4,6 +4,8 @@ public class Tag {
 
     private int tagId;
     private String tagValue;
+    private String brand;
+    private int category;
 
     public Tag() {
     }
@@ -30,6 +32,22 @@ public class Tag {
 
     public void setId(int id) {
         this.tagId = id;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public int getCategory() {
+        return category;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
     }
 
     @Override

@@ -9,7 +9,9 @@
     <meta name="author" content="GilbertInc">
     <link rel="stylesheet" href="/IndexStyles.css">
 </head>
+
 <body>
+
 <header>
     <div class="logo">Gilbert</div>
     <div class="tagline">Quality • Sustainability • Preloved</div>
@@ -40,40 +42,43 @@
             <h3 class="filter-title">Filters</h3>
             <div class="filters-row">
 
-                <div th:each="entry : ${TestTagMap}"
-                     class="dropdown-box"
-                     th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
+                <div class="filter-options">
+                    <div th:each="entry : ${TestTagMap}"
+                         class="dropdown-box"
+                         th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
 
-                    <div class="selected-item">
-                        <input th:id="${fieldName}" th:name="${fieldName}"
-                               th:field="*{__${fieldName}__}"
-                               th:placeholder="${prettyName}"
-                               readonly="readonly" />
-                    </div>
-
-                    <div class="dropdown-content">
-                        <div class="search-input">
-                            <label>
-                                <input type="text" placeholder="Search tags..." />
-                            </label>
+                        <div class="selected-item">
+                            <input th:id="${fieldName}" th:name="${fieldName}"
+                                   th:field="*{__${fieldName}__}"
+                                   th:placeholder="${prettyName}"
+                                   readonly="readonly"/>
                         </div>
 
-                        <ul>
-                            <li th:each="tag : ${entry.value}"
-                                class="dropdown-item"
-                                th:data-value="${tag.tagValue}"
-                                th:text="${tag.tagValue}">
-                            </li>
-                        </ul>
+                        <div class="dropdown-content">
+                            <div class="search-input">
+                                <label>
+                                    <input type="text" placeholder="Search tags..."/>
+                                </label>
+                            </div>
+
+                            <ul>
+                                <li th:each="tag : ${entry.value}"
+                                    class="dropdown-item"
+                                    th:data-value="${tag.tagValue}"
+                                    th:text="${tag.tagValue}">
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
-                <label for="FilterSearchInput">Search</label>
+                <label for="FilterSearchInput"></label>
                 <input id="FilterSearchInput" type="text"
-                       th:field="*{searchText}" placeholder="Search..." />
+                       th:field="*{searchText}" placeholder="Search..."/>
 
                 <button type="submit" class="filter-submit-btn">Apply Filters</button>
             </div>
+
         </form>
     </section>
 
@@ -115,13 +120,13 @@
                 <div class="card-content">
                     <h3 class="card-title" th:text="${listing.getListingTitle()}"></h3>
                     <p class="card-price" th:text="${listing.getPrice()}">Dkk</p>
-                    <p class="card-brand">Acne Studios</p>
+                    <p class="card-brand" th:text="${listing.getTags()}">Acne Studios</p>
                     <div class="card-seller">
                         <div class="seller-avatar"
                              style="background-color: #ccc; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
                             A
                         </div>
-                        <span class="seller-name">JohanneK</span>
+                        <span class="seller-name" th:text="${listing.getDisplayName()}"></span>
                         <span class="trust-score">98%</span>
                     </div>
                 </div>
