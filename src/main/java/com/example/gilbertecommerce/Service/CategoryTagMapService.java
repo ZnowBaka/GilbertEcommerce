@@ -160,6 +160,38 @@ public class CategoryTagMapService {
         return map;
     }
 
+    public Map<TagCategory, List<Tag>> buildGenericClothing() {
+        Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
+        map.put(new TagCategory("Gender"), genderTags);
+        map.put(new TagCategory("Designer"), designerTags);
+        map.put(new TagCategory("Brand"), brandTags);
+        map.put(new TagCategory("Condition"), conditionTags);
+        map.put(new TagCategory("InternationalSize"), internationalSizeTags);
+
+        return map;
+    }
+
+    public Map<TagCategory, List<Tag>> buildGenericFootWear() {
+        Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
+        map.put(new TagCategory("Gender"), genderTags);
+        map.put(new TagCategory("Designer"), designerTags);
+        map.put(new TagCategory("Brand"), brandTags);
+        map.put(new TagCategory("Condition"), conditionTags);
+        map.put(new TagCategory("Shoe Size"), shoeSizeTags);
+
+        return map;
+    }
+
+    public Map<TagCategory, List<Tag>> buildGenericAccessory() {
+        Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
+        map.put(new TagCategory("Gender"), genderTags);
+        map.put(new TagCategory("Designer"), designerTags);
+        map.put(new TagCategory("Brand"), brandTags);
+        map.put(new TagCategory("Condition"), conditionTags);
+
+        return map;
+    }
+
 
     public Map<TagCategory, List<Tag>> buildExampleListingTagsMap() {
         Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
