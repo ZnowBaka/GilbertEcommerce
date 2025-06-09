@@ -61,6 +61,17 @@ public class ProductListing {
         this.tags = tags;
     }
 
+    public String getBrand (){
+        for (Tag tag : tags) {
+            if (tag.getBrand() != null) {
+                return tag.getBrand();
+            }
+        }
+        return "Brand N/A";
+    }
+
+
+
     public boolean getFeatureStatus() {
         return featureStatus;
     }

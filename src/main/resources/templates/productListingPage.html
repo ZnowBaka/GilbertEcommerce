@@ -94,13 +94,14 @@
                 <div class="card-content">
                     <h3 class="card-title" th:text="${listing.getListingTitle()}"></h3>
                     <p class="card-price" th:text="${listing.getPrice()}">Dkk</p>
-                    <p class="card-brand">Acne Studios</p>
+                    <p class="card-price" th:text="${listing.getBrand()}">Dkk</p>
                     <div class="card-seller">
                         <div class="seller-avatar"
                              style="background-color: #ccc; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
                             A
                         </div>
-                        <span class="seller-name">JohanneK</span>
+
+                        <span class="seller-name" th:text="${listing.getDisplayName()}">JohanneK</span>
                         <span class="trust-score">98%</span>
                     </div>
                 </div>
