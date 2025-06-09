@@ -166,6 +166,8 @@ public class ProductListingRepo {
         }
     }
 
+
+
     public void updateStatus(int id, String status) {
         try{
         String sql = "update Listings set Status = ? where listing_id = ?";

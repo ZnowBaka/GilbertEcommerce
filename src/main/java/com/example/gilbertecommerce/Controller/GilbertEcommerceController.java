@@ -94,6 +94,24 @@ public class GilbertEcommerceController {
             return "searchResults";
         }
 
+    @PostMapping("/search/")
+    public String searchProducts(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
+
+        try {
+            // This should now "refresh" the custom build sql, so that we no longer get duplicates in our search.
+            queryService.clear();
+
+            form.setTagSelections(extractTagSelections(form));
+            queryService.buildFromForm(form);
+
+            // This Likely still needs to be in the service layer as it is only the form that is needed...
+            String sqlWhere = queryService.getSql();
+            List<Object> params = queryService.getParams();
+            String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
+
+            // We need to make a service & a Repo method for this.
+            List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
+
         @PostMapping("/search/")
         public String searchProducts (@ModelAttribute("TestSearchForm") SearchForm form, Model model){
             try {
@@ -105,6 +123,7 @@ public class GilbertEcommerceController {
                 String fullSql = "SELECT * FROM Listings productListing " + sqlWhere;
 
                 List<ProductListing> results = jdbcTemplate.query(fullSql, params.toArray(), new ProductListingMapper());
+
 
                 // Gets the tags for each Listing and add their tags.
                 for (ProductListing product : results) {
@@ -126,6 +145,19 @@ public class GilbertEcommerceController {
             }
         }
 
+
+    private Map<String, String> extractTagSelections(SearchForm form) {
+        Map<String, String> selections = new HashMap<>();
+        for (Field field : form.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+
+            try {
+                String name = field.getName();
+                if (!name.equals("searchText") && !name.equals("tagSelections")) {
+                    Object value = field.get(form);
+                    if (value != null) {
+                        selections.put(name, value.toString());
+
         private Map<String, String> extractTagSelections (SearchForm form){
             Map<String, String> selections = new HashMap<>();
             for (Field field : form.getClass().getDeclaredFields()) {
@@ -137,6 +169,7 @@ public class GilbertEcommerceController {
                         if (value != null) {
                             selections.put(name, value.toString());
                         }
+
                     }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace(); // or log properly

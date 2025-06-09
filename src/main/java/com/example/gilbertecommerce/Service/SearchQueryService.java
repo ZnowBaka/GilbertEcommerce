@@ -45,7 +45,9 @@ public class SearchQueryService {
     TagCategories, as we map what they are called in the program vs the DB.
      */
     public void buildFromForm(SearchForm form) {
+        clear(); // Another chance to ensure the filter is clean.
         System.out.println("Started Building Form: ");
+
         addSearchText(form.getSearchText());
         addTagFilter(form.getGender(), "Gender");
         addTagFilter(form.getDesigner(), "Designer");
@@ -100,20 +102,21 @@ public class SearchQueryService {
         if (!uniqueTagFilters.add(key)) return; // Already added, skip
 
         sql.append("""
-              AND EXISTS (
+                 AND EXISTS (
                 SELECT 1
                 FROM product_tags pt
                 JOIN tags t ON pt.tag_id = t.tag_id
                 JOIN tag_has_category thc ON t.tag_id = thc.tag_id
                 JOIN tag_category tc ON thc.cat_id = tc.cat_id
                 WHERE pt.product_tag = productListing.listing_id
-                  AND tc.category_name = ?
-                  AND t.tag_value = ?
-              )
-          """);
+                AND tc.category_name = ?
+                AND t.tag_value = ?
+                )
+                """);
         params.add(tagCategory);
         params.add(tagValue);
     }
+
 //
 //    AND EXISTS (
 //            SELECT 1
@@ -127,10 +130,12 @@ public class SearchQueryService {
 //
 
     /**
-     * Unrefined explanation
+     * Unrefined explanation:
      * Uses Java reflection to dynamically extract the value of a field from the SearchForm instance.
-     * Instead of manually calling form.getBags_and_luggage(), form.getShoes(), etc. for every single field, reflection lets you access any field dynamically by its name as a string.
-     * This helps when you have a map (TAG_FILTERS) that relates form field names to database category names, so you can loop through them and get the value without a huge if or switch-case.
+     * Instead of manually calling form.getBags_and_luggage(), form.getShoes(), etc. for every single field, -
+     * reflection lets you access any field dynamically by its name as a string.
+     * This helps when you have a map (TAG_FILTERS) that relates form field names to database category names, -
+     * so you can loop through them and get the value without a huge if or switch-case. Very smart!
      */
     private String getFieldValue(SearchForm form, String fieldName) {
         try {
@@ -154,4 +159,13 @@ public class SearchQueryService {
     public List<Object> getParams() {
         return params;
     }
+
+    public void clear() {
+        sql.setLength(0);           // Setting the size to 0 works, it clears the whole sql
+        sql.append("WHERE 1=1");    // We need to re-add the constructor build statement otherwise sql will die
+        params.clear();             // Clears parameter list, ready to be filled out again.
+        uniqueTagFilters.clear();   // This is now needed after we added the (!uniqueTagFilters.add(key)) to prevent duplicates, if not cleared correctly the form skipped values.
+    }
+
+
 }

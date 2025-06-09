@@ -47,6 +47,7 @@ public class TagRepo {
      The "$" properly does the sam thing it does in the like %STRING% SQL, but idk what that is, likely just a stop block.
      This should then first check for only numbers, then mixed numbers and then no numbers.
      */
+
     public List<Tag> getAllTagsFromCategory(String categoryName) {
         String sql = ("""
                 SELECT DISTINCT tag.tag_id, tag.tag_value FROM tags tag
