@@ -1,20 +1,28 @@
 package com.example.gilbertecommerce.Service;
 
-import com.example.gilbertecommerce.CustomException.InvalidListingException;
-import com.example.gilbertecommerce.CustomException.ListingNotFoundException;
+import com.example.gilbertecommerce.CustomException.BusinessExceptions.InvalidListingException;
+import com.example.gilbertecommerce.CustomException.BusinessExceptions.ListingNotFoundException;
 import com.example.gilbertecommerce.Entity.ProductListing;
+import com.example.gilbertecommerce.Entity.Tag;
 import com.example.gilbertecommerce.Framework.ProductListingRepo;
+import com.example.gilbertecommerce.Framework.TagCategoryRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class ProductListingService {
 
-    private ProductListingRepo repo;
+    private TagCategoryRepo catRepo;
+    private final ProductListingRepo repo;
+    private final LoggerService logger;
 
-    public ProductListingService(ProductListingRepo repo) {
+    public ProductListingService(ProductListingRepo repo,TagCategoryRepo catRepo ,LoggerService logger) {
         this.repo = repo;
+        this.catRepo = catRepo;
+        this.logger = logger;
     }
 
     public List<ProductListing> getAllListings() {
@@ -24,7 +32,7 @@ public class ProductListingService {
     public ProductListing getProductListing(int id) {
        ProductListing listing = repo.findById(id);
        if (listing == null) {
-           throw new ListingNotFoundException("The listing you're searching for could not be found");
+           throw new ListingNotFoundException("The listing you're searching for could not be found", "Listing by id in db returned null");
        }
         return listing;
     }
@@ -32,6 +40,19 @@ public class ProductListingService {
     public void create(ProductListing listing) {
         validateListing(listing, "create");
         repo.save(listing);
+    }
+    public void insertTags(List<Tag> tags, String listingTitle, int userId) {
+        System.out.println(2);;
+        int listingId = repo.findResentListing(userId, listingTitle);
+        System.out.println(3);
+        if(tags.isEmpty()){
+            System.out.println("scuffed");
+        }
+        for(Tag tag : tags){
+            System.out.println(tag.getId());
+            catRepo.addTagToListing(tag.getId(), listingId);
+        }
+
     }
 
     public void update(int id, ProductListing listing) {
@@ -50,19 +71,29 @@ public class ProductListingService {
     public void validateListing(ProductListing productListing, String source) {
 
         if(productListing.getListingTitle() == null || productListing.getListingTitle().isEmpty()) {
-            throw new InvalidListingException("The title of your listing is empty, but must be provided.", "title", source);
+            throw new InvalidListingException("The title of your listing is empty, but must be provided.", "User tried to create listing without title", "title", "ProductListingRepo");
         }
 
         if(productListing.getListingDescription() == null || productListing.getListingDescription().isEmpty()) {
-            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "description", source);
+            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "User tried to create listing without description","description", "ProductListingRepo");
         }
 
         if(productListing.getPrice() <= 0){
-            throw new InvalidListingException("The price of your listing is less than or equal to zero.", "price", source);
+            throw new InvalidListingException("The price of your listing is less than or equal to zero.", "User tried to create listing without price", "price", "ProductListingRepo");
         }
     }
     public List<ProductListing> getAllPendingProductListings() {
         return repo.getAllPendingProductListings();
+    }
+
+    public List<ProductListing> getAllApprovedListings(){
+        return repo.getAllApprovedFromDB();
+    }
+    public List<ProductListing> getAllFeaturedListings(){
+        return repo.getAllFeaturedFromDB();
+    }
+    public void updateFeatureStatus(int id, Boolean status) {
+        repo.updateFeatureStatus(id, status);
     }
     }
 

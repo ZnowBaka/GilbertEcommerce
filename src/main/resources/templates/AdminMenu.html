@@ -1,119 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Menu</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/AdminStyles.css">
+    <meta charset="UTF-8">
+    <title>Admin Menu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/AdminStyles.css">
 </head>
 <body>
 
 <!-- Header -->
 <header>
-  <div class="logo">Gilbert Admin Menu</div>
-  <div class="tagline">Quality • Sustainability • Preloved</div>
+    <div class="logo">Gilbert Admin Menu</div>
+    <div class="tagline">Quality • Sustainability • Preloved</div>
 </header>
 
 <!-- Radio Tabs -->
-<input type="radio" name="tab" id="tab-account" >
+<input type="radio" name="tab" id="tab-account">
 <input type="radio" name="tab" id="tab-listings" checked>
 <input type="radio" name="tab" id="tab-settings">
 
 <!-- Tab Navigation -->
 <div class="tab-nav">
-  <label for="tab-account">Account</label>
-  <label for="tab-listings">Listings</label>
-  <label for="tab-settings">Settings</label>
+    <label for="tab-account">Account</label>
+    <label for="tab-listings">Listings</label>
+    <label for="tab-settings">Settings</label>
 </div>
 
 <!-- Main Content -->
 <div class="content">
-  <!-- Account Tab -->
-  <div id="account" class="tab-content">
-    <h2>Account</h2>
-    <p>Manage user accounts here.</p>
-    <div class="user-list-container">
+    <!-- Account Tab -->
+    <div id="account" class="tab-content">
+        <h2>Account</h2>
+        <p>Manage user accounts here.</p>
+        <div class="user-list-container">
 
-      <div class="user-card" th:each="user : ${users}">
-        <div class="account-info-icon">
-          <img src="/Icons/user-svgrepo-com.svg" alt="User icon">
-        </div>
-        <div class="account-info-text">
-          <span class="account-info-title" th:text="${user.getDisplayName()}">Display Name</span>
-          <span class="account-info-value" th:text="${user.getRole().getRoleName()}">Role</span>
-        </div>
-      </div>
+            <div class="user-card" th:each="user : ${users}">
+                <div class="account-info-icon">
+                    <img src="/Icons/user-svgrepo-com.svg" alt="User icon">
+                </div>
+                <div class="account-info-text">
+                    <span class="account-info-title" th:text="${user.getDisplayName()}">Display Name</span>
+                    <span class="account-info-value" th:text="${user.getRole().getRoleName()}">Role</span>
+                </div>
+            </div>
 
+        </div>
     </div>
-  </div>
 
-  <!-- Listings Tab -->
-  <div id="listings" class="tab-content">
-    <h2>Listings</h2>
-    <p>Manage your listings here.</p>
-    <div class="listing-list-container">
-      <div class="listing-card" th:each="listing : ${pendingListings}">
-        <figure>
-          <img th:if="${listing.listingImage} ==null" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" th:else="${listing.listingImage}">
-          <figcaption>
-            <span>posting date: <span th:text="${listing.getListingDate}"></span>  price: <span th:text="${listing.price}"></span>Dkk</span>
-          </figcaption>
-        </figure>
+    <!-- Listings Tab -->
+    <div id="listings" class="tab-content">
+        <h2>Listings</h2>
+        <p>Manage your listings here.</p>
+        <div class="listing-container-box">
+            <div class="listing-list-container">
+                <h3>Pending Listings</h3>
+                <div class="listing-card" th:each="listing : ${pendingListings}">
+                    <figure>
+                        <img th:if="${listing.listingImage} ==null" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg"
+                             th:else="${listing.listingImage}">
+                        <figcaption>
+                            <span>posting date: <span th:text="${listing.getListingDate}"></span>  price: <span
+                                    th:text="${listing.price}"></span>Dkk</span>
+                        </figcaption>
+                    </figure>
 
-        <div class="listing-info">
-          <h3 th:text="${listing.listingTitle}"></h3>
-          <p th:text="${listing.listingDescription}"></p>
-          <a th:href="@{'/AdminMenu/Approve/' + ${listing.listingID}}">
-            <button>Approve</button>
-          </a>
-          <a th:href="@{'/AdminMenu/Reject/' + ${listing.listingID}}">
-            <button>Reject</button>
-          </a>
+                    <div class="listing-info">
+                        <h3 th:text="${listing.listingTitle}"></h3>
+                        <p th:text="${listing.listingDescription}"></p>
+                        <a th:href="@{'/AdminMenu/Approve/' + ${listing.listingID}}">
+                            <button>Approve</button>
+                        </a>
+                        <a th:href="@{'/AdminMenu/Reject/' + ${listing.listingID}}">
+                            <button>Reject</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="listing-list-container">
+                <h3>Approved Listings</h3>
+                <div class="listing-card" th:each="listing : ${approvedListings}">
+                    <figure>
+                        <img th:if="${listing.listingImage} ==null" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg"
+                             th:else="${listing.listingImage}">
+                        <figcaption>
+                            <span>posting date: <span th:text="${listing.getListingDate}"></span>  price: <span
+                                    th:text="${listing.price}"></span>Dkk</span>
+                        </figcaption>
+                    </figure>
+
+                    <h3 th:text="${listing.listingTitle}"></h3>
+                    <p th:text="${listing.listingDescription}"></p>
+                    <a th:if="${!listing.featureStatus}" th:href="@{'/AdminMenu/Feature/' + ${listing.listingID}}">
+                        <button>Feature</button>
+                    </a>
+                    <a th:if="${listing.featureStatus}" th:href="@{'/AdminMenu/!Feature/' + ${listing.listingID}}">
+                        <button>Remove Feature</button>
+                    </a>
+                </div>
+            </div>
         </div>
-
-      </div>
     </div>
-  </div>
-
-  <!-- Settings Tab -->
-  <div id="settings" class="tab-content">
-    <h2>Settings</h2>
-    <p>Configure admin settings here.</p>
-  </div>
+    <!-- Settings Tab -->
+    <div id="settings" class="tab-content">
+        <h2>Settings</h2>
+        <p>Configure admin settings here.</p>
+    </div>
 </div>
 
 <!-- Bottom Navigation Bar -->
 <div class="nav-bar">
-  <a href="/productListingPage" class="nav-item active">
-    <div class="nav-icon"><img src="/Icons/home-1-svgrepo-com.svg" alt="Home icon"></div>
-  </a>
-  <a href="/ProfileView" class="nav-item">
-    <div class="nav-icon"><img src="/Icons/search-alt-2-svgrepo-com.svg" alt="Search icon"></div>
-  </a>
-  <a href="#" class="nav-item">
-    <div class="nav-icon"><img src="/Icons/heart-svgrepo-com.svg" alt="Favorites icon"></div>
-  </a>
-  <a href="#" class="nav-item">
-    <div class="nav-icon"><img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" alt="Logo icon"></div>
-  </a>
-  <a href="#" class="nav-item">
-    <div class="nav-icon"><img src="/Icons/bell-alt-svgrepo-com.svg" alt="Notifications icon"></div>
-  </a>
+    <a href="/productListingPage" class="nav-item active">
+        <div class="nav-icon"><img src="/Icons/home-1-svgrepo-com.svg" alt="Home icon"></div>
+    </a>
+    <a href="/ProfileView" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/search-alt-2-svgrepo-com.svg" alt="Search icon"></div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/heart-svgrepo-com.svg" alt="Favorites icon"></div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" alt="Logo icon"></div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/bell-alt-svgrepo-com.svg" alt="Notifications icon"></div>
+    </a>
 </div>
 
 <!-- Footer -->
 <footer>
-  <div class="footer-nav">
-    <a href="#" class="footer-link">About Gilbert</a>
-    <a href="#" class="footer-link">How It Works</a>
-    <a href="#" class="footer-link">Sustainability</a>
-    <a href="#" class="footer-link">FAQ</a>
-    <a href="#" class="footer-link">Contact</a>
-    <a href="#" class="footer-link">Terms</a>
-  </div>
-  <div class="copyright">
-    © 2025 Gilbert - All rights reserved
-  </div>
+    <div class="footer-nav">
+        <a href="#" class="footer-link">About Gilbert</a>
+        <a href="#" class="footer-link">How It Works</a>
+        <a href="#" class="footer-link">Sustainability</a>
+        <a href="#" class="footer-link">FAQ</a>
+        <a href="#" class="footer-link">Contact</a>
+        <a href="#" class="footer-link">Terms</a>
+    </div>
+    <div class="copyright">
+        © 2025 Gilbert - All rights reserved
+    </div>
 </footer>
 
 </body>

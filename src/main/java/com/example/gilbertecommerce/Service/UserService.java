@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
     private final UserRepo userRepo;
+    private final LoggerService logger;
 
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepo userRepo, LoggerService logger) {
         this.userRepo = userRepo;
+        this.logger =  logger;
     }
 
     public User getUserByEmail(LoginInfo loginInfo) {

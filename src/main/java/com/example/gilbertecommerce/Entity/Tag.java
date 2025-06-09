@@ -2,7 +2,7 @@ package com.example.gilbertecommerce.Entity;
 
 public class Tag {
 
-    private int id;
+    private int tagId;
     private String tagValue;
 
     public Tag() {
@@ -12,7 +12,7 @@ public class Tag {
         this.tagValue = tagValue;
     }
     public Tag(int id, String tagValue) {
-        this.id = id;
+        this.tagId = id;
         this.tagValue = tagValue;
     }
 
@@ -25,11 +25,11 @@ public class Tag {
     }
 
     public int getId() {
-        return id;
+        return tagId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.tagId = id;
     }
 
     @Override

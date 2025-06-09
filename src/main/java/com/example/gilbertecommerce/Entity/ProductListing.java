@@ -16,6 +16,7 @@ public class ProductListing {
     private String listingDescription;
     private String listingImage;
     private String listingStatus;
+    private boolean featureStatus;
 
     private List<Tag> tags = new ArrayList<>();
 
@@ -39,7 +40,7 @@ public class ProductListing {
         this.price = price;
     }
 
-    public ProductListing(int listingID, double price, int sellerID, long epochMillis, String listingTitle, String ListingDescription, String ListingImage, String listingStatus) {
+    public ProductListing(int listingID, double price, int sellerID, long epochMillis, String listingTitle, String ListingDescription, String ListingImage, String listingStatus, boolean featureStatus) {
         this.listingID = listingID;
         this.price = price;
         this.sellerID = sellerID;
@@ -48,6 +49,7 @@ public class ProductListing {
         this.listingTitle = listingTitle;
         this.listingDescription = ListingDescription;
         this.listingImage = ListingImage;
+        this.featureStatus = featureStatus;
     }
 
     public List<Tag> getTags() {
@@ -58,7 +60,12 @@ public class ProductListing {
         this.tags = tags;
     }
 
-
+    public boolean getFeatureStatus() {
+        return featureStatus;
+    }
+    public void setFeatureStatus(boolean featureStatus) {
+        this.featureStatus = featureStatus;
+    }
     public int getListingID() {return listingID;}
     public void setListingID(int listingID) {
         this.listingID = listingID;
@@ -81,7 +88,7 @@ public class ProductListing {
     public void setListingDate(LocalDateTime listingDate) {
         this.listingDate = listingDate;
     }
-    public String isListingStatus() {
+    public String getListingStatus() {
         return listingStatus;
     }
     public void setListingStatus(String listingStatus) {

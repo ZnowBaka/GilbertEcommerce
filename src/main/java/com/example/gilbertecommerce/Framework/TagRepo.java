@@ -40,13 +40,14 @@ public class TagRepo {
     }
 
     /*
-    Added some more SQL to order the tag values correctly
-    The "^" sign ensure that the ordering happen from the first char.
-    The [0-9] Checks for chars matching in that range I.E Numbers.
-    The "+" sign here checks for more digits in the String.
-    The "$" properly does the sam thing it does in the like %STRING% SQL, but idk what that is, likely just a stop block.
-    This should then first check for only numbers, then mixed numbers and then no numbers.
-    */
+     Added some more SQL to order the tag values correctly
+     The "^" sign ensure that the ordering happen from the first char.
+     The [0-9] Checks for chars matching in that range I.E Numbers.
+     The "+" sign here checks for more digits in the String.
+     The "$" properly does the sam thing it does in the like %STRING% SQL, but idk what that is, likely just a stop block.
+     This should then first check for only numbers, then mixed numbers and then no numbers.
+     */
+
     public List<Tag> getAllTagsFromCategory(String categoryName) {
         String sql = ("""
                 SELECT DISTINCT tag.tag_id, tag.tag_value FROM tags tag
@@ -56,18 +57,21 @@ public class TagRepo {
                 ORDER BY tag.tag_value REGEXP '^[0-9]+$' DESC, tag.tag_value + 0, tag.tag_value
                 """);
 
-        List<Tag> tags = null;
-        tags = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Tag.class), categoryName);
 
-        return tags;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Tag tag = new Tag();
+            tag.setId(rs.getInt("tag_id"));           // map tag_id to id explicitly
+            tag.setTagValue(rs.getString("tag_value"));
+            return tag;
+        }, categoryName);
     }
 
     public List<Tag> getTagsByListingId(int listingId) {
         String sql = """
-                    SELECT tag.tag_id AS tagId, tag.tag_value AS tagValue
-                    FROM tags tag
-                             JOIN product_tags tagConnection ON tag.tag_id = tagConnection.tag_id
-                    WHERE tagConnection.product_tag = ?
+                SELECT tag.tag_id AS tagId, tag.tag_value AS tagValue
+                FROM tags tag
+                JOIN product_tags tagConnection ON tag.tag_id = tagConnection.tag_id
+                WHERE tagConnection.product_tag = ?
                 """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Tag.class), listingId);
     }

@@ -2,6 +2,7 @@ package com.example.gilbertecommerce.Service;
 
 import com.example.gilbertecommerce.Entity.Tag;
 import com.example.gilbertecommerce.Entity.TagCategory;
+import com.example.gilbertecommerce.Entity.TagInsertForm;
 import com.example.gilbertecommerce.Framework.TagCategoryRepo;
 import com.example.gilbertecommerce.Framework.TagRepo;
 import jakarta.annotation.PostConstruct;
@@ -108,8 +109,8 @@ public class CategoryTagMapService {
     }
 
 
-    public Map<String, List<Tag>> buildNormalizedCategoryTagsMap() {
-        Map<String, List<Tag>> normalizedMap = new LinkedHashMap<>();
+    public HashMap<String, List<Tag>> buildNormalizedCategoryTagsMap() {
+        LinkedHashMap<String, List<Tag>> normalizedMap = new LinkedHashMap<>();
         Map<TagCategory, List<Tag>> originalMap = buildTestCategoryTagsMap();
 
         for (Map.Entry<TagCategory, List<Tag>> entry : originalMap.entrySet()) {
@@ -166,6 +167,24 @@ public class CategoryTagMapService {
         map.put(new TagCategory("Brand"), brandTags);
         return map;
     }
+    public List<Tag> getTagsBySelection(TagInsertForm form, Map<String, List<Tag>> map) {
+        List<Tag> result = new ArrayList<>();
 
+        for (Map.Entry<String, String> entry : form.getTagSelections().entrySet()) {
+            String categoryKey = entry.getKey();
+            String selectedValue = entry.getValue();
 
+            List<Tag> tags = map.get(categoryKey);
+
+            for (Tag tag : tags) {
+                if (tag.getTagValue().trim().equalsIgnoreCase(selectedValue.trim())) {
+                    System.out.println("Match found: " + tag.getTagValue());
+                    result.add(tag);
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
 }
