@@ -105,8 +105,16 @@ public class ProductListingService {
             productListing.setDisplayName(ownerName);
         }
     }
-
-
-
+    public List<ProductListing> getProductListingsHeaderSearch(List<ProductListing> productListings, String value) {
+        List<ProductListing> headerProductListings = new ArrayList<>();
+        for (ProductListing productListing : productListings) {
+            if(productListing.getTags().stream().anyMatch(tag -> tag.getTagValue().equals(value))){
+                headerProductListings.add(productListing);
+            }
+        }
+        return headerProductListings;
     }
+
+
+}
 

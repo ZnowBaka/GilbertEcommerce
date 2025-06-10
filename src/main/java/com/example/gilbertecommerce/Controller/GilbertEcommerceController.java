@@ -75,7 +75,6 @@ public class GilbertEcommerceController {
 
     @PostMapping("/search/")
     public String searchProducts(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
-
         try {
             // This should now "refresh" the custom build sql, so that we no longer get duplicates in our search.
             queryService.clear();
@@ -127,6 +126,38 @@ public class GilbertEcommerceController {
         }
     }
 
+    @GetMapping("/search/Women")
+    public String searchWomen(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
+        String value = "Woman";
+        try {
+            List<ProductListing> results = listingService.getProductListingsHeaderSearch(initializerService.getApprovedListings(), value);
+
+            Map<String, List<Tag>> tagFilterMap = initializerService.buildNormalizedCategoryTagsMap();
+
+            // Create a map for pretty display names
+            Map<String, String> prettyNameMap = new HashMap<>();
+            tagFilterMap.keySet().forEach(key -> {
+                prettyNameMap.put(key, formatDisplayName(key));
+            });
+
+            form = new SearchForm();
+
+            model.addAttribute("results", results);
+            model.addAttribute("TestSearchForm", form);
+
+
+            model.addAttribute("TestTagMap", tagFilterMap);
+            model.addAttribute("PrettyNames", prettyNameMap);
+
+
+            return "searchResults";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Search failed: " + e.getMessage());
+            return "redirect:/productListingPage"; // Fallback page
+        }
+    }
 
     private Map<String, String> extractTagSelections(SearchForm form) {
         Map<String, String> selections = new HashMap<>();
@@ -368,4 +399,16 @@ public class GilbertEcommerceController {
         listingService.delete(listingID);
         return "redirect:/listingView";
     }
+
+    @GetMapping("/notificationPage")
+    public String showNotificationPage() {
+        return "/notificationPage";
+    }
+
+    @GetMapping("/aboutPage")
+    public String aboutPage() {
+        return "/aboutPage";
+    }
+
+
 }
