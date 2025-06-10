@@ -128,7 +128,9 @@ public class GilbertEcommerceController {
 
     @GetMapping("/search/Women")
     public String searchWomen(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
-        String value = "Woman";
+        String value = "woman";
+        form.setGender(value);
+
         try {
             List<ProductListing> results = listingService.getProductListingsHeaderSearch(initializerService.getApprovedListings(), value);
 

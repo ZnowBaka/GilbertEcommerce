@@ -19,7 +19,7 @@ public class ProductListingService {
     private final ProductListingRepo repo;
     private final LoggerService logger;
 
-    public ProductListingService(ProductListingRepo repo,TagCategoryRepo catRepo ,LoggerService logger) {
+    public ProductListingService(ProductListingRepo repo, TagCategoryRepo catRepo, LoggerService logger) {
         this.repo = repo;
         this.catRepo = catRepo;
         this.logger = logger;
@@ -30,10 +30,10 @@ public class ProductListingService {
     }
 
     public ProductListing getProductListing(int id) {
-       ProductListing listing = repo.findById(id);
-       if (listing == null) {
-           throw new ListingNotFoundException("The listing you're searching for could not be found", "Listing by id in db returned null");
-       }
+        ProductListing listing = repo.findById(id);
+        if (listing == null) {
+            throw new ListingNotFoundException("The listing you're searching for could not be found", "Listing by id in db returned null");
+        }
         return listing;
     }
 
@@ -41,14 +41,16 @@ public class ProductListingService {
         validateListing(listing, "create");
         repo.save(listing);
     }
+
     public void insertTags(List<Tag> tags, String listingTitle, int userId) {
-        System.out.println(2);;
+        System.out.println(2);
+        ;
         int listingId = repo.findResentListing(userId, listingTitle);
         System.out.println(3);
-        if(tags.isEmpty()){
+        if (tags.isEmpty()) {
             System.out.println("scuffed");
         }
-        for(Tag tag : tags){
+        for (Tag tag : tags) {
             System.out.println(tag.getId());
             catRepo.addTagToListing(tag.getId(), listingId);
         }
@@ -70,27 +72,28 @@ public class ProductListingService {
 
     public void validateListing(ProductListing productListing, String source) {
 
-        if(productListing.getListingTitle() == null || productListing.getListingTitle().isEmpty()) {
+        if (productListing.getListingTitle() == null || productListing.getListingTitle().isEmpty()) {
             throw new InvalidListingException("The title of your listing is empty, but must be provided.", "User tried to create listing without title", "title", "ProductListingRepo");
         }
 
-        if(productListing.getListingDescription() == null || productListing.getListingDescription().isEmpty()) {
-            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "User tried to create listing without description","description", "ProductListingRepo");
+        if (productListing.getListingDescription() == null || productListing.getListingDescription().isEmpty()) {
+            throw new InvalidListingException("The description of your listing is empty, but must be provided.", "User tried to create listing without description", "description", "ProductListingRepo");
         }
 
-        if(productListing.getPrice() <= 0){
+        if (productListing.getPrice() <= 0) {
             throw new InvalidListingException("The price of your listing is less than or equal to zero.", "User tried to create listing without price", "price", "ProductListingRepo");
         }
     }
+
     public List<ProductListing> getAllPendingProductListings() {
         return repo.getAllPendingProductListings();
     }
 
-    public List<ProductListing> getAllApprovedListings(){
+    public List<ProductListing> getAllApprovedListings() {
         return repo.getAllApprovedFromDB();
     }
 
-    public List<ProductListing> getAllFeaturedListings(){
+    public List<ProductListing> getAllFeaturedListings() {
         return repo.getAllFeaturedFromDB();
     }
 
@@ -105,12 +108,20 @@ public class ProductListingService {
             productListing.setDisplayName(ownerName);
         }
     }
+
     public List<ProductListing> getProductListingsHeaderSearch(List<ProductListing> productListings, String value) {
         List<ProductListing> headerProductListings = new ArrayList<>();
+        List<Tag> productTags = new ArrayList<>();
+
         for (ProductListing productListing : productListings) {
-            if(productListing.getTags().stream().anyMatch(tag -> tag.getTagValue().equals(value))){
-                headerProductListings.add(productListing);
+            productTags = productListing.getTags();
+
+            for (Tag productTag : productTags) {
+                if (productTag.getTagValue().equalsIgnoreCase(value)) {
+                    headerProductListings.add(productListing);
+                }
             }
+
         }
         return headerProductListings;
     }

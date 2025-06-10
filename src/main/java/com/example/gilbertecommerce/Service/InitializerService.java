@@ -36,8 +36,8 @@ public class InitializerService {
     private List<Tag> internationalSizeTags;
     private List<Tag> shoeSizeTags;
 
-    List<ProductListing> approvedListings;
-    List<ProductListing> featuredListings;
+    private List<ProductListing> approvedListings;
+    private List<ProductListing> featuredListings;
 
 
     public InitializerService(TagRepo tagRepo, TagCategoryRepo catRepo, ProductListingService listingService) {
