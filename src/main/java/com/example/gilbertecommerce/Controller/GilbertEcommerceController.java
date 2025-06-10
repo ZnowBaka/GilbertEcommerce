@@ -128,12 +128,10 @@ public class GilbertEcommerceController {
 
     @GetMapping("/search/Women")
     public String searchWomen(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
-        String value = "woman";
-        form.setGender(value);
+        String value = "Women";
 
         try {
             List<ProductListing> results = listingService.getProductListingsHeaderSearch(initializerService.getApprovedListings(), value);
-
             Map<String, List<Tag>> tagFilterMap = initializerService.buildNormalizedCategoryTagsMap();
 
             // Create a map for pretty display names
@@ -146,11 +144,8 @@ public class GilbertEcommerceController {
 
             model.addAttribute("results", results);
             model.addAttribute("TestSearchForm", form);
-
-
             model.addAttribute("TestTagMap", tagFilterMap);
             model.addAttribute("PrettyNames", prettyNameMap);
-
 
             return "searchResults";
 
