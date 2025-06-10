@@ -44,7 +44,7 @@
                 </div>
             </div>
             </div>
-            <div style="float: right;">
+            <div style="float: right; ">
                 <div th:each="entry : ${TestTagMap}"
                      class="dropdown-box"
                      th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
@@ -88,6 +88,7 @@
 
 </main>
 
+
 <div class="nav-bar">
     <a href="#" class="nav-item active">
         <div class="nav-icon"><img src="/Icons/home-1-svgrepo-com.svg" width="20" height="20"></div>
@@ -109,19 +110,6 @@
     </a>
 </div>
 
-<footer>
-    <div class="footer-nav">
-        <a href="#" class="footer-link">About Gilbert</a>
-        <a href="#" class="footer-link">How It Works</a>
-        <a href="#" class="footer-link">Sustainability</a>
-        <a href="#" class="footer-link">FAQ</a>
-        <a href="#" class="footer-link">Contact</a>
-        <a href="#" class="footer-link">Terms</a>
-    </div>
-    <div class="copyright">
-        © 2025 Gilbert - All rights reserved
-    </div>
-</footer>
 <script>
     // Some Explanation, this simply waits until the entire pages is fully loaded before running this script.
     // Then we use the same trick as we have used before to select specific CSS classes.
@@ -171,6 +159,5 @@
 
 </script>
 </body>
-</html>
-</body>
+
 </html>

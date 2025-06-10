@@ -48,6 +48,7 @@ header {
 .search-bar {
     margin: 1rem auto;
     max-width: 600px;
+    justify-content: center;
     position: relative;
     display: flex;
 }
@@ -261,7 +262,7 @@ footer {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .footer-link {
@@ -340,10 +341,10 @@ footer {
 
 .listing-creation-container {
     background-color: white;
-    padding: 2.5rem;
+    padding: 1.5rem;
     border-radius: 0;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
+    max-width: 600px;
     width: 100%;
 }
 
@@ -355,12 +356,13 @@ footer {
 }
 
 .input-group {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+
 }
 
 .input-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     font-weight: 600;
     color: var(--primary-color);
 }
@@ -384,6 +386,7 @@ footer {
 .button-group {
     margin-top: 1.5rem;
     text-align: center;
+    margin-right: 337px;
 }
 
 .button-group button {
@@ -448,11 +451,8 @@ footer {
     width: 100%;
 }
 
-.dropdown-box {
-    width: 100px;
-    border-radius: 5px;
-    background-color: #f8f0e5;
-    position: relative;
+.dropdown-box.active-create .dropdown-content {
+    display: block;
 }
 
 .dropdown-box input {
@@ -464,7 +464,6 @@ footer {
     color: rgba(0, 0, 0, 1);
     font-weight: bold;
     font-family: Segoe UI, sans-serif;
-
 }
 
 .dropdown-box .selected-item {
@@ -540,21 +539,21 @@ footer {
 
 
 .dropdown-box {
-    width: 100px;
-    border-radius: 5px;
-    background-color: #f8f0e5;
+    width: 175px;
+    border-radius: 2px;
     position: relative;
 }
 
 .dropdown-box input {
     width: 100%;
     border: 1px solid rgb(120, 120, 120);
-    border-radius: 12px;
+    border-radius: 4px;
     outline: none;
     padding: 3px 5px;
     color: rgba(0, 0, 0, 1);
     font-weight: bold;
     font-family: Segoe UI, sans-serif;
+
 
 }
 
@@ -621,6 +620,8 @@ footer {
     background-color: rgba(66, 58, 38, 0.85);
     color: #f8f0e5;
 }
+
+
 
 .filters-row {
     display: flex;
