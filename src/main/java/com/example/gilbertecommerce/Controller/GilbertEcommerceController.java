@@ -126,12 +126,15 @@ public class GilbertEcommerceController {
         }
     }
 
-    @GetMapping("/search/Women")
-    public String searchWomen(@ModelAttribute("TestSearchForm") SearchForm form, Model model) {
-        String value = "Women";
+    @GetMapping("/search/{headerID}")
+    public String searchWomen(
+            @ModelAttribute("TestSearchForm")
+            @PathVariable String headerID,
+            SearchForm form,
+            Model model) {
 
         try {
-            List<ProductListing> results = listingService.getProductListingsHeaderSearch(initializerService.getApprovedListings(), value);
+            List<ProductListing> results = listingService.getProductListingsHeaderSearch(initializerService.getApprovedListings(), headerID);
             Map<String, List<Tag>> tagFilterMap = initializerService.buildNormalizedCategoryTagsMap();
 
             // Create a map for pretty display names

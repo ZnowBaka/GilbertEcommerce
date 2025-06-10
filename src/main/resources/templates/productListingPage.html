@@ -20,24 +20,30 @@
 <main>
     <section class="category-section">
         <div class="category-card">
-           <a href="search/Women">
-               <h2 class="category-title">Women</h2>
-               <p class="category-description">Discover high-end clothing and accessories for women</p>
-           </a>
+            <form action="#" th:action="@{/search/{headerID}(headerID='Women')}" method="get">
+                <button type="submit">
+                    <h2 class="category-title">Women</h2>
+                    <p class="category-description">Discover high-end clothing and accessories for women</p>
+                </button>
+            </form>
         </div>
 
         <div class="category-card">
-            <a href="search/Men">
-                <h2 class="category-title">Men</h2>
-                <p class="category-description">Find the best brands and designs for men</p>
-            </a>
+            <form action="#" th:action="@{/search/{headerID}(headerID='Men')}" method="get">
+                <button type="submit">
+                    <h2 class="category-title">Men</h2>
+                    <p class="category-description">Find the best brands and designs for men</p>
+                </button>
+            </form>
         </div>
 
         <div class="category-card">
-            <a href="search/Home">
-                <h2 class="category-title">Home</h2>
-                <p class="category-description">Luxurious items for your home</p>
-            </a>
+            <form action="#" th:action="@{/search/{headerID}(headerID='Home')}" method="get">
+                <button type="submit">
+                    <h2 class="category-title">Home</h2>
+                    <p class="category-description">Luxurious items for your home</p>
+                </button>
+            </form>
         </div>
     </section>
 

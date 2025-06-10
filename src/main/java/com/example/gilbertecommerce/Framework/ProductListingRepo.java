@@ -25,8 +25,6 @@ public class ProductListingRepo {
         this.jdbcTemplate = jdbcTemplate;
         this.logger = logger;
     }
-
-
     public List<ProductListing> findAllListings() {
         try {
             String sql = "select * from Listings";
