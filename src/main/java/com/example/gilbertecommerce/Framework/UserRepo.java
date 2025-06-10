@@ -30,7 +30,8 @@ public class UserRepo {
     public LoginInfo getLoginInfo(LoginInfo loginInfo) {
         try {
             String sql = "select * from LOGIN_INFO where user_loginEmail = ?";
-            //the line below allows for more flexiable input but not needed in this case
+
+            //the line below allows for more flexible input but not needed in this case
             // return jdbcTemplate.queryForObject(sql, new Object[]{loginEmail}, String.class);
             //jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(LoginInfo.class), loginInfo.getLoginEmail());
             return jdbcTemplate.queryForObject(sql, new Object[]{loginInfo.getLoginEmail()}, (rs, rowNum) -> {
@@ -40,8 +41,7 @@ public class UserRepo {
                 userFromdb.setLoginEmail(rs.getString("user_loginEmail"));
                 userFromdb.setLoginPass(rs.getString("user_pass"));
                 System.out.println("logininfo " + userFromdb.getLoginEmail() + " is in the db with id:" + userFromdb.getLoginId());
-                // result (User jack is in the db with id:1) it just works
-                // result User bob is in the db with id:4
+
                 return userFromdb;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -75,10 +75,11 @@ public class UserRepo {
             throw ex;
         }
     }
+
     @Transactional
     public boolean createNewUser(LoginInfo loginInfo, User user) {
         try {
-            if(doesLoginInfoExist(loginInfo.getLoginEmail())) {
+            if (doesLoginInfoExist(loginInfo.getLoginEmail())) {
                 UserAlreadyExistException ex = new UserAlreadyExistException(
                         "There's already a registered user with the email: " + loginInfo.getLoginEmail(),
                         "Attempt at creating a user with duplicate email: " + loginInfo.getLoginEmail()
@@ -92,7 +93,7 @@ public class UserRepo {
             sql = "select user_id from USER where user_email = ?"; //Tvunget til at ændre id til interger istedet for int
             Integer id = jdbcTemplate.queryForObject(sql, Integer.class, user.getEmail());
 
-            if(id == null){
+            if (id == null) {
                 throw new DataIntegrityException(
                         "Failed to get user ID after creation",
                         "Created user appeared as successful but DB call for id failed for profile: " + loginInfo.getLoginEmail()

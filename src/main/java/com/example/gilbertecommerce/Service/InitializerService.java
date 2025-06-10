@@ -108,7 +108,6 @@ public class InitializerService {
             }
 
 
-
             System.out.println("Program Initialized successfully");
         } catch (Exception e) {
             System.err.println("Error in InitializerService.init(): " + e.getMessage());
@@ -152,9 +151,8 @@ public class InitializerService {
     }
 
     // In turn this will be used to "normalise" the SearchForm data
-    public HashMap<String, List<Tag>> buildNormalizedCategoryTagsMap() {
+    public HashMap<String, List<Tag>> normalizeTagsMap(Map<TagCategory, List<Tag>> originalMap) {
         LinkedHashMap<String, List<Tag>> normalizedMap = new LinkedHashMap<>();
-        Map<TagCategory, List<Tag>> originalMap = buildTestCategoryTagsMap();
 
         for (Map.Entry<TagCategory, List<Tag>> entry : originalMap.entrySet()) {
             String catName = entry.getKey().getName();
@@ -191,23 +189,33 @@ public class InitializerService {
 
     // Section for map building, this is how we can define precisely what tags we want from where, and in what order.
     // By using a LinkedHashMap we can control the order that the Category buttons appear while also able to make predefined templates when you build a Listing
-    public Map<TagCategory, List<Tag>> buildTestCategoryTagsMap() {
+    public Map<TagCategory, List<Tag>> buildStandardSearchFilterTagsMap() {
         Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
         map.put(new TagCategory("Gender"), genderTags);
-        map.put(new TagCategory("Designer"), designerTags);
-        map.put(new TagCategory("Brand"), brandTags);
         map.put(new TagCategory("Condition"), conditionTags);
-        map.put(new TagCategory("Bags & Luggage"), bagsAndLuggageTags);
+        map.put(new TagCategory("Brand"), brandTags);
+        map.put(new TagCategory("Designer"), designerTags);
+        map.put(new TagCategory("Clothing"), clothingTags);
+        map.put(new TagCategory("InternationalSize"), internationalSizeTags);
+        map.put(new TagCategory("Shoes"), shoeTags);
         map.put(new TagCategory("Shoe Size"), shoeSizeTags);
+        map.put(new TagCategory("Accessories"), accessoryTags);
+        map.put(new TagCategory("Bags & Luggage"), bagsAndLuggageTags);
+        map.put(new TagCategory("Beauty"), beautyTags);
+        map.put(new TagCategory("Home"), homeTags);
+
         return map;
     }
 
     public Map<TagCategory, List<Tag>> buildGenericClothing() {
         Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
+        map.put(new TagCategory("Clothing"), clothingTags);
+        map.put(new TagCategory("InternationalSize"), internationalSizeTags);
         map.put(new TagCategory("Gender"), genderTags);
-        map.put(new TagCategory("Designer"), designerTags);
-        map.put(new TagCategory("Brand"), brandTags);
         map.put(new TagCategory("Condition"), conditionTags);
+        map.put(new TagCategory("Brand"), brandTags);
+        map.put(new TagCategory("Designer"), designerTags);
+        map.put(new TagCategory("Clothing"), clothingTags);
         map.put(new TagCategory("InternationalSize"), internationalSizeTags);
 
         return map;
@@ -215,33 +223,40 @@ public class InitializerService {
 
     public Map<TagCategory, List<Tag>> buildGenericFootWear() {
         Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
-        map.put(new TagCategory("Gender"), genderTags);
-        map.put(new TagCategory("Designer"), designerTags);
-        map.put(new TagCategory("Brand"), brandTags);
-        map.put(new TagCategory("Condition"), conditionTags);
+        map.put(new TagCategory("Shoes"), shoeTags);
         map.put(new TagCategory("Shoe Size"), shoeSizeTags);
+        map.put(new TagCategory("Gender"), genderTags);
+        map.put(new TagCategory("Condition"), conditionTags);
+        map.put(new TagCategory("Brand"), brandTags);
+        map.put(new TagCategory("Designer"), designerTags);
 
         return map;
     }
 
     public Map<TagCategory, List<Tag>> buildGenericAccessory() {
         Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
+        map.put(new TagCategory("Accessories"), accessoryTags);
         map.put(new TagCategory("Gender"), genderTags);
-        map.put(new TagCategory("Designer"), designerTags);
-        map.put(new TagCategory("Brand"), brandTags);
         map.put(new TagCategory("Condition"), conditionTags);
-
-        return map;
-    }
-
-
-    public Map<TagCategory, List<Tag>> buildExampleListingTagsMap() {
-        Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
-        map.put(new TagCategory("Gender"), genderTags);
-        map.put(new TagCategory("Designer"), designerTags);
         map.put(new TagCategory("Brand"), brandTags);
+        map.put(new TagCategory("Designer"), designerTags);
+
         return map;
     }
+
+    public Map<TagCategory, List<Tag>> buildGenericLuggage() {
+        Map<TagCategory, List<Tag>> map = new LinkedHashMap<>();
+        map.put(new TagCategory("Bags & Luggage"), bagsAndLuggageTags);
+        map.put(new TagCategory("InternationalSize"), internationalSizeTags);
+        map.put(new TagCategory("Gender"), genderTags);
+        map.put(new TagCategory("Condition"), conditionTags);
+        map.put(new TagCategory("Brand"), brandTags);
+        map.put(new TagCategory("Designer"), designerTags);
+
+        return map;
+    }
+
+
 
     public List<Tag> getTagsBySelection(TagInsertForm form, Map<String, List<Tag>> map) {
         List<Tag> result = new ArrayList<>();

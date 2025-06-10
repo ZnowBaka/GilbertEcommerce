@@ -7,7 +7,7 @@ public class User {
     private String lastName;
     private String displayName;
     private int userID;
-    private UserRole role; // For now its kept as an int, possibly used with a to string, possibly an enum.
+    private UserRole role; // For now its kept as an int, it could possibly be a string, possibly an enum.
     private int trustRating;
    // private ContactInfo contactInfo;  an object pulled when invoice is created
 

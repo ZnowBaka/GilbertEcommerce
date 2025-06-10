@@ -99,7 +99,7 @@ public class GilbertEcommerceController {
             // Maps OwnerDisplayName onto the Listing
             listingService.getListingOwnerNameByListingId(results);
 
-            Map<String, List<Tag>> tagFilterMap = initializerService.buildNormalizedCategoryTagsMap();
+            Map<String, List<Tag>> tagFilterMap = initializerService.normalizeTagsMap(initializerService.buildStandardSearchFilterTagsMap());
 
             // Create a map for pretty display names
             Map<String, String> prettyNameMap = new HashMap<>();
@@ -135,7 +135,7 @@ public class GilbertEcommerceController {
 
         try {
             List<ProductListing> results = listingService.getProductListingsHeaderSearch(initializerService.getApprovedListings(), headerID);
-            Map<String, List<Tag>> tagFilterMap = initializerService.buildNormalizedCategoryTagsMap();
+            Map<String, List<Tag>> tagFilterMap = initializerService.normalizeTagsMap(initializerService.buildStandardSearchFilterTagsMap());
 
             // Create a map for pretty display names
             Map<String, String> prettyNameMap = new HashMap<>();
@@ -249,7 +249,7 @@ public class GilbertEcommerceController {
 
         // Creates a new SearchForm Object so it is empty and ready to be used
         SearchForm form = new SearchForm();
-        Map<String, List<Tag>> mapToBeTested = initializerService.buildNormalizedCategoryTagsMap();
+        Map<String, List<Tag>> mapToBeTested = initializerService.normalizeTagsMap(initializerService.buildStandardSearchFilterTagsMap());
 
         // Gets the Specific Listing required for the page
         List<ProductListing> approvedListings = initializerService.getApprovedListings();
@@ -323,7 +323,7 @@ public class GilbertEcommerceController {
     public String showCreateForm(Model model) {
         loginService.getLoggedInUser(session);
         TagInsertForm form = new TagInsertForm();
-        HashMap<String, List<Tag>> mapToBeTested = initializerService.buildNormalizedCategoryTagsMap();
+        HashMap<String, List<Tag>> mapToBeTested = initializerService.normalizeTagsMap(initializerService.buildStandardSearchFilterTagsMap());
 
         // Create a map for pretty display names
         HashMap<String, String> prettyNameMap = new HashMap<>();
@@ -346,7 +346,7 @@ public class GilbertEcommerceController {
 
         User user = loginService.getLoggedInUser(session);
 
-        HashMap<String, List<Tag>> mapWithID = initializerService.buildNormalizedCategoryTagsMap();
+        HashMap<String, List<Tag>> mapWithID = initializerService.normalizeTagsMap(initializerService.buildStandardSearchFilterTagsMap());
         listingService.validateListing(listing, "GilbertController.postCreateForm");
         listing.setSellerID(user.getUserID());
         model.addAttribute("error", "all fields needed");

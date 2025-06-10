@@ -85,9 +85,9 @@ public class SearchQueryService {
     }
 
     /**
-     * Adds a tag existence filter, assuming the field maps to tag value under a specific level.
-     * Filter listings that have the given tag value under the specified tag category.
-     * This uses EXISTS to ensure the listing has at least one matching tag in that category.
+     * Adds a tag existence filter:
+     * This simple Filter makes sure that any appended SQL is the exact same, utilising both the safe start trick 1=1 and the
+     * EXISTS tag, this ensures that the searched listing has at least one matching tag in that category.
      * Joins:
      * - product_tags links listings to tags
      * - tags holds tag values
@@ -117,25 +117,13 @@ public class SearchQueryService {
         params.add(tagValue);
     }
 
-//
-//    AND EXISTS (
-//            SELECT 1
-//                    FROM product_tags connectedTags
-//                    JOIN tags tag ON connectedTags.tag_id = tag.tag_id
-//                    JOIN tag_has_category connectedCategory ON tag.tag_id = connectedCategory.tag_id
-//                    JOIN tag_category tagCategory ON connectedCategory.cat_id = tagCategory.cat_id
-//                    WHERE tagCategory.category_name = ?
-//                    AND tag.tag_value = ?
-//    )
-//
-
     /**
      * Unrefined explanation:
      * Uses Java reflection to dynamically extract the value of a field from the SearchForm instance.
      * Instead of manually calling form.getBags_and_luggage(), form.getShoes(), etc. for every single field, -
      * reflection lets you access any field dynamically by its name as a string.
-     * This helps when you have a map (TAG_FILTERS) that relates form field names to database category names, -
-     * so you can loop through them and get the value without a huge if or switch-case. Very smart!
+     * This allows us to Map stuff as <String,<String>> - like our (TAG_FILTERS), it remaps data from the frontend, and the backend, into something the DB recognises.
+     * That way we can simply loop values without a huge if or switch-case. Very smart!
      */
     private String getFieldValue(SearchForm form, String fieldName) {
         try {

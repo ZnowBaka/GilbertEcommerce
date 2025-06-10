@@ -59,7 +59,6 @@ public class TagRepo {
                 ORDER BY tag.tag_value REGEXP '^[0-9]+$' DESC, tag.tag_value + 0, tag.tag_value
                 """);
 
-
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Tag tag = new Tag();
             tag.setId(rs.getInt("tag_id"));           // map tag_id to id explicitly
@@ -79,8 +78,6 @@ public class TagRepo {
 
         List<Tag> tagList = new ArrayList<>();
         tagList = jdbcTemplate.query(sql, new TagMapper(), listingId);
-
-
 
         return tagList;
     }

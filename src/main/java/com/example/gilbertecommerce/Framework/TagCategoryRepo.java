@@ -69,6 +69,7 @@ public class TagCategoryRepo {
 
         return affectRows > 0;
     }
+
     public void addTagToListing(int tagId, int listingId) {
         System.out.println("Adding tag " + tagId + " to listing " + listingId + " in TagCategoryRepo");
         String sql = "INSERT INTO product_tags (product_tag, tag_id) VALUES (?, ?)";
