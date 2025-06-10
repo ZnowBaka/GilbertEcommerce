@@ -5,69 +5,10 @@
     <title>Search Results</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/IndexStyles.css">
-    <style>
-        body {
-            background-color: #f8f0e5;
-            font-family: Arial, Helvetica, sans-serif;
-            padding: 40px 20px;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .collection-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-img {
-            height: 220px;
-            background-color: #e6e6e6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            color: #777;
-        }
-
-        .card-content {
-            padding: 1rem;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 0.4rem;
-        }
-
-        .card-price {
-            font-size: 1rem;
-            color: #333;
-        }
-
-
-        .no-results {
-            text-align: center;
-            font-size: 1.2rem;
-            color: #999;
-            margin-top: 3rem;
-        }
-    </style>
 </head>
 
 <body>
+
 <header>
     <div class="logo">Gilbert</div>
     <div class="tagline">Quality • Sustainability • Preloved</div>
@@ -75,6 +16,63 @@
 
 
 <main>
+
+    <section class="filter-section">
+        <form method="post" th:action="@{'/search/'}" th:object="${TestSearchForm}">
+            <h3 class="filter-title">Filters</h3>
+            <div class="filters-row">
+
+                <div class="filter-options">
+                    <div th:each="entry : ${TestTagMap}"
+                         class="dropdown-box"
+                         th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
+
+                        <div class="selected-item">
+                            <input th:id="${fieldName}" th:name="${fieldName}"
+                                   th:field="*{__${fieldName}__}"
+                                   th:placeholder="${prettyName}"
+                                   readonly="readonly"/>
+                        </div>
+
+                        <div class="dropdown-content">
+                            <div class="search-input">
+                                <label>
+                                    <input type="text" placeholder="Search tags..."/>
+                                </label>
+                            </div>
+
+                            <ul>
+                                <li th:each="tag : ${entry.value}"
+                                    class="dropdown-item"
+                                    th:data-value="${tag.tagValue}"
+                                    th:text="${tag.tagValue}">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <label for="FilterSearchInput"></label>
+                <input id="FilterSearchInput" type="text"
+                       th:field="*{searchText}" placeholder="Search..."/>
+
+                <button type="submit" class="filter-submit-btn">Apply Filters</button>
+            </div>
+
+        </form>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
     <section class="featured-collections">
         <h2 class="section-title">Search Results</h2>
 
@@ -111,6 +109,9 @@
         </div>
     </section>
 
+
+    <hr>
+
     <!-- Display for the search data -->
     <section class="search-summary">
         <h2>Search Summary</h2>
@@ -136,25 +137,28 @@
         </div>
     </section>
 
-    <hr>
-
-    <section class="results">
-        <h2>Results</h2>
-        <div th:if="${#lists.isEmpty(results)}">
-            <p>No listings matched your criteria.</p>
-        </div>
-
-        <div th:each="listing : ${results}">
-            <div class="listing-box">
-                <h3 th:text="${listing.listingTitle}">Product Title</h3>
-                <p th:text="${listing.listingDescription}">Product description</p>
-                <p><strong>Price:</strong> $<span th:text="${listing.price}">0.00</span></p>
-            </div>
-        </div>
-    </section>
-
-
 </main>
+
+<div class="nav-bar">
+    <a href="#" class="nav-item active">
+        <div class="nav-icon"><img src="/Icons/home-1-svgrepo-com.svg" width="20" height="20"></div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/search-alt-2-svgrepo-com.svg" width="20" height="20"></div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/heart-svgrepo-com.svg" width="20" height="20"></div>
+
+    </a>
+    <a href="/listingView" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg" width="20" height="20"></div>
+
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon"><img src="/Icons/bell-alt-svgrepo-com.svg" width="20" height="20"></div>
+
+    </a>
+</div>
 
 <footer>
     <div class="footer-nav">
@@ -171,4 +175,65 @@
 </footer>
 
 </body>
+
+<script>
+    // Some Explanation, this simply waits until the entire pages is fully loaded before running this script.
+    // Then we use the same trick as we have used before to select specific CSS classes.
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // When a dropdown item is clicked, it's value is put into the input.
+        document.querySelectorAll(".dropdown-item").forEach(item => {
+            item.addEventListener("click", function () {
+                const selectedValue = this.getAttribute("data-value");
+                const container = this.closest(".dropdown-box");
+                const input = container.querySelector("input[readonly]");
+
+                // This is what sets the input value.
+                if (input) {
+                    input.value = selectedValue;
+                }
+
+                // This is adding a highlight for the chosen item. If another item was highlighted, then remove it (the highlight).
+                container.querySelectorAll(".dropdown-item").forEach(i => i.classList.remove("active"));
+                this.classList.add("active");
+
+                // Simply closes the dropdown box
+                container.classList.remove("active");
+            });
+        });
+
+        // When the selected-item (the visible input box) is clicked, we find its parent dropdown-box
+        // and toggle its "active" class to show or hide the list of tag options
+        document.querySelectorAll(".selected-item").forEach(selected => {
+            selected.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const box = this.closest(".dropdown-box");
+                box.classList.toggle("active");
+            });
+        });
+
+        // If a user clicks outside the dropdown box, then it should close automatically.
+        window.addEventListener("click", function (e) {
+            document.querySelectorAll(".dropdown-box").forEach(box => {
+                if (!box.contains(e.target)) {
+                    box.classList.remove("active");
+                }
+            });
+        });
+
+        // This compares the searched input with the dropdown options in real-time.
+        // It does this by simmply hiding options that don't match.
+        document.querySelectorAll(".search-input input").forEach(input => {
+            input.addEventListener("keyup", function () {
+                const filter = this.value.toLowerCase();
+                const listItems = this.closest(".dropdown-content").querySelectorAll(".dropdown-item");
+                listItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(filter) ? "block" : "none";
+                });
+            });
+        });
+    });
+</script>
+
 </html>

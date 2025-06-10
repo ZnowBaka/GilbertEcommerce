@@ -55,26 +55,6 @@ public class GilbertEcommerceController {
         this.queryService = queryService;
     }
 
-
-    @GetMapping("/testTags")
-    public String testCategoryService(Model model) {
-        SearchForm form = new SearchForm();
-        Map<String, List<Tag>> mapToBeTested = initializerService.buildNormalizedCategoryTagsMap();
-
-        // Create a map for pretty display names
-        Map<String, String> prettyNameMap = new HashMap<>();
-        mapToBeTested.keySet().forEach(key -> {
-            prettyNameMap.put(key, formatDisplayName(key));
-        });
-
-        model.addAttribute("TestSearchForm", form);
-        model.addAttribute("TestTagMap", mapToBeTested);
-        model.addAttribute("PrettyNames", prettyNameMap);
-
-
-        return "testTags";
-    }
-
     // This formats "bags_and_luggage" -> "Bags And Luggage"
     private String formatDisplayName(String key) {
         if (key == null || key.isBlank()) {
@@ -89,6 +69,7 @@ public class GilbertEcommerceController {
 
     @GetMapping("/searchResults")
     public String showSearchResults(Model model) {
+
         return "searchResults";
     }
 
@@ -119,17 +100,27 @@ public class GilbertEcommerceController {
             // Maps OwnerDisplayName onto the Listing
             listingService.getListingOwnerNameByListingId(results);
 
+            Map<String, List<Tag>> tagFilterMap = initializerService.buildNormalizedCategoryTagsMap();
+
+            // Create a map for pretty display names
+            Map<String, String> prettyNameMap = new HashMap<>();
+            tagFilterMap.keySet().forEach(key -> {
+                prettyNameMap.put(key, formatDisplayName(key));
+            });
+
             model.addAttribute("results", results);
             model.addAttribute("TestSearchForm", form);
             model.addAttribute("executedSql", fullSql);
             model.addAttribute("sqlParams", params);
+            model.addAttribute("TestTagMap", tagFilterMap);
+            model.addAttribute("PrettyNames", prettyNameMap);
 
             return "searchResults";
 
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "Search failed: " + e.getMessage());
-            return "testTags"; // or your fallback page
+            return "productListingPage"; // Fallback page
         }
     }
 
