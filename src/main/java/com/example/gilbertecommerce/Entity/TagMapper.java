@@ -20,6 +20,4 @@ public class TagMapper implements org.springframework.jdbc.core.RowMapper<Tag> {
         }
         return tag;
     }
-
-
 }

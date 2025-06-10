@@ -75,7 +75,7 @@
 
 
 <main>
-    <section>
+    <section class="featured-collections">
         <h2 class="section-title">Search Results</h2>
 
         <div th:if="${#lists.isEmpty(results)}" class="no-results">
@@ -84,15 +84,28 @@
 
         <div class="collection-cards" th:if="${!#lists.isEmpty(results)}">
             <div class="card" th:each="product : ${results}">
-                <div class="card-img">
-                    <span th:text="${product.listingTitle} + ' image'">Image</span>
+
+                <div class="card-img"
+                     style="background-color: #e6e6e6; display: flex; align-items: center; justify-content: center;">
+                    <img th:if="${product.listingImage} ==null" src="/Icons/Gilbert_Logo_Refined_Base_Draft.svg"
+                         th:else="${product.listingImage}" style="width: 100%; height: 100%;">
                 </div>
+                <span th:text="${product.listingTitle} + ' image'">Image</span>
+
+
                 <div class="card-content">
                     <h3 class="card-title" th:text="${product.listingTitle}">Title</h3>
                     <p class="card-price" th:text="${product.price} + ' DKK'">Price</p>
-                    <ul class="tag-list" th:if="${product.tags}">
-                        <li th:each="tag : ${product.tags}" th:text="${tag.tagValue}">Tag</li>
-                    </ul>
+                    <p class="card-price" th:text="${product.getBrand()}">Brand</p>
+                    <div class="card-seller">
+                        <div class="seller-avatar"
+                             style="background-color: #ccc; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+                            A
+                        </div>
+
+                        <span class="seller-name" th:text="${product.getDisplayName()}">JohanneK</span>
+                        <span class="trust-score">98%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -145,12 +158,17 @@
 
 <footer>
     <div class="footer-nav">
-        <a href="/" class="footer-link">Back to Home</a>
-        <a href="#" class="footer-link">Support</a>
+        <a href="#" class="footer-link">About Gilbert</a>
+        <a href="#" class="footer-link">How It Works</a>
+        <a href="#" class="footer-link">Sustainability</a>
+        <a href="#" class="footer-link">FAQ</a>
+        <a href="#" class="footer-link">Contact</a>
+        <a href="#" class="footer-link">Terms</a>
     </div>
     <div class="copyright">
         © 2025 Gilbert - All rights reserved
     </div>
 </footer>
+
 </body>
 </html>

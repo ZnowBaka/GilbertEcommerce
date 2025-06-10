@@ -116,6 +116,9 @@ public class GilbertEcommerceController {
                 product.setTags(tags);
             }
 
+            // Maps OwnerDisplayName onto the Listing
+            listingService.getListingOwnerNameByListingId(results);
+
             model.addAttribute("results", results);
             model.addAttribute("TestSearchForm", form);
             model.addAttribute("executedSql", fullSql);
