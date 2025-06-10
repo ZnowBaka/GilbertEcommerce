@@ -201,8 +201,7 @@ public class GilbertEcommerceController {
     }
 
     @PostMapping("/registerNewProfile")
-    public String postNewProfile(@ModelAttribute("registrationForm") RegistrationForm
-                                         registrationForm) {
+    public String postNewProfile(@ModelAttribute("registrationForm") RegistrationForm registrationForm) {
         loginService.validateRegistrationForm(registrationForm);
         registrationForm.getLoginInfo().setLoginEmail(registrationForm.getUser().getEmail());
         loginService.registerUser(registrationForm.getLoginInfo(), registrationForm.getUser());
@@ -314,7 +313,7 @@ public class GilbertEcommerceController {
     }
 
     @GetMapping("/AdminMenu/!Feature/{Id}")
-    public String unfeatureAdminListing(@PathVariable("Id") int listingId) {
+    public String unFeatureAdminListing(@PathVariable("Id") int listingId) {
         listingService.updateFeatureStatus(listingId, false);
         return "redirect:/AdminMenu";
     }

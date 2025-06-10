@@ -10,7 +10,7 @@
 <body>
 
 <header>
-    <div class="logo">Gilbert</div>
+    <div class="logo" style="padding: 0; margin: 0;">Gilbert</div>
     <div class="tagline">Quality • Sustainability • Preloved</div>
 </header>
 
@@ -19,12 +19,13 @@
 
     <section class="filter-section">
         <form method="post" th:action="@{'/search/'}" th:object="${TestSearchForm}">
-            <h3 class="filter-title">Filters</h3>
+            <h3 class="filter-title">Please select desired tags</h3>
             <div class="filters-row">
 
-                <div class="filter-options">
+                <div class="filter-options" style="justify-content: flex-start;">
                     <div th:each="entry : ${TestTagMap}"
                          class="dropdown-box"
+                         style="clear: both; width: 5fr; align-items: center;"
                          th:with="fieldName=${entry.key}, prettyName=${PrettyNames[entry.key]}">
 
                         <div class="selected-item">
@@ -50,16 +51,21 @@
                             </ul>
                         </div>
                     </div>
+                    <br>
                 </div>
+                <div style="clear: both; width: 100%; display: flex; align-items: center; justify-content: center;">
 
-                <label for="FilterSearchInput"></label>
-                <input id="FilterSearchInput" type="text"
-                       th:field="*{searchText}" placeholder="Search..."/>
+                     <span style="width: 100%; margin: 0; padding: 0;"><label for="FilterSearchInput"></label>
+                        <input id="FilterSearchInput" type="text" th:field="*{searchText}" placeholder="Search..."
+                               style="border-radius: 5px ; height: 30px; width: 50%"/>
+                        <button type="submit" class="filter-submit-btn"
+                                style="height: 25px; width: 20%;">Search</button>
+                        <button type="reset" class="filter-submit-btn"
+                                style="height: 25px; width: 20%">Reset Filters</button>
+                    </span>
 
-                <button type="submit" class="filter-submit-btn">Apply Filters</button>
-                <button type="reset" class="filter-submit-btn">Reset Filters</button>
+                </div>
             </div>
-
         </form>
     </section>
 

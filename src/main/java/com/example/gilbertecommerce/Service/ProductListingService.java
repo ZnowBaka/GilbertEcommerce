@@ -110,6 +110,12 @@ public class ProductListingService {
     }
 
     public List<ProductListing> getProductListingsHeaderSearch(List<ProductListing> productListings, String value) {
+        if (value == null || value.isEmpty()) {
+            List<ProductListing> originalListings = new ArrayList<>();
+            originalListings = productListings;
+            return originalListings;
+        }
+
         List<ProductListing> headerProductListings = new ArrayList<>();
         List<Tag> productTags = new ArrayList<>();
 
