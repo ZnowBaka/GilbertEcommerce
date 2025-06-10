@@ -224,22 +224,8 @@ public class GilbertEcommerceController {
         Map<String, List<Tag>> mapToBeTested = initializerService.buildNormalizedCategoryTagsMap();
 
         // Gets the Specific Listing required for the page
-        List<ProductListing> approvedListings = listingService.getAllApprovedListings();
-        List<ProductListing> featuredListings = listingService.getAllFeaturedListings();
-
-        // Add Owners DisplayName to productListing
-        listingService.getListingOwnerNameByListingId(approvedListings);
-        listingService.getListingOwnerNameByListingId(featuredListings);
-
-        // Gets the tags for each Listing and add their tags.
-        for (ProductListing product : approvedListings) {
-            List<Tag> approvedListingsTags = initializerService.getTagsByListingId(product.getListingID());
-            product.setTags(approvedListingsTags);
-        }
-        for (ProductListing product : featuredListings) {
-            List<Tag> featuredListingsTags = initializerService.getTagsByListingId(product.getListingID());
-            product.setTags(featuredListingsTags);
-        }
+        List<ProductListing> approvedListings = initializerService.getApprovedListings();
+        List<ProductListing> featuredListings = initializerService.getFeaturedListings();
 
         // Create a map for pretty display names
         Map<String, String> prettyNameMap = new HashMap<>();

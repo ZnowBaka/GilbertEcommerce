@@ -1,5 +1,6 @@
 package com.example.gilbertecommerce.Service;
 
+import com.example.gilbertecommerce.Entity.ProductListing;
 import com.example.gilbertecommerce.Entity.Tag;
 import com.example.gilbertecommerce.Entity.TagCategory;
 import com.example.gilbertecommerce.Entity.TagInsertForm;
@@ -35,27 +36,28 @@ public class InitializerService {
     private List<Tag> internationalSizeTags;
     private List<Tag> shoeSizeTags;
 
-
+    List<ProductListing> approvedListings;
+    List<ProductListing> featuredListings;
 
 
     public InitializerService(TagRepo tagRepo, TagCategoryRepo catRepo, ProductListingService listingService) {
 
-        try{
-           this.tagRepo = tagRepo;
-           this.catRepo = catRepo;
-           this.listingService = listingService;
+        try {
+            this.tagRepo = tagRepo;
+            this.catRepo = catRepo;
+            this.listingService = listingService;
 
-       } catch (Exception e) {
-           e.printStackTrace();
-           throw e;
-       }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @PostConstruct
     public void init() {
         try {
             // Finishes the constructor before the rest of the calls
-            System.out.println("Loading Tags from DB into CategoryTagMapService...");
+            System.out.println("Loading Tags from DB into the program...");
             this.genderTags = tagDataFiller("Gender");
             this.designerTags = tagDataFiller("Designer");
             this.homeTags = tagDataFiller("Home");
@@ -69,6 +71,8 @@ public class InitializerService {
             this.jewelryTags = tagDataFiller("Jewelry");
             this.internationalSizeTags = tagDataFiller("InternationalSize");
             this.shoeSizeTags = tagDataFiller("Shoe Size");
+            this.approvedListings = listingService.getAllApprovedListings();
+            this.featuredListings = listingService.getAllFeaturedListings();
 
             // Starts Mapping
             System.out.println("Setting up field mappings...");
@@ -87,22 +91,29 @@ public class InitializerService {
             categoryToFormFieldMap.put("Shoe Size", "shoe_size");
 
             // Adds Tags and Brands & Owner's Display names to Listings needed for front page
+            // Add Owners DisplayName to productListing
+            System.out.println("Setting up Listings...");
+            listingService.getListingOwnerNameByListingId(approvedListings);
+            listingService.getListingOwnerNameByListingId(featuredListings);
+
+            // Gets the tags for each Listing and add their tags.
+            for (ProductListing product : approvedListings) {
+                List<Tag> approvedListingsTags = getTagsByListingId(product.getListingID());
+                product.setTags(approvedListingsTags);
+            }
+
+            for (ProductListing product : featuredListings) {
+                List<Tag> featuredListingsTags = getTagsByListingId(product.getListingID());
+                product.setTags(featuredListingsTags);
+            }
 
 
 
-
-
-
-
-
-
-
-
-            System.out.println("CategoryTagMapService Initialized successfully");
+            System.out.println("Program Initialized successfully");
         } catch (Exception e) {
-            System.err.println("Error in CategoryTagMapService.init(): " + e.getMessage());
+            System.err.println("Error in InitializerService.init(): " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException("Failed to initialize CategoryTagMapService", e);
+            throw new RuntimeException("Failed to initialize Program", e);
         }
     }
 
@@ -120,12 +131,27 @@ public class InitializerService {
         return tagsList;
     }
 
-    // In turn this will be used to "normalise" the SearchForm data
     public Map<String, String> getCategoryToFormFieldMap() {
         return this.categoryToFormFieldMap;
     }
 
+    public List<ProductListing> getApprovedListings() {
+        return approvedListings;
+    }
 
+    public void setApprovedListings(List<ProductListing> approvedListings) {
+        this.approvedListings = approvedListings;
+    }
+
+    public List<ProductListing> getFeaturedListings() {
+        return featuredListings;
+    }
+
+    public void setFeaturedListings(List<ProductListing> featuredListings) {
+        this.featuredListings = featuredListings;
+    }
+
+    // In turn this will be used to "normalise" the SearchForm data
     public HashMap<String, List<Tag>> buildNormalizedCategoryTagsMap() {
         LinkedHashMap<String, List<Tag>> normalizedMap = new LinkedHashMap<>();
         Map<TagCategory, List<Tag>> originalMap = buildTestCategoryTagsMap();
@@ -216,6 +242,7 @@ public class InitializerService {
         map.put(new TagCategory("Brand"), brandTags);
         return map;
     }
+
     public List<Tag> getTagsBySelection(TagInsertForm form, Map<String, List<Tag>> map) {
         List<Tag> result = new ArrayList<>();
 

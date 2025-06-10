@@ -15,10 +15,6 @@
 <header>
     <div class="logo">Gilbert</div>
     <div class="tagline">Quality • Sustainability • Preloved</div>
-    <div class="search-bar">
-        <input type="text" placeholder="Search for products, brands or designers...">
-        <button>Search</button>
-    </div>
 </header>
 
 <main>
@@ -121,7 +117,8 @@
                 <div class="card-content">
                     <h3 class="card-title" th:text="${listing.getListingTitle()}"></h3>
                     <p class="card-price" th:text="${listing.getPrice()}">Dkk</p>
-                    <p class="card-brand" th:text="${listing.getTags()}">Acne Studios</p>
+                    <p class="card-price" th:text="${listing.getBrand()}">Dkk</p>
+
                     <div class="card-seller">
                         <div class="seller-avatar"
                              style="background-color: #ccc; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">

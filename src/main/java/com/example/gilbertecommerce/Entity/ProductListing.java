@@ -54,7 +54,13 @@ public class ProductListing {
     }
 
     public List<Tag> getTags() {
-        return tags;
+        List<Tag> fallBackTags = new ArrayList<>();
+        fallBackTags.add(new Tag(-1, "tag N/A"));
+        if (!tags.isEmpty() || !(tags.size() == 0)){
+            return tags;
+
+        }
+        return fallBackTags;
     }
 
     public void setTags(List<Tag> tags) {
