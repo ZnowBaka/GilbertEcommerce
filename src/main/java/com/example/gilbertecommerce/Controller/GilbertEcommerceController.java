@@ -20,7 +20,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import jakarta.servlet.http.HttpSession;
 
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +34,7 @@ public class GilbertEcommerceController {
     private final HttpSession session;
     private final AdminService adminService;
     private final ProductListingService listingService;
-    private final CategoryTagMapService categoryTagMapService;
+    private final InitializerService initializerService;
     private final TagCategoryRepo tagCategoryRepo;
     private final LoggerService logger;
     private SearchQueryService queryService;
@@ -43,13 +42,13 @@ public class GilbertEcommerceController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService listingService, CategoryTagMapService categoryTagMapService, JdbcTemplate jdbcTemplate, SearchQueryService queryService, LoggerService logger, TagCategoryRepo tagCategoryRepo) {
+    public GilbertEcommerceController(LoginService loginService, UserService userService, HttpSession session, AdminService adminService, ProductListingService listingService, InitializerService initializerService, JdbcTemplate jdbcTemplate, SearchQueryService queryService, LoggerService logger, TagCategoryRepo tagCategoryRepo) {
         this.loginService = loginService;
         this.userService = userService;
         this.session = session;
         this.adminService = adminService;
         this.listingService = listingService;
-        this.categoryTagMapService = categoryTagMapService;
+        this.initializerService = initializerService;
         this.tagCategoryRepo = tagCategoryRepo;
         this.logger = logger;
         this.jdbcTemplate = jdbcTemplate;
@@ -60,7 +59,7 @@ public class GilbertEcommerceController {
     @GetMapping("/testTags")
     public String testCategoryService(Model model) {
         SearchForm form = new SearchForm();
-        Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
+        Map<String, List<Tag>> mapToBeTested = initializerService.buildNormalizedCategoryTagsMap();
 
         // Create a map for pretty display names
         Map<String, String> prettyNameMap = new HashMap<>();
@@ -113,7 +112,7 @@ public class GilbertEcommerceController {
 
             // Gets the tags for each Listing and add their tags.
             for (ProductListing product : results) {
-                List<Tag> tags = categoryTagMapService.getTagsByListingId(product.getListingID());
+                List<Tag> tags = initializerService.getTagsByListingId(product.getListingID());
                 product.setTags(tags);
             }
 
@@ -222,7 +221,7 @@ public class GilbertEcommerceController {
 
         // Creates a new SearchForm Object so it is empty and ready to be used
         SearchForm form = new SearchForm();
-        Map<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
+        Map<String, List<Tag>> mapToBeTested = initializerService.buildNormalizedCategoryTagsMap();
 
         // Gets the Specific Listing required for the page
         List<ProductListing> approvedListings = listingService.getAllApprovedListings();
@@ -234,11 +233,11 @@ public class GilbertEcommerceController {
 
         // Gets the tags for each Listing and add their tags.
         for (ProductListing product : approvedListings) {
-            List<Tag> approvedListingsTags = categoryTagMapService.getTagsByListingId(product.getListingID());
+            List<Tag> approvedListingsTags = initializerService.getTagsByListingId(product.getListingID());
             product.setTags(approvedListingsTags);
         }
         for (ProductListing product : featuredListings) {
-            List<Tag> featuredListingsTags = categoryTagMapService.getTagsByListingId(product.getListingID());
+            List<Tag> featuredListingsTags = initializerService.getTagsByListingId(product.getListingID());
             product.setTags(featuredListingsTags);
         }
 
@@ -310,7 +309,7 @@ public class GilbertEcommerceController {
     public String showCreateForm(Model model) {
         loginService.getLoggedInUser(session);
         TagInsertForm form = new TagInsertForm();
-        HashMap<String, List<Tag>> mapToBeTested = categoryTagMapService.buildNormalizedCategoryTagsMap();
+        HashMap<String, List<Tag>> mapToBeTested = initializerService.buildNormalizedCategoryTagsMap();
 
         // Create a map for pretty display names
         HashMap<String, String> prettyNameMap = new HashMap<>();
@@ -333,13 +332,13 @@ public class GilbertEcommerceController {
 
         User user = loginService.getLoggedInUser(session);
 
-        HashMap<String, List<Tag>> mapWithID = categoryTagMapService.buildNormalizedCategoryTagsMap();
+        HashMap<String, List<Tag>> mapWithID = initializerService.buildNormalizedCategoryTagsMap();
         listingService.validateListing(listing, "GilbertController.postCreateForm");
         listing.setSellerID(user.getUserID());
         model.addAttribute("error", "all fields needed");
         try {
             listingService.create(listing);
-            List<Tag> tags = categoryTagMapService.getTagsBySelection(form, mapWithID);
+            List<Tag> tags = initializerService.getTagsBySelection(form, mapWithID);
             for (Tag tag : tags) {
                 System.out.println(tag.getTagValue());
                 System.out.println(tag.getId());

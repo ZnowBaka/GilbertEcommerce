@@ -1,6 +1,5 @@
 package com.example.gilbertecommerce.Service;
 
-import com.example.gilbertecommerce.Entity.ProductListing;
 import com.example.gilbertecommerce.Entity.Tag;
 import com.example.gilbertecommerce.Entity.TagCategory;
 import com.example.gilbertecommerce.Entity.TagInsertForm;
@@ -13,10 +12,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CategoryTagMapService {
+public class InitializerService {
 
     private final TagRepo tagRepo;
     private final TagCategoryRepo catRepo;
+    private final ProductListingService listingService;
 
     // Doing this here keeps the controller clean, but man its annoying to map out
     private final Map<String, String> categoryToFormFieldMap = new LinkedHashMap<>();
@@ -38,10 +38,12 @@ public class CategoryTagMapService {
 
 
 
-    public CategoryTagMapService(TagRepo tagRepo, TagCategoryRepo catRepo) {
-       try{
+    public InitializerService(TagRepo tagRepo, TagCategoryRepo catRepo, ProductListingService listingService) {
+
+        try{
            this.tagRepo = tagRepo;
            this.catRepo = catRepo;
+           this.listingService = listingService;
 
        } catch (Exception e) {
            e.printStackTrace();
@@ -52,6 +54,7 @@ public class CategoryTagMapService {
     @PostConstruct
     public void init() {
         try {
+            // Finishes the constructor before the rest of the calls
             System.out.println("Loading Tags from DB into CategoryTagMapService...");
             this.genderTags = tagDataFiller("Gender");
             this.designerTags = tagDataFiller("Designer");
@@ -67,6 +70,7 @@ public class CategoryTagMapService {
             this.internationalSizeTags = tagDataFiller("InternationalSize");
             this.shoeSizeTags = tagDataFiller("Shoe Size");
 
+            // Starts Mapping
             System.out.println("Setting up field mappings...");
             categoryToFormFieldMap.put("Gender", "gender");
             categoryToFormFieldMap.put("Designer", "designer");
@@ -81,6 +85,18 @@ public class CategoryTagMapService {
             categoryToFormFieldMap.put("Jewelry", "jewelry");
             categoryToFormFieldMap.put("InternationalSize", "international_size");
             categoryToFormFieldMap.put("Shoe Size", "shoe_size");
+
+            // Adds Tags and Brands & Owner's Display names to Listings needed for front page
+
+
+
+
+
+
+
+
+
+
 
             System.out.println("CategoryTagMapService Initialized successfully");
         } catch (Exception e) {
