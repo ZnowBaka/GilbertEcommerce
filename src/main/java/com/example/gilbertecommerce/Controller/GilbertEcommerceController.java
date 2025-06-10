@@ -108,10 +108,13 @@ public class GilbertEcommerceController {
                 prettyNameMap.put(key, formatDisplayName(key));
             });
 
+            form = new SearchForm();
+
             model.addAttribute("results", results);
             model.addAttribute("TestSearchForm", form);
             model.addAttribute("executedSql", fullSql);
             model.addAttribute("sqlParams", params);
+
             model.addAttribute("TestTagMap", tagFilterMap);
             model.addAttribute("PrettyNames", prettyNameMap);
 

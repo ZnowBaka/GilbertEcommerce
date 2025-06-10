@@ -178,5 +178,25 @@ public class SearchForm {
     public void setShoe_size(String shoe_size) {
         this.shoe_size = shoe_size;
     }
+
+    public void resetFilters() {
+        this.tagSelections.clear();
+        this.tagSelections.put("gender", gender);
+        this.tagSelections.put("designer", designer);
+        this.tagSelections.put("home", home);
+        this.tagSelections.put("beauty", beauty);
+        this.tagSelections.put("brand", brand);
+        this.tagSelections.put("condition", condition);
+        this.tagSelections.put("clothing", clothing);
+        this.tagSelections.put("accessories", accessories);
+        this.tagSelections.put("shoes", shoes);
+        this.tagSelections.put("bags_and_luggage", bags_and_luggage);
+        this.tagSelections.put("jewelry", jewelry);
+        this.tagSelections.put("international_size", international_size);
+        this.tagSelections.put("shoe_size", shoe_size);
+    }
+
+
+
 }
 
